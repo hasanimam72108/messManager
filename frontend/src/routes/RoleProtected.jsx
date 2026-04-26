@@ -1,6 +1,5 @@
 import { Navigate, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth.js";
-import { hasAccessToRoute } from "../utils/roleBasedNavigation.jsx";
 
 const RoleProtected = ({
   children,
@@ -22,11 +21,6 @@ const RoleProtected = ({
 
   // Check if user has required role
   if (requiredRoles.length > 0 && !requiredRoles.includes(user.role)) {
-    return <Navigate to={fallback} replace />;
-  }
-
-  // Check if user has access to current route
-  if (!hasAccessToRoute(location.pathname, user.role)) {
     return <Navigate to={fallback} replace />;
   }
 

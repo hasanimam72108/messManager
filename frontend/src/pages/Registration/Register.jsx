@@ -1,32 +1,32 @@
 import { ChefHat } from "lucide-react";
-// import { toast } from "react-hot-toast";
-// import { useNavigate } from "react-router-dom";
-// import { useRegisterMutation } from "../../features/auth/authSlice";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
+import { Link } from "react-router-dom";
+import { requestMess } from "../../mock/mockBackend";
 
 const Register = () => {
-  // const [registerUser, { isLoading }] = useRegisterMutation();
-  // const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    messName: "",
+    managerName: "",
+    managerEmail: "",
+  });
 
-  // const onSubmit = async (data) => {
-  //   const toastId = toast.loading("Creating account...");
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  //   try {
-  //     const response = await registerUser(data).unwrap();
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-  //     if (response.data?.token && response.data?.user) {
-  //       toast.success("Registration successful!", { id: toastId });
-  //       navigate("/login");
-  //     } else {
-  //       toast.error("Invalid response from server.", { id: toastId });
-  //     }
-  //   } catch (err) {
-  //     const errorMessage =
-  //       err?.data?.message === "Validation failed"
-  //         ? "User email/phone already exists!"
-  //         : "Registration failed. Please try again.";
-  //     toast.error(errorMessage, { id: toastId });
-  //   }
-  // };
+    try {
+      requestMess(formData);
+      toast.success("Mess request sent to super admin.");
+      setFormData({ messName: "", managerName: "", managerEmail: "" });
+    } catch (error) {
+      toast.error(error.message || "Request failed.");
+    }
+  };
 
   return (
     <div className="text-center w-full">
@@ -39,94 +39,69 @@ const Register = () => {
           Mess<span className="text-green-600">Manager</span>
         </h1>
       </div>
-      <p className="text-gray-500 mt-2 mb-8">
-        Create your account to get started
-      </p>
+      <p className="text-gray-500 mt-2 mb-8">Manager mess creation request</p>
 
       {/* <!-- Card --> */}
-      <div className="bg-white shadow-xl border border-gray-200 w-[420px] mx-auto p-8 rounded-xl text-left">
-        <h2 className="text-xl font-semibold">Register</h2>
+      <div className="bg-white shadow-xl border border-gray-200 w-105 mx-auto p-8 rounded-xl text-left">
+        <h2 className="text-xl font-semibold">Create Mess Request</h2>
         <p className="text-gray-500 text-sm mb-4">
-          Fill in your details to create an account
+          Submit mess details for super admin approval
         </p>
 
-        <form className="space-y-4">
-          {/* <!-- Full Name --> */}
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block mb-1">Full Name</label>
+            <label className="block mb-1">Mess Name</label>
             <input
               type="text"
-              placeholder="Enter your full name"
+              name="messName"
+              value={formData.messName}
+              onChange={handleChange}
+              placeholder="Enter mess name"
+              className="w-full bg-gray-100 border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1">Manager Name (Optional)</label>
+            <input
+              type="text"
+              name="managerName"
+              value={formData.managerName}
+              onChange={handleChange}
+              placeholder="Enter manager name"
               className="w-full bg-gray-100 border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
 
-          {/* <!-- Email --> */}
           <div>
-            <label className="block mb-1">Email</label>
+            <label className="block mb-1">Manager Email</label>
             <input
               type="email"
-              placeholder="your.email@example.com"
+              name="managerEmail"
+              value={formData.managerEmail}
+              onChange={handleChange}
+              placeholder="manager.email@example.com"
               className="w-full bg-gray-100 border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+              required
             />
           </div>
 
-          {/* <!-- Password --> */}
-          <div>
-            <label className="block mb-1">Password</label>
-            <input
-              type="password"
-              placeholder="Create a password"
-              className="w-full bg-gray-100 border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
-
-          {/* <!-- Confirm Password --> */}
-          <div>
-            <label className="block mb-1">Confirm Password</label>
-            <input
-              type="password"
-              placeholder="Confirm your password"
-              className="w-full bg-gray-100 border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-            />
-          </div>
-
-          {/* <!-- Role --> */}
-          <div>
-            <label className="block mb-2">Role</label>
-
-            <div className="flex gap-6">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  name="role"
-                  defaultChecked
-                  className="accent-green-600"
-                />
-                Member
-              </label>
-
-              <label className="flex items-center gap-2">
-                <input type="radio" name="role" className="accent-green-600" />
-                Manager
-              </label>
-            </div>
-          </div>
-
-          {/* <!-- Button --> */}
-          <button className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg mt-2">
-            Register
+          <button
+            type="submit"
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg mt-2"
+          >
+            Create Mess
           </button>
 
-          {/* <!-- Login Link --> */}
           <p className="text-center text-sm mt-3">
-            Already have an account?
-            <a
-              href="login"
-              className="text-green-600 font-medium hover:underline"
+            Already approved?
+            <Link
+              to="/login"
+              className="text-green-600 font-medium hover:underline ml-1"
             >
               Login here
-            </a>
+            </Link>
           </p>
         </form>
       </div>

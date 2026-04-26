@@ -1,25 +1,20 @@
 import {
   ChefHat,
   FileText,
+  Home,
   LayoutDashboard,
   LogOut,
   Utensils,
   Wallet,
 } from "lucide-react";
-import { useDispatch } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
-import { logoutSuccess } from "../../../features/auth/authSlice";
+import { NavLink } from "react-router-dom";
 
 const Sidebar = ({ onClose }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const handleLogout = () => {
-    // Clear Redux state & localStorage
-    dispatch(logoutSuccess());
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     if (onClose) onClose();
-    // Redirect to login page
-    navigate("/login");
+    window.location.replace("/home");
   };
 
   const menuItems = [
@@ -34,29 +29,29 @@ const Sidebar = ({ onClose }) => {
       name: "Meal Entry",
       path: "/user/meal-entry",
       icon: Utensils,
-      color: "text-orange-600",
-      bg: "bg-orange-100",
+      color: "text-emerald-600",
+      bg: "bg-emerald-100",
     },
     {
       name: "My Bill",
       path: "/user/my-bill",
       icon: FileText,
-      color: "text-purple-600",
-      bg: "bg-purple-100",
+      color: "text-rose-600",
+      bg: "bg-rose-100",
     },
     {
       name: "Balance",
       path: "/user/balance",
       icon: Wallet,
-      color: "text-emerald-600",
-      bg: "bg-emerald-100",
+      color: "text-fuchsia-600",
+      bg: "bg-fuchsia-100",
     },
   ];
 
   return (
     <aside className="w-64 bg-white border-r border-gray-100 h-full max-h-screen overflow-y-auto flex flex-col justify-between shadow-xl lg:shadow-none">
       <div>
-        <div className="p-8 pb-6 flex items-center gap-3">
+        <div className="p-8 pb-6 flex items-center gap-3 border-b border-gray-50">
           <div className="bg-green-600 p-2 rounded-xl flex items-center justify-center">
             <ChefHat className="w-6 h-6 text-white" />
           </div>
@@ -64,7 +59,8 @@ const Sidebar = ({ onClose }) => {
             Mess<span className="text-green-600">Manager</span>
           </h2>
         </div>
-        <nav className="px-4 space-y-2">
+
+        <nav className="p-4 space-y-2 mt-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -89,10 +85,20 @@ const Sidebar = ({ onClose }) => {
           })}
         </nav>
       </div>
-      <div className="p-4 border-t border-gray-100">
+
+      <div className="p-4 border-t border-gray-100 space-y-2">
+        <NavLink
+          to="/home"
+          onClick={() => onClose && onClose()}
+          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full transition-all font-medium bg-linear-to-r from-green-500 to-teal-500 text-white hover:shadow-lg hover:-translate-y-0.5"
+        >
+          <Home className="w-5 h-5" />
+          Back to Home
+        </NavLink>
+
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl w-full transition-colors font-medium"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full transition-all font-medium bg-linear-to-r from-red-500 to-pink-500 text-white hover:shadow-lg hover:-translate-y-0.5"
         >
           <LogOut className="w-5 h-5" />
           Logout

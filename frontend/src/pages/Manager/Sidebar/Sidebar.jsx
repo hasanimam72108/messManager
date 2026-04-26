@@ -1,14 +1,22 @@
 import {
   ChefHat,
+  Home,
   LayoutDashboard,
   LogOut,
   PieChart,
   Receipt,
   Users,
 } from "lucide-react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const Sidebar = ({ onClose }) => {
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    if (onClose) onClose();
+    window.location.replace("/home");
+  };
+
   const menuItems = [
     {
       name: "Dashboard",
@@ -76,15 +84,22 @@ const Sidebar = ({ onClose }) => {
           })}
         </nav>
       </div>
-      <div className="p-4 border-t border-gray-100">
-        <Link
+      <div className="p-4 border-t border-gray-100 space-y-2">
+        <NavLink
+          to="/home"
           onClick={() => onClose && onClose()}
-          to="/login"
-          className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl w-full transition-colors font-medium"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full transition-all font-medium bg-gradient-to-r from-green-500 to-teal-500 text-white hover:shadow-lg hover:-translate-y-0.5"
+        >
+          <Home className="w-5 h-5" />
+          Back to Home
+        </NavLink>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full transition-all font-medium bg-gradient-to-r from-red-500 to-pink-500 text-white hover:shadow-lg hover:-translate-y-0.5"
         >
           <LogOut className="w-5 h-5" />
           Logout
-        </Link>
+        </button>
       </div>
     </aside>
   );

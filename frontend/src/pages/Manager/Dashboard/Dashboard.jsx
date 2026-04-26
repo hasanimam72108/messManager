@@ -1,4 +1,45 @@
+import { useState } from "react";
+import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { updateAuthenticatedUser } from "../../../features/auth/authSlice";
+import useAuth from "../../../hooks/useAuth";
+import { completeFirstLoginPasswordSetup } from "../../../mock/mockBackend";
+
 const Dashboard = () => {
+  const { user } = useAuth();
+  const dispatch = useDispatch();
+  const [passwordForm, setPasswordForm] = useState({
+    password: "",
+    confirmPassword: "",
+  });
+
+  const handlePasswordChange = (event) => {
+    const { name, value } = event.target;
+    setPasswordForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSetupPassword = (event) => {
+    event.preventDefault();
+    if (!user?.id) return;
+
+    if (passwordForm.password !== passwordForm.confirmPassword) {
+      toast.error("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const updatedUser = completeFirstLoginPasswordSetup({
+        userId: user.id,
+        newPassword: passwordForm.password,
+      });
+      dispatch(updateAuthenticatedUser(updatedUser));
+      setPasswordForm({ password: "", confirmPassword: "" });
+      toast.success("Password updated successfully.");
+    } catch (error) {
+      toast.error(error.message || "Password setup failed.");
+    }
+  };
+
   return (
     <>
       <div className="mb-8">
@@ -7,6 +48,48 @@ const Dashboard = () => {
           Manage your mess and track all activities
         </p>
       </div>
+
+      {user?.mustChangePassword && (
+        <div className="mb-8 bg-amber-50 border border-amber-200 rounded-2xl p-6">
+          <h3 className="text-xl font-semibold text-amber-900">
+            Set Your New Password
+          </h3>
+          <p className="text-sm text-amber-700 mt-1 mb-4">
+            This is your first login. Please set a new password to continue.
+          </p>
+          <form
+            onSubmit={handleSetupPassword}
+            className="grid grid-cols-1 md:grid-cols-3 gap-3"
+          >
+            <input
+              type="password"
+              name="password"
+              value={passwordForm.password}
+              onChange={handlePasswordChange}
+              placeholder="New password"
+              className="bg-white border border-amber-200 rounded-lg px-3 py-2 text-sm"
+              minLength={6}
+              required
+            />
+            <input
+              type="password"
+              name="confirmPassword"
+              value={passwordForm.confirmPassword}
+              onChange={handlePasswordChange}
+              placeholder="Confirm password"
+              className="bg-white border border-amber-200 rounded-lg px-3 py-2 text-sm"
+              minLength={6}
+              required
+            />
+            <button
+              type="submit"
+              className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg px-4 py-2 text-sm font-medium"
+            >
+              Save Password
+            </button>
+          </form>
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

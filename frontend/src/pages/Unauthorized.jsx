@@ -1,6 +1,7 @@
 import { ArrowLeft, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { getRoleHomePath } from "../mock/mockBackend";
 import { getRoleDisplayName } from "../utils/roleBasedNavigation";
 
 const Unauthorized = () => {
@@ -8,7 +9,7 @@ const Unauthorized = () => {
   const { user } = useAuth();
 
   const handleGoHome = () => {
-    navigate("/dashboard");
+    navigate(getRoleHomePath(user?.role));
   };
 
   const handleGoBack = () => {
@@ -25,7 +26,7 @@ const Unauthorized = () => {
             You don't have permission to access this page.
           </p>
           {user && (
-            <div className="p-4 bg-gray-100rounded-lg">
+            <div className="p-4 bg-gray-100 rounded-lg">
               <p className="text-sm text-gray-600">
                 Current Role:{" "}
                 <span className="font-semibold text-gray-900">

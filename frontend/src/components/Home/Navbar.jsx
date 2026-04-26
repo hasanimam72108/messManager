@@ -33,7 +33,7 @@ const Navbar = () => {
             to="/register"
             className="bg-green-600 text-white px-6 py-2.5 rounded-lg font-semibold shadow-md hover:bg-green-700 hover:shadow-lg transition-all transform hover:-translate-y-0.5"
           >
-            Register
+            Create Mess
           </Link>
         </div>
       </div>

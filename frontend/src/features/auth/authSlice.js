@@ -39,11 +39,18 @@ const getInitialState = () => {
   try {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
+    const parsedUser = user ? JSON.parse(user) : null;
+    const isValidSession = !!token && !!parsedUser;
+
+    if (!isValidSession) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
 
     return {
-      user: user ? JSON.parse(user) : null,
-      token: token || null,
-      isAuthenticated: !!token,
+      user: isValidSession ? parsedUser : null,
+      token: isValidSession ? token : null,
+      isAuthenticated: isValidSession,
     };
   } catch {
     // Clear corrupted data
@@ -90,12 +97,21 @@ const authSlice = createSlice({
           state.token = token;
           state.user = JSON.parse(user);
           state.isAuthenticated = true;
+        } else {
+          state.token = null;
+          state.user = null;
+          state.isAuthenticated = false;
         }
       } catch {
         // Clear corrupted data
         localStorage.removeItem("token");
         localStorage.removeItem("user");
       }
+    },
+    updateAuthenticatedUser: (state, action) => {
+      if (!state.user) return;
+      state.user = { ...state.user, ...action.payload };
+      localStorage.setItem("user", JSON.stringify(state.user));
     },
   },
 });
@@ -109,7 +125,11 @@ export const {
 } = authApiSlice;
 
 // Export actions
-export const { loginSuccess, logoutSuccess, initializeAuth } =
-  authSlice.actions;
+export const {
+  loginSuccess,
+  logoutSuccess,
+  initializeAuth,
+  updateAuthenticatedUser,
+} = authSlice.actions;
 
 export default authSlice.reducer;

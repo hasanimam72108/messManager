@@ -1,4 +1,15 @@
+import { useMemo } from "react";
+import useAuth from "../../../hooks/useAuth";
+import {
+  getMealBreakdownByUser,
+  getUserDashboardStats,
+} from "../../../mock/mockBackend";
+
 const MyBill = () => {
+  const { user } = useAuth();
+  const stats = useMemo(() => getUserDashboardStats(user?.id), [user?.id]);
+  const breakdown = useMemo(() => getMealBreakdownByUser(user?.id), [user?.id]);
+
   return (
     <div className="max-w-6xl mx-auto">
       <div className="mb-8">
@@ -19,23 +30,33 @@ const MyBill = () => {
         <div className="space-y-2 text-sm sm:text-base">
           <div className="flex justify-between items-center py-4 border-b border-gray-50 flex-wrap gap-2">
             <span className="text-gray-600">Total Meals Consumed</span>
-            <span className="font-medium text-gray-900">45 meals</span>
+            <span className="font-medium text-gray-900">
+              {stats.totalMeals} meals
+            </span>
           </div>
           <div className="flex justify-between items-center py-4 border-b border-gray-50 flex-wrap gap-2">
             <span className="text-gray-600">Cost Per Meal</span>
-            <span className="font-medium text-gray-900">৳72.22</span>
+            <span className="font-medium text-gray-900">
+              ৳{stats.costPerMeal.toFixed(2)}
+            </span>
           </div>
           <div className="flex justify-between items-center py-4 border-b border-gray-50 flex-wrap gap-2">
             <span className="text-gray-600">Total Bill</span>
-            <span className="font-bold text-gray-900 text-lg">৳3250</span>
+            <span className="font-bold text-gray-900 text-lg">
+              ৳{stats.totalBill.toFixed(2)}
+            </span>
           </div>
           <div className="flex justify-between items-center py-4 border-b border-gray-50 flex-wrap gap-2">
             <span className="text-gray-600">Paid Amount</span>
-            <span className="font-medium text-[#16a34a]">৳1500</span>
+            <span className="font-medium text-[#16a34a]">
+              ৳{stats.paidAmount.toFixed(2)}
+            </span>
           </div>
           <div className="flex justify-between items-center py-4 flex-wrap gap-2">
             <span className="text-gray-600">Remaining Amount</span>
-            <span className="font-bold text-[#ea580c] text-lg">৳1750</span>
+            <span className="font-bold text-[#ea580c] text-lg">
+              ৳{stats.dueAmount.toFixed(2)}
+            </span>
           </div>
         </div>
       </div>
@@ -50,8 +71,23 @@ const MyBill = () => {
           </p>
         </div>
 
-        <div className="py-4 text-center text-gray-500">
-          Breakdown details will appear here
+        <div className="space-y-3 text-sm">
+          <div className="flex items-center justify-between border border-gray-100 rounded-lg px-4 py-3">
+            <span className="text-gray-600">Lunch Meals</span>
+            <span className="font-semibold text-gray-900">
+              {breakdown.lunch}
+            </span>
+          </div>
+          <div className="flex items-center justify-between border border-gray-100 rounded-lg px-4 py-3">
+            <span className="text-gray-600">Dinner Meals</span>
+            <span className="font-semibold text-gray-900">
+              {breakdown.dinner}
+            </span>
+          </div>
+          <div className="flex items-center justify-between border border-gray-100 rounded-lg px-4 py-3">
+            <span className="text-gray-600">Off Days</span>
+            <span className="font-semibold text-gray-900">{breakdown.off}</span>
+          </div>
         </div>
       </div>
     </div>

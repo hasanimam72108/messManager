@@ -1,37 +1,35 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import useAuth from "../../../hooks/useAuth";
+import {
+  addDepositByUser,
+  getUserDashboardStats,
+  listTransactionsByUser,
+} from "../../../mock/mockBackend";
 
 const Balance = () => {
+  const { user } = useAuth();
   const [amount, setAmount] = useState("");
+  const [refreshToken, setRefreshToken] = useState(0);
 
-  const [transactions, setTransactions] = useState([
-    {
-      id: 1,
-      date: "2026-02-01",
-      type: "Deposit",
-      amount: "৳2000",
-      balance: "৳2000",
-    },
-    {
-      id: 2,
-      date: "2026-02-15",
-      type: "Expense",
-      amount: "-৳250",
-      balance: "৳1750",
-    },
-  ]);
+  const transactions = useMemo(
+    () => listTransactionsByUser(user?.id),
+    [refreshToken, user?.id],
+  );
+  const stats = useMemo(
+    () => getUserDashboardStats(user?.id),
+    [refreshToken, user?.id],
+  );
 
   const handleAddDeposit = (e) => {
     e.preventDefault();
-    if (!amount) return;
+    if (!amount || !user?.id) return;
 
-    const newTx = {
-      id: Date.now(),
-      date: new Date().toISOString().split("T")[0],
-      type: "Deposit",
-      amount: `৳${amount}`,
-      balance: `৳${1750 + Number(amount)}`,
-    };
-    setTransactions([newTx, ...transactions]);
+    addDepositByUser({
+      userId: user.id,
+      amount,
+    });
+
+    setRefreshToken((prev) => prev + 1);
     setAmount("");
   };
 
@@ -49,7 +47,9 @@ const Balance = () => {
           Current Balance
         </h2>
         <p className="text-gray-500 text-sm mb-4">Your available balance</p>
-        <div className="text-4xl font-bold text-[#16a34a]">৳1750</div>
+        <div className="text-4xl font-bold text-[#16a34a]">
+          ৳{stats.currentBalance.toFixed(2)}
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
@@ -114,12 +114,14 @@ const Balance = () => {
                   <td className="py-4 px-4 text-gray-600">{tx.date}</td>
                   <td className="py-4 px-4 text-gray-600">{tx.type}</td>
                   <td
-                    className={`py-4 px-4 font-medium ${tx.amount.startsWith("-") ? "text-red-500" : "text-[#16a34a]"}`}
+                    className={`py-4 px-4 font-medium ${tx.amount < 0 ? "text-red-500" : "text-[#16a34a]"}`}
                   >
-                    {tx.amount}
+                    {tx.amount < 0
+                      ? `-৳${Math.abs(tx.amount).toFixed(2)}`
+                      : `৳${tx.amount.toFixed(2)}`}
                   </td>
                   <td className="py-4 px-4 text-gray-900 font-medium">
-                    {tx.balance}
+                    ৳{Number(tx.balance).toFixed(2)}
                   </td>
                 </tr>
               ))}

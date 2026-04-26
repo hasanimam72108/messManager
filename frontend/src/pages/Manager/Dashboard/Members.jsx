@@ -1,47 +1,39 @@
+import { useState } from "react";
+import { toast } from "react-hot-toast";
+import useAuth from "../../../hooks/useAuth";
+import {
+  addMemberByManager,
+  listMembersByManager,
+} from "../../../mock/mockBackend";
+
 const Members = () => {
-  // Dummy member data mapping what is on the screenshot
-  const members = [
-    {
-      id: 1,
-      name: "Ahmed Khan",
-      email: "ahmed@example.com",
-      phone: "01712345678",
-      meals: 45,
-      balance: "৳1750",
-    },
-    {
-      id: 2,
-      name: "Fatima Begum",
-      email: "fatima@example.com",
-      phone: "01812345678",
-      meals: 38,
-      balance: "৳2100",
-    },
-    {
-      id: 3,
-      name: "Rakib Hasan",
-      email: "rakib@example.com",
-      phone: "01912345678",
-      meals: 42,
-      balance: "৳1500",
-    },
-    {
-      id: 4,
-      name: "Nusrat Jahan",
-      email: "nusrat@example.com",
-      phone: "01612345678",
-      meals: 40,
-      balance: "৳1800",
-    },
-    {
-      id: 5,
-      name: "Kamal Rahman",
-      email: "kamal@example.com",
-      phone: "01512345678",
-      meals: 35,
-      balance: "৳2500",
-    },
-  ];
+  const { user } = useAuth();
+  const [lastTempPassword, setLastTempPassword] = useState("");
+  const [formData, setFormData] = useState({ name: "", email: "" });
+
+  const members = user?.id ? listMembersByManager(user.id) : [];
+
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddMember = (event) => {
+    event.preventDefault();
+    if (!user?.id) return;
+
+    try {
+      const result = addMemberByManager({
+        managerUserId: user.id,
+        ...formData,
+      });
+      setFormData({ name: "", email: "" });
+      setLastTempPassword(`Temporary password: ${result.tempPassword}`);
+      toast.success("Member added successfully.");
+    } catch (error) {
+      toast.error(error.message || "Failed to add member.");
+    }
+  };
 
   return (
     <div className="space-y-8 font-sans">
@@ -50,16 +42,26 @@ const Members = () => {
         <h3 className="text-3xl font-bold text-gray-800">Add New Member</h3>
         <p className="text-sm text-gray-500 mb-6">Enter new member details</p>
 
-        <form>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        {lastTempPassword && (
+          <p className="text-sm bg-green-50 text-green-700 border border-green-100 rounded-lg px-3 py-2 mb-4">
+            {lastTempPassword}
+          </p>
+        )}
+
+        <form onSubmit={handleAddMember}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
                 Full Name
               </label>
               <input
                 type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
                 placeholder="Enter name"
                 className="w-full bg-gray-50 border border-transparent rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-gray-200 transition text-sm"
+                required
               />
             </div>
             <div>
@@ -68,23 +70,17 @@ const Members = () => {
               </label>
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder="Enter email"
                 className="w-full bg-gray-50 border border-transparent rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-gray-200 transition text-sm"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Phone
-              </label>
-              <input
-                type="text"
-                placeholder="Enter phone"
-                className="w-full bg-gray-50 border border-transparent rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-gray-200 transition text-sm"
+                required
               />
             </div>
           </div>
           <button
-            type="button"
+            type="submit"
             className="bg-[#00a859] hover:bg-green-600 text-white font-medium py-2.5 px-6 rounded-lg transition text-sm"
           >
             Add Member
@@ -122,58 +118,35 @@ const Members = () => {
               </tr>
             </thead>
             <tbody className="text-sm text-gray-800">
-              {members.map((member, index) => (
-                <tr
-                  key={member.id}
-                  className={
-                    index !== members.length - 1
-                      ? "border-b border-gray-100"
-                      : ""
-                  }
-                >
-                  <td className="py-4 px-2 font-medium break-words">
-                    {member.name}
-                  </td>
-                  <td className="py-4 px-2 break-words">{member.email}</td>
-                  <td className="py-4 px-2">{member.phone}</td>
-                  <td className="py-4 px-2">{member.meals}</td>
-                  <td className="py-4 px-2">{member.balance}</td>
-                  <td className="py-4 px-2">
-                    <div className="flex items-center space-x-4">
-                      <button className="text-gray-600 hover:text-black transition">
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                          />
-                        </svg>
-                      </button>
-                      <button className="text-red-500 hover:text-red-700 transition">
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
-                      </button>
-                    </div>
+              {members.length === 0 ? (
+                <tr>
+                  <td className="py-4 px-2 text-gray-500" colSpan={6}>
+                    No members added yet.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                members.map((member, index) => (
+                  <tr
+                    key={member.id}
+                    className={
+                      index !== members.length - 1
+                        ? "border-b border-gray-100"
+                        : ""
+                    }
+                  >
+                    <td className="py-4 px-2 font-medium wrap-break-word">
+                      {member.name}
+                    </td>
+                    <td className="py-4 px-2 wrap-break-word">
+                      {member.email}
+                    </td>
+                    <td className="py-4 px-2">N/A</td>
+                    <td className="py-4 px-2">0</td>
+                    <td className="py-4 px-2">৳0</td>
+                    <td className="py-4 px-2 text-gray-500">-</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

@@ -33,8 +33,8 @@ export const ROLE_NAVIGATION = {
 
 export const getNavigationItemsByRole = (userRole) => {
   if (!userRole || !ROLE_NAVIGATION[userRole]) {
-    // Default fallback - only dashboard and settings
-    return [ALL_NAVIGATION_ITEMS.dashboard, ALL_NAVIGATION_ITEMS.settings];
+    // Default fallback - return empty list for unsupported roles
+    return [];
   }
 
   const allowedItems = ROLE_NAVIGATION[userRole];
@@ -58,7 +58,8 @@ export const hasAccessToRoute = (route, userRole) => {
 
 export const getRoleDisplayName = (role) => {
   const roleNames = {
-    admin: "Administrator",
+    superAdmin: "Super Admin",
+    manager: "Manager",
     user: "User",
   };
 

@@ -1,14 +1,15 @@
 import { ArrowLeft, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { getRoleHomePath } from "../mock/mockBackend";
 
 const NotFound = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   const handleGoHome = () => {
     if (isAuthenticated) {
-      navigate("/dashboard");
+      navigate(getRoleHomePath(user?.role));
     } else {
       navigate("/login");
     }

@@ -1,28 +1,41 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import useAuth from "../../../hooks/useAuth";
+import { addMealByUser, listMealsByUser } from "../../../mock/mockBackend";
 
 const MealEntry = () => {
+  const { user } = useAuth();
   const [date, setDate] = useState("");
   const [mealType, setMealType] = useState("Lunch");
   const [quantity, setQuantity] = useState(1);
+  const [refreshToken, setRefreshToken] = useState(0);
 
-  const [meals, setMeals] = useState([
-    { id: 1, date: "2026-02-24", mealType: "Dinner", quantity: 1 },
-    { id: 2, date: "2026-02-24", mealType: "Lunch", quantity: 1 },
-    { id: 3, date: "2026-02-23", mealType: "Dinner", quantity: 1 },
-    { id: 4, date: "2026-02-23", mealType: "Lunch", quantity: 1 },
-  ]);
+  const handleMealTypeChange = (e) => {
+    const selectedMealType = e.target.value;
+    setMealType(selectedMealType);
+    if (selectedMealType === "Off") {
+      setQuantity(0);
+    } else if (Number(quantity) === 0) {
+      setQuantity(1);
+    }
+  };
+
+  const meals = useMemo(
+    () => listMealsByUser(user?.id),
+    [refreshToken, user?.id],
+  );
 
   const handleAddMeal = (e) => {
     e.preventDefault();
-    if (!date) return;
+    if (!date || !user?.id) return;
 
-    const newMeal = {
-      id: Date.now(),
+    addMealByUser({
+      userId: user.id,
       date,
       mealType,
-      quantity: Number(quantity),
-    };
-    setMeals([newMeal, ...meals]);
+      quantity,
+    });
+
+    setRefreshToken((prev) => prev + 1);
     setDate("");
     setMealType("Lunch");
     setQuantity(1);
@@ -63,11 +76,12 @@ const MealEntry = () => {
               </label>
               <select
                 value={mealType}
-                onChange={(e) => setMealType(e.target.value)}
+                onChange={handleMealTypeChange}
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors appearance-none"
               >
                 <option value="Lunch">Lunch</option>
                 <option value="Dinner">Dinner</option>
+                <option value="Off">Off</option>
               </select>
             </div>
             <div>
@@ -76,9 +90,10 @@ const MealEntry = () => {
               </label>
               <input
                 type="number"
-                min="1"
+                min={mealType === "Off" ? "0" : "1"}
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
+                disabled={mealType === "Off"}
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors"
                 required
               />

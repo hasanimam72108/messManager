@@ -1,14 +1,22 @@
+import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import { initializeMockData } from "../mock/mockBackend";
 import Routers from "../routes/Routers";
 import { store } from "./store";
 
 const App = () => {
+  useEffect(() => {
+    initializeMockData();
+  }, []);
+
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Routers />
       </BrowserRouter>
+      <Toaster position="top-right" />
     </Provider>
   );
 };
