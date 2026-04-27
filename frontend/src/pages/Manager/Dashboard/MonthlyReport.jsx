@@ -1,30 +1,60 @@
+import { useMemo, useState } from "react";
+import useAuth from "../../../hooks/useAuth";
+import { getMessMonthlyReportStatsByManager } from "../../../mock/mockBackend";
+
+const getCurrentMonthKey = () => new Date().toISOString().slice(0, 7);
+
 const MonthlyReport = () => {
+  const { user } = useAuth();
+  const managerUserId = user?.id;
+  const [monthKey, setMonthKey] = useState(getCurrentMonthKey());
+
+  const stats = useMemo(() => {
+    if (!managerUserId) {
+      return {
+        memberCount: 0,
+        totalMealsAllMembers: 0,
+        totalExpenses: 0,
+        fixedTotal: 0,
+        costPerMeal: 0,
+        breakdownRows: [],
+      };
+    }
+
+    try {
+      return getMessMonthlyReportStatsByManager({
+        managerUserId,
+        monthKey,
+      });
+    } catch {
+      return {
+        memberCount: 0,
+        totalMealsAllMembers: 0,
+        totalExpenses: 0,
+        fixedTotal: 0,
+        costPerMeal: 0,
+        breakdownRows: [],
+      };
+    }
+  }, [managerUserId, monthKey]);
+
+  const fixedCostPerPerson =
+    stats.memberCount > 0 ? stats.fixedTotal / stats.memberCount : 0;
+
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Monthly Report</h1>
-          <p className="text-gray-500 mt-1">
-            Complete report for February 2026
-          </p>
+          <p className="text-gray-500 mt-1">Complete report for {monthKey}</p>
         </div>
-        <button className="bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg text-sm px-5 py-2.5 flex items-center transition-colors">
-          <svg
-            className="w-4 h-4 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-            />
-          </svg>
-          Download Report
-        </button>
+        <input
+          type="month"
+          value={monthKey}
+          onChange={(event) => setMonthKey(event.target.value)}
+          className="bg-white border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
       </div>
 
       {/* Top Cards */}
@@ -33,23 +63,69 @@ const MonthlyReport = () => {
           <p className="text-gray-500 text-sm font-medium mb-1">
             Total Members
           </p>
-          <h2 className="text-3xl font-bold text-gray-800">8</h2>
+          <h2 className="text-3xl font-bold text-gray-800">
+            {stats.memberCount}
+          </h2>
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <p className="text-gray-500 text-sm font-medium mb-1">Total Meals</p>
-          <h2 className="text-3xl font-bold text-gray-800">360</h2>
+          <h2 className="text-3xl font-bold text-gray-800">
+            {stats.totalMealsAllMembers}
+          </h2>
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <p className="text-gray-500 text-sm font-medium mb-1">
             Total Expenses
           </p>
-          <h2 className="text-3xl font-bold text-red-600">৳26000</h2>
+          <h2 className="text-3xl font-bold text-red-600">
+            ৳{stats.totalExpenses.toFixed(2)}
+          </h2>
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <p className="text-gray-500 text-sm font-medium mb-1">
             Cost Per Meal
           </p>
-          <h2 className="text-3xl font-bold text-green-600">৳72.22</h2>
+          <h2 className="text-3xl font-bold text-green-600">
+            ৳{stats.costPerMeal.toFixed(2)}
+          </h2>
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <div className="mb-4">
+          <h3 className="text-lg font-bold text-gray-800">
+            Fixed Expense Summary
+          </h3>
+          <p className="text-gray-500 text-sm">
+            Month-wise fixed expense overview
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <p className="text-gray-500 text-sm font-medium mb-1">
+              Total Members
+            </p>
+            <h2 className="text-3xl font-bold text-gray-800">
+              {stats.memberCount}
+            </h2>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <p className="text-gray-500 text-sm font-medium mb-1">
+              Total Expenses
+            </p>
+            <h2 className="text-3xl font-bold text-red-600">
+              ৳{stats.fixedTotal.toFixed(2)}
+            </h2>
+          </div>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <p className="text-gray-500 text-sm font-medium mb-1">
+              Cost Per Person
+            </p>
+            <h2 className="text-3xl font-bold text-green-600">
+              ৳{fixedCostPerPerson.toFixed(2)}
+            </h2>
+          </div>
         </div>
       </div>
 
@@ -76,76 +152,33 @@ const MonthlyReport = () => {
               </tr>
             </thead>
             <tbody className="block mt-2 space-y-4">
-              {/* Row 1 */}
-              <tr className="flex items-center text-sm text-gray-700">
-                <td className="w-1/3 font-medium">Bazaar</td>
-                <td className="w-1/3">৳18500</td>
-                <td className="w-1/3 flex items-center gap-3">
-                  <div className="w-24 md:w-48 bg-gray-100 rounded-full h-2">
-                    <div
-                      className="bg-green-500 h-2 rounded-full"
-                      style={{ width: "71.2%" }}
-                    ></div>
-                  </div>
-                  <span className="text-gray-500">71.2%</span>
-                </td>
-              </tr>
-              {/* Row 2 */}
-              <tr className="flex items-center text-sm text-gray-700 border-t border-gray-50 pt-4">
-                <td className="w-1/3 font-medium">Gas</td>
-                <td className="w-1/3">৳3600</td>
-                <td className="w-1/3 flex items-center gap-3">
-                  <div className="w-24 md:w-48 bg-gray-100 rounded-full h-2">
-                    <div
-                      className="bg-green-500 h-2 rounded-full"
-                      style={{ width: "13.8%" }}
-                    ></div>
-                  </div>
-                  <span className="text-gray-500">13.8%</span>
-                </td>
-              </tr>
-              {/* Row 3 */}
-              <tr className="flex items-center text-sm text-gray-700 border-t border-gray-50 pt-4">
-                <td className="w-1/3 font-medium">Electricity</td>
-                <td className="w-1/3">৳2100</td>
-                <td className="w-1/3 flex items-center gap-3">
-                  <div className="w-24 md:w-48 bg-gray-100 rounded-full h-2">
-                    <div
-                      className="bg-green-500 h-2 rounded-full"
-                      style={{ width: "8.1%" }}
-                    ></div>
-                  </div>
-                  <span className="text-gray-500">8.1%</span>
-                </td>
-              </tr>
-              {/* Row 4 */}
-              <tr className="flex items-center text-sm text-gray-700 border-t border-gray-50 pt-4">
-                <td className="w-1/3 font-medium">Water</td>
-                <td className="w-1/3">৳800</td>
-                <td className="w-1/3 flex items-center gap-3">
-                  <div className="w-24 md:w-48 bg-gray-100 rounded-full h-2">
-                    <div
-                      className="bg-green-500 h-2 rounded-full"
-                      style={{ width: "3.1%" }}
-                    ></div>
-                  </div>
-                  <span className="text-gray-500">3.1%</span>
-                </td>
-              </tr>
-              {/* Row 5 */}
-              <tr className="flex items-center text-sm text-gray-700 border-t border-gray-50 pt-4">
-                <td className="w-1/3 font-medium">Other</td>
-                <td className="w-1/3">৳1000</td>
-                <td className="w-1/3 flex items-center gap-3">
-                  <div className="w-24 md:w-48 bg-gray-100 rounded-full h-2">
-                    <div
-                      className="bg-green-500 h-2 rounded-full"
-                      style={{ width: "3.8%" }}
-                    ></div>
-                  </div>
-                  <span className="text-gray-500">3.8%</span>
-                </td>
-              </tr>
+              {stats.breakdownRows.map((row, index) => {
+                const percentage =
+                  stats.totalExpenses > 0
+                    ? (row.amount / stats.totalExpenses) * 100
+                    : 0;
+
+                return (
+                  <tr
+                    key={row.category}
+                    className={`flex items-center text-sm text-gray-700 ${index > 0 ? "border-t border-gray-50 pt-4" : ""}`}
+                  >
+                    <td className="w-1/3 font-medium">{row.category}</td>
+                    <td className="w-1/3">৳{row.amount.toFixed(2)}</td>
+                    <td className="w-1/3 flex items-center gap-3">
+                      <div className="w-24 md:w-48 bg-gray-100 rounded-full h-2">
+                        <div
+                          className="bg-green-500 h-2 rounded-full"
+                          style={{ width: `${Math.min(percentage, 100)}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-gray-500">
+                        {percentage.toFixed(1)}%
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

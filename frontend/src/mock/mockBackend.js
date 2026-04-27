@@ -5,6 +5,7 @@ const STORAGE_KEYS = {
   MEMBERS: "mm_members",
   USER_MEALS: "mm_user_meals",
   USER_TRANSACTIONS: "mm_user_transactions",
+  MESS_MONTHLY_FIXED_COSTS: "mm_mess_monthly_fixed_costs",
 };
 
 const DEFAULT_SUPER_ADMIN_EMAIL =
@@ -33,6 +34,41 @@ const uid = (prefix) =>
   `${prefix}_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
 const round2 = (value) => Math.round(value * 100) / 100;
+const COST_PER_MEAL = 72.22;
+
+const getCurrentMonthKey = () => new Date().toISOString().slice(0, 7);
+
+const normalizeMonthKey = (value) => {
+  const monthKey = String(value || "").trim();
+  return /^\d{4}-\d{2}$/.test(monthKey) ? monthKey : getCurrentMonthKey();
+};
+
+const getDefaultFixedCosts = () => ({
+  rent: 0,
+  khala: 0,
+  utilities: 0,
+  wifi: 0,
+});
+
+const readMessMonthScopedMap = () => {
+  const value = read(STORAGE_KEYS.MESS_MONTHLY_FIXED_COSTS);
+  if (value && !Array.isArray(value) && typeof value === "object") {
+    return value;
+  }
+  return {};
+};
+
+const writeMessMonthScopedMap = (value) => {
+  write(STORAGE_KEYS.MESS_MONTHLY_FIXED_COSTS, value);
+};
+
+const toNonNegativeAmount = (value, fieldName) => {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    throw new Error(`${fieldName} must be a number and cannot be negative.`);
+  }
+  return round2(parsed);
+};
 
 const getDefaultMeals = () => [
   { id: uid("meal"), date: "2026-02-24", mealType: "Dinner", quantity: 1 },
@@ -167,6 +203,9 @@ export const initializeMockData = () => {
   }
   if (!localStorage.getItem(STORAGE_KEYS.MEMBERS)) {
     write(STORAGE_KEYS.MEMBERS, members);
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.MESS_MONTHLY_FIXED_COSTS)) {
+    write(STORAGE_KEYS.MESS_MONTHLY_FIXED_COSTS, {});
   }
 };
 
@@ -495,33 +534,265 @@ export const addDepositByUser = ({ userId, amount }) => {
   return transactionsMap[userId];
 };
 
-export const getUserDashboardStats = (userId) => {
-  const meals = listMealsByUser(userId);
-  const transactions = listTransactionsByUser(userId);
-  const costPerMeal = 72.22;
+export const getFixedCostsByMess = ({ messId, monthKey }) => {
+  if (!messId) {
+    return getDefaultFixedCosts();
+  }
 
+  const normalizedMonthKey = normalizeMonthKey(monthKey);
+  const costsMap = readMessMonthScopedMap();
+  const messCosts = costsMap[messId];
+  const monthCosts =
+    messCosts && typeof messCosts === "object"
+      ? messCosts[normalizedMonthKey]
+      : null;
+
+  return {
+    rent: Number(monthCosts?.rent) || 0,
+    khala: Number(monthCosts?.khala) || 0,
+    utilities: Number(monthCosts?.utilities) || 0,
+    wifi: Number(monthCosts?.wifi) || 0,
+  };
+};
+
+export const upsertFixedCostsByManager = ({
+  managerUserId,
+  monthKey,
+  rent,
+  khala,
+  utilities,
+  wifi,
+}) => {
+  const users = read(STORAGE_KEYS.USERS);
+  const manager = users.find((item) => item.id === managerUserId);
+
+  if (!manager || manager.role !== "manager" || !manager.messId) {
+    throw new Error("Manager mess not found.");
+  }
+
+  const normalizedMonthKey = normalizeMonthKey(monthKey);
+  const nextCosts = {
+    rent: toNonNegativeAmount(rent, "Rent"),
+    khala: toNonNegativeAmount(khala, "Khala"),
+    utilities: toNonNegativeAmount(utilities, "Utilities"),
+    wifi: toNonNegativeAmount(wifi, "WiFi"),
+    updatedAt: new Date().toISOString(),
+  };
+
+  const costsMap = readMessMonthScopedMap();
+  const messCosts =
+    costsMap[manager.messId] && typeof costsMap[manager.messId] === "object"
+      ? costsMap[manager.messId]
+      : {};
+
+  costsMap[manager.messId] = {
+    ...messCosts,
+    [normalizedMonthKey]: nextCosts,
+  };
+
+  writeMessMonthScopedMap(costsMap);
+
+  return {
+    monthKey: normalizedMonthKey,
+    ...getFixedCostsByMess({
+      messId: manager.messId,
+      monthKey: normalizedMonthKey,
+    }),
+  };
+};
+
+export const getMemberCountByMessId = (messId) => {
+  if (!messId) return 0;
+  return read(STORAGE_KEYS.MEMBERS).filter((item) => item.messId === messId)
+    .length;
+};
+
+export const getFixedTotals = ({ messId, monthKey }) => {
+  const fixedBreakdown = getFixedCostsByMess({ messId, monthKey });
+  const fixedTotal = round2(
+    fixedBreakdown.rent +
+      fixedBreakdown.khala +
+      fixedBreakdown.utilities +
+      fixedBreakdown.wifi,
+  );
+
+  return {
+    fixedBreakdown,
+    fixedTotal,
+  };
+};
+
+export const getFixedSharePerMember = ({ messId, monthKey }) => {
+  const memberCount = getMemberCountByMessId(messId);
+  const { fixedBreakdown, fixedTotal } = getFixedTotals({ messId, monthKey });
+
+  if (!memberCount) {
+    return {
+      memberCount: 0,
+      shareBreakdown: {
+        rentShare: 0,
+        khalaShare: 0,
+        utilitiesShare: 0,
+        wifiShare: 0,
+      },
+      fixedShareTotal: 0,
+    };
+  }
+
+  const shareBreakdown = {
+    rentShare: round2(fixedBreakdown.rent / memberCount),
+    khalaShare: round2(fixedBreakdown.khala / memberCount),
+    utilitiesShare: round2(fixedBreakdown.utilities / memberCount),
+    wifiShare: round2(fixedBreakdown.wifi / memberCount),
+  };
+
+  return {
+    memberCount,
+    shareBreakdown,
+    fixedShareTotal: round2(fixedTotal / memberCount),
+  };
+};
+
+export const getUserMonthlyBillDetails = ({ userId, monthKey }) => {
+  const users = read(STORAGE_KEYS.USERS);
+  const user = users.find((item) => item.id === userId);
+  const normalizedMonthKey = normalizeMonthKey(monthKey);
+
+  if (!user || !user.messId) {
+    return {
+      monthKey: normalizedMonthKey,
+      totalMeals: 0,
+      costPerMeal: COST_PER_MEAL,
+      mealSubtotal: 0,
+      fixedShareTotal: 0,
+      shareBreakdown: {
+        rentShare: 0,
+        khalaShare: 0,
+        utilitiesShare: 0,
+        wifiShare: 0,
+      },
+      totalBill: 0,
+      paidAmount: 0,
+      dueAmount: 0,
+      memberCount: 0,
+    };
+  }
+
+  const meals = listMealsByUser(userId).filter((item) =>
+    String(item.date || "").startsWith(normalizedMonthKey),
+  );
   const totalMeals = meals.reduce(
     (sum, item) => sum + Number(item.quantity || 0),
     0,
   );
-  const totalBill = round2(totalMeals * costPerMeal);
+  const mealSubtotal = round2(totalMeals * COST_PER_MEAL);
+
+  const { memberCount, shareBreakdown, fixedShareTotal } =
+    getFixedSharePerMember({
+      messId: user.messId,
+      monthKey: normalizedMonthKey,
+    });
+
   const paidAmount = round2(
-    transactions
-      .filter((item) => Number(item.amount) > 0)
+    listTransactionsByUser(userId)
+      .filter(
+        (item) =>
+          Number(item.amount) > 0 &&
+          String(item.date || "").startsWith(normalizedMonthKey),
+      )
       .reduce((sum, item) => sum + Number(item.amount), 0),
   );
-  const currentBalance = transactions.length
-    ? Number(transactions[0].balance)
-    : 0;
+
+  const totalBill = round2(mealSubtotal + fixedShareTotal);
   const dueAmount = Math.max(round2(totalBill - paidAmount), 0);
 
   return {
+    monthKey: normalizedMonthKey,
     totalMeals,
-    costPerMeal,
+    costPerMeal: COST_PER_MEAL,
+    mealSubtotal,
+    fixedShareTotal,
+    shareBreakdown,
     totalBill,
     paidAmount,
-    currentBalance,
     dueAmount,
+    memberCount,
+  };
+};
+
+export const getMessMonthlyReportStatsByManager = ({
+  managerUserId,
+  monthKey,
+}) => {
+  const users = read(STORAGE_KEYS.USERS);
+  const manager = users.find((item) => item.id === managerUserId);
+  if (!manager || manager.role !== "manager" || !manager.messId) {
+    throw new Error("Manager mess not found.");
+  }
+
+  const normalizedMonthKey = normalizeMonthKey(monthKey);
+  const memberCount = getMemberCountByMessId(manager.messId);
+  const { fixedBreakdown, fixedTotal } = getFixedTotals({
+    messId: manager.messId,
+    monthKey: normalizedMonthKey,
+  });
+
+  const members = read(STORAGE_KEYS.MEMBERS).filter(
+    (item) => item.messId === manager.messId,
+  );
+
+  const totalMealsAllMembers = members.reduce((sum, member) => {
+    const memberMeals = listMealsByUser(member.userId)
+      .filter((item) => String(item.date || "").startsWith(normalizedMonthKey))
+      .reduce((mealSum, item) => mealSum + Number(item.quantity || 0), 0);
+    return sum + memberMeals;
+  }, 0);
+
+  const mealCostTotal = round2(totalMealsAllMembers * COST_PER_MEAL);
+  const totalExpenses = round2(mealCostTotal + fixedTotal);
+
+  const breakdownRows = [
+    { category: "Meal cost", amount: mealCostTotal },
+    { category: "House Rent", amount: fixedBreakdown.rent },
+    { category: "Khala", amount: fixedBreakdown.khala },
+    { category: "Utilities", amount: fixedBreakdown.utilities },
+    { category: "WiFi", amount: fixedBreakdown.wifi },
+  ];
+
+  return {
+    monthKey: normalizedMonthKey,
+    memberCount,
+    fixedBreakdown,
+    fixedTotal,
+    totalMealsAllMembers,
+    costPerMeal: COST_PER_MEAL,
+    mealCostTotal,
+    totalExpenses,
+    breakdownRows,
+  };
+};
+
+export const getUserDashboardStats = (userId) => {
+  const transactions = listTransactionsByUser(userId);
+  const monthly = getUserMonthlyBillDetails({
+    userId,
+    monthKey: getCurrentMonthKey(),
+  });
+  const currentBalance = transactions.length
+    ? Number(transactions[0].balance)
+    : 0;
+
+  return {
+    totalMeals: monthly.totalMeals,
+    costPerMeal: monthly.costPerMeal,
+    mealSubtotal: monthly.mealSubtotal,
+    fixedShareTotal: monthly.fixedShareTotal,
+    shareBreakdown: monthly.shareBreakdown,
+    totalBill: monthly.totalBill,
+    paidAmount: monthly.paidAmount,
+    currentBalance,
+    dueAmount: monthly.dueAmount,
+    monthKey: monthly.monthKey,
   };
 };
 

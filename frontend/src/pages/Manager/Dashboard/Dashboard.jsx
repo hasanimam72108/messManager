@@ -1,13 +1,52 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { updateAuthenticatedUser } from "../../../features/auth/authSlice";
 import useAuth from "../../../hooks/useAuth";
-import { completeFirstLoginPasswordSetup } from "../../../mock/mockBackend";
+import {
+  completeFirstLoginPasswordSetup,
+  getMessMonthlyReportStatsByManager,
+} from "../../../mock/mockBackend";
+
+const getCurrentMonthKey = () => new Date().toISOString().slice(0, 7);
 
 const Dashboard = () => {
   const { user } = useAuth();
   const dispatch = useDispatch();
+  const managerUserId = user?.id;
+
+  const fixedStats = useMemo(() => {
+    if (!managerUserId) {
+      return {
+        monthKey: getCurrentMonthKey(),
+        fixedTotal: 0,
+        memberCount: 0,
+        perPersonRate: 0,
+      };
+    }
+
+    try {
+      const report = getMessMonthlyReportStatsByManager({
+        managerUserId,
+        monthKey: getCurrentMonthKey(),
+      });
+      return {
+        monthKey: report.monthKey,
+        fixedTotal: report.fixedTotal,
+        memberCount: report.memberCount,
+        perPersonRate:
+          report.memberCount > 0 ? report.fixedTotal / report.memberCount : 0,
+      };
+    } catch {
+      return {
+        monthKey: getCurrentMonthKey(),
+        fixedTotal: 0,
+        memberCount: 0,
+        perPersonRate: 0,
+      };
+    }
+  }, [managerUserId]);
+
   const [passwordForm, setPasswordForm] = useState({
     password: "",
     confirmPassword: "",
@@ -179,6 +218,35 @@ const Dashboard = () => {
           </div>
           <h3 className="text-4xl font-bold text-gray-900 mb-1">৳72.22</h3>
           <p className="text-gray-400 text-xs">per meal</p>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8">
+        <div className="mb-6">
+          <h4 className="text-lg font-medium text-gray-900">
+            Fixed Expense Summary
+          </h4>
+          <p className="text-sm text-gray-500">
+            Current month: {fixedStats.monthKey}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+            <p className="text-sm text-gray-500 mb-2">Total Fixed Expense</p>
+            <p className="text-2xl font-bold text-red-600">
+              ৳{fixedStats.fixedTotal.toFixed(2)}
+            </p>
+          </div>
+          <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+            <p className="text-sm text-gray-500 mb-2">Per Person Expense</p>
+            <p className="text-2xl font-bold text-gray-900">
+              ৳{fixedStats.perPersonRate.toFixed(2)}
+            </p>
+            <p className="text-xs text-gray-400 mt-1">
+              based on {fixedStats.memberCount} members
+            </p>
+          </div>
         </div>
       </div>
 

@@ -20,26 +20,14 @@ const MyBill = () => {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-1">
-            Bill Overview - February 2026
+            Bill Overview - {stats.monthKey || "Current Month"}
           </h2>
           <p className="text-gray-500 text-sm">
             Your complete billing information for this month
           </p>
         </div>
 
-        <div className="space-y-2 text-sm sm:text-base">
-          <div className="flex justify-between items-center py-4 border-b border-gray-50 flex-wrap gap-2">
-            <span className="text-gray-600">Total Meals Consumed</span>
-            <span className="font-medium text-gray-900">
-              {stats.totalMeals} meals
-            </span>
-          </div>
-          <div className="flex justify-between items-center py-4 border-b border-gray-50 flex-wrap gap-2">
-            <span className="text-gray-600">Cost Per Meal</span>
-            <span className="font-medium text-gray-900">
-              ৳{stats.costPerMeal.toFixed(2)}
-            </span>
-          </div>
+        <div className="space-y-2 text-sm sm:text-base mb-8">
           <div className="flex justify-between items-center py-4 border-b border-gray-50 flex-wrap gap-2">
             <span className="text-gray-600">Total Bill</span>
             <span className="font-bold text-gray-900 text-lg">
@@ -53,10 +41,76 @@ const MyBill = () => {
             </span>
           </div>
           <div className="flex justify-between items-center py-4 flex-wrap gap-2">
-            <span className="text-gray-600">Remaining Amount</span>
+            <span className="text-gray-600">Remaining Due</span>
             <span className="font-bold text-[#ea580c] text-lg">
               ৳{stats.dueAmount.toFixed(2)}
             </span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="border border-gray-100 rounded-xl p-4">
+            <h3 className="text-base font-semibold text-gray-900 mb-3">
+              Meal Expense Summary
+            </h3>
+            <div className="space-y-2 text-sm sm:text-base">
+              <div className="flex justify-between items-center py-3 border-b border-gray-50 flex-wrap gap-2">
+                <span className="text-gray-600">Total Meals Consumed</span>
+                <span className="font-medium text-gray-900">
+                  {stats.totalMeals} meals
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-3 border-b border-gray-50 flex-wrap gap-2">
+                <span className="text-gray-600">Cost Per Meal</span>
+                <span className="font-medium text-gray-900">
+                  ৳{stats.costPerMeal.toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-3 flex-wrap gap-2">
+                <span className="text-gray-600">Meal Subtotal</span>
+                <span className="font-medium text-gray-900">
+                  ৳{(stats.mealSubtotal || 0).toFixed(2)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="border border-gray-100 rounded-xl p-4">
+            <h3 className="text-base font-semibold text-gray-900 mb-3">
+              Fixed Expense Summary
+            </h3>
+            <div className="space-y-2 text-sm sm:text-base">
+              <div className="flex justify-between items-center py-3 border-b border-gray-50 flex-wrap gap-2">
+                <span className="text-gray-600">Fixed Bill Total</span>
+                <span className="font-medium text-gray-900">
+                  ৳{(stats.fixedShareTotal || 0).toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-3 border-b border-gray-50 flex-wrap gap-2">
+                <span className="text-gray-600">Rent Bill</span>
+                <span className="font-medium text-gray-900">
+                  ৳{(stats.shareBreakdown?.rentShare || 0).toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-3 border-b border-gray-50 flex-wrap gap-2">
+                <span className="text-gray-600">Khala Bill</span>
+                <span className="font-medium text-gray-900">
+                  ৳{(stats.shareBreakdown?.khalaShare || 0).toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-3 border-b border-gray-50 flex-wrap gap-2">
+                <span className="text-gray-600">Utilities Bill</span>
+                <span className="font-medium text-gray-900">
+                  ৳{(stats.shareBreakdown?.utilitiesShare || 0).toFixed(2)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-3 flex-wrap gap-2">
+                <span className="text-gray-600">WiFi Bill</span>
+                <span className="font-medium text-gray-900">
+                  ৳{(stats.shareBreakdown?.wifiShare || 0).toFixed(2)}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -64,11 +118,9 @@ const MyBill = () => {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
         <div className="mb-6">
           <h2 className="text-xl font-semibold text-gray-900 mb-1">
-            Bill Breakdown
+            Meal Breakdown
           </h2>
-          <p className="text-gray-500 text-sm">
-            Detailed breakdown by meal type
-          </p>
+          <p className="text-gray-500 text-sm">Existing meal system </p>
         </div>
 
         <div className="space-y-3 text-sm">

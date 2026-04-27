@@ -24,6 +24,10 @@ const Dashboard = () => {
     () => listMealsByUser(user?.id).slice(0, 6),
     [user?.id],
   );
+  const fixedExpenseRemainingDue = Math.max(
+    (stats.fixedShareTotal || 0) - (stats.paidAmount || 0),
+    0,
+  );
 
   const handlePasswordChange = (event) => {
     const { name, value } = event.target;
@@ -167,6 +171,58 @@ const Dashboard = () => {
             ৳{stats.dueAmount.toFixed(2)}
           </h3>
           <p className="text-gray-400 text-xs">after deposits</p>
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Fixed Expense Per Person
+          </h3>
+          <p className="text-sm text-gray-500">
+            Your current fixed expense summary for this month
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start mb-4">
+              <p className="text-gray-500 text-sm">Total Cost</p>
+              <div className="p-2 bg-red-50 text-red-500 rounded-lg">
+                <Wallet className="w-5 h-5" />
+              </div>
+            </div>
+            <h3 className="text-4xl font-bold text-gray-900 mb-1">
+              ৳{(stats.fixedShareTotal || 0).toFixed(2)}
+            </h3>
+            <p className="text-gray-400 text-xs">fixed share amount</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start mb-4">
+              <p className="text-gray-500 text-sm">Current Bill</p>
+              <div className="p-2 bg-orange-50 text-orange-500 rounded-lg">
+                <FileText className="w-5 h-5" />
+              </div>
+            </div>
+            <h3 className="text-4xl font-bold text-gray-900 mb-1">
+              ৳{(stats.fixedShareTotal || 0).toFixed(2)}
+            </h3>
+            <p className="text-gray-400 text-xs">this month fixed bill</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start mb-4">
+              <p className="text-gray-500 text-sm">Remaining Due</p>
+              <div className="p-2 bg-rose-50 text-rose-500 rounded-lg">
+                <Wallet className="w-5 h-5" />
+              </div>
+            </div>
+            <h3 className="text-4xl font-bold text-gray-900 mb-1">
+              ৳{fixedExpenseRemainingDue.toFixed(2)}
+            </h3>
+            <p className="text-gray-400 text-xs">after your deposits</p>
+          </div>
         </div>
       </div>
 
