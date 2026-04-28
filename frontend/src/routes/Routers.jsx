@@ -3,7 +3,6 @@ import useAuth from "../hooks/useAuth";
 import DashboardLayout from "../layouts/DashboardLayout";
 import SuperAdminLayout from "../layouts/SuperAdminLayout";
 import UserLayout from "../layouts/UserLayout";
-import { getRoleHomePath } from "../mock/mockBackend";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import AddExpense from "../pages/Manager/Dashboard/AddExpense";
@@ -21,6 +20,7 @@ import Balance from "../pages/User/Dashboard/Balance";
 import UserDashboard from "../pages/User/Dashboard/Dashboard";
 import MealEntry from "../pages/User/Dashboard/MealEntry";
 import MyBill from "../pages/User/Dashboard/MyBill";
+import { getRoleHomePath } from "../utils/roleBasedNavigation";
 import RoleProtected from "./RoleProtected";
 
 const Routers = () => {

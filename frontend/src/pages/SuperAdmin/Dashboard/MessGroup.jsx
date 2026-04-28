@@ -1,34 +1,34 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import {
-  approveMessRequest,
-  listMessRequests,
-  rejectMessRequest,
-} from "../../../mock/mockBackend";
+  useApproveMessRequestMutation,
+  useGetMessRequestsQuery,
+  useRejectMessRequestMutation,
+} from "../../../features/management/managementSlice";
 
 const MessGroup = () => {
   const [lastApproved, setLastApproved] = useState("");
-  const [refreshToken, setRefreshToken] = useState(0);
+  const { data, isLoading } = useGetMessRequestsQuery("pending");
+  const pendingRequests = data?.data || [];
+  const [approveMessRequest] = useApproveMessRequestMutation();
+  const [rejectMessRequest] = useRejectMessRequestMutation();
 
-  const pendingRequests = useMemo(
-    () => listMessRequests("pending"),
-    [refreshToken],
-  );
-
-  const handleApprove = (requestId) => {
+  const handleApprove = async (requestId) => {
     try {
-      const result = approveMessRequest(requestId);
+      const result = await approveMessRequest(requestId).unwrap();
       setLastApproved(
         `Approved. Manager temporary password: ${result.tempPassword}`,
       );
-      setRefreshToken((prev) => prev + 1);
     } catch (error) {
-      setLastApproved(error.message);
+      setLastApproved(error?.data?.message || "Unable to approve request.");
     }
   };
 
-  const handleReject = (requestId) => {
-    rejectMessRequest(requestId);
-    setRefreshToken((prev) => prev + 1);
+  const handleReject = async (requestId) => {
+    try {
+      await rejectMessRequest(requestId).unwrap();
+    } catch (error) {
+      setLastApproved(error?.data?.message || "Unable to reject request.");
+    }
   };
 
   return (
@@ -60,7 +60,13 @@ const MessGroup = () => {
               </tr>
             </thead>
             <tbody>
-              {pendingRequests.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td className="py-4 text-gray-500" colSpan={4}>
+                    Loading requests...
+                  </td>
+                </tr>
+              ) : pendingRequests.length === 0 ? (
                 <tr>
                   <td className="py-4 text-gray-500" colSpan={4}>
                     No pending requests.

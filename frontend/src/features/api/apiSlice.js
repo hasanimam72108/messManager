@@ -1,12 +1,15 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-// Get base URL from .env
-const baseUrl = `${import.meta.env.VITE_REACT_APP_BACKEND_URL}/api`;
+const backendUrl =
+  import.meta.env.VITE_REACT_APP_BACKEND_URL || "http://127.0.0.1:8000";
+const normalizedBackendUrl = backendUrl.replace(/\/$/, "");
+const baseUrl = normalizedBackendUrl.endsWith("/api")
+  ? normalizedBackendUrl
+  : `${normalizedBackendUrl}/api`;
 
 // Enhanced base query with error handling
 const baseQueryWithAuth = fetchBaseQuery({
   baseUrl,
-  credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     headers.set("Accept", "application/json");
 
@@ -23,7 +26,7 @@ export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithAuth,
   // Enhanced tag types for better cache invalidation
-  tagTypes: ["User"],
+  tagTypes: ["User", "MessRequest", "Manager", "Member"],
   // Optimal cache configuration
   keepUnusedDataFor: 300,
   refetchOnMountOrArgChange: 300,

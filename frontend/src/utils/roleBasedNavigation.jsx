@@ -31,6 +31,16 @@ export const ROLE_NAVIGATION = {
   user: ["dashboard"],
 };
 
+export const getRoleHomePath = (role) => {
+  const roleHomePaths = {
+    superAdmin: "/super-admin/dashboard",
+    manager: "/manager/dashboard",
+    user: "/user/dashboard",
+  };
+
+  return roleHomePaths[role] || "/login";
+};
+
 export const getNavigationItemsByRole = (userRole) => {
   if (!userRole || !ROLE_NAVIGATION[userRole]) {
     // Default fallback - return empty list for unsupported roles

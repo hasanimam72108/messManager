@@ -26,6 +26,14 @@ export const authApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["User"],
     }),
+    completeFirstLoginPasswordSetup: builder.mutation({
+      query: (data) => ({
+        url: "/password/first-login",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["User"],
+    }),
     getProfile: builder.query({
       query: () => "/profile",
       providesTags: ["User"],
@@ -121,6 +129,7 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useLogoutMutation,
+  useCompleteFirstLoginPasswordSetupMutation,
   useGetProfileQuery,
 } = authApiSlice;
 

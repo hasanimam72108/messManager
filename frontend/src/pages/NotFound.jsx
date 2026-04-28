@@ -1,7 +1,7 @@
 import { ArrowLeft, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import { getRoleHomePath } from "../mock/mockBackend";
+import { getRoleHomePath } from "../utils/roleBasedNavigation";
 
 const NotFound = () => {
   const navigate = useNavigate();

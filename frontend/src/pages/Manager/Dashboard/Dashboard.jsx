@@ -1,18 +1,21 @@
+import { Eye, EyeOff } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { updateAuthenticatedUser } from "../../../features/auth/authSlice";
-import useAuth from "../../../hooks/useAuth";
 import {
-  completeFirstLoginPasswordSetup,
-  getMessMonthlyReportStatsByManager,
-} from "../../../mock/mockBackend";
+  updateAuthenticatedUser,
+  useCompleteFirstLoginPasswordSetupMutation,
+} from "../../../features/auth/authSlice";
+import useAuth from "../../../hooks/useAuth";
+import { getMessMonthlyReportStatsByManager } from "../../../mock/mockBackend";
 
 const getCurrentMonthKey = () => new Date().toISOString().slice(0, 7);
 
 const Dashboard = () => {
   const { user } = useAuth();
   const dispatch = useDispatch();
+  const [completeFirstLoginPasswordSetup, { isLoading }] =
+    useCompleteFirstLoginPasswordSetupMutation();
   const managerUserId = user?.id;
 
   const fixedStats = useMemo(() => {
@@ -51,13 +54,16 @@ const Dashboard = () => {
     password: "",
     confirmPassword: "",
   });
+  const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
+    useState(false);
 
   const handlePasswordChange = (event) => {
     const { name, value } = event.target;
     setPasswordForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSetupPassword = (event) => {
+  const handleSetupPassword = async (event) => {
     event.preventDefault();
     if (!user?.id) return;
 
@@ -67,15 +73,16 @@ const Dashboard = () => {
     }
 
     try {
-      const updatedUser = completeFirstLoginPasswordSetup({
-        userId: user.id,
+      const response = await completeFirstLoginPasswordSetup({
         newPassword: passwordForm.password,
-      });
-      dispatch(updateAuthenticatedUser(updatedUser));
+      }).unwrap();
+      dispatch(updateAuthenticatedUser(response.user));
       setPasswordForm({ password: "", confirmPassword: "" });
+      setIsNewPasswordVisible(false);
+      setIsConfirmPasswordVisible(false);
       toast.success("Password updated successfully.");
     } catch (error) {
-      toast.error(error.message || "Password setup failed.");
+      toast.error(error?.data?.message || "Password setup failed.");
     }
   };
 
@@ -100,31 +107,62 @@ const Dashboard = () => {
             onSubmit={handleSetupPassword}
             className="grid grid-cols-1 md:grid-cols-3 gap-3"
           >
-            <input
-              type="password"
-              name="password"
-              value={passwordForm.password}
-              onChange={handlePasswordChange}
-              placeholder="New password"
-              className="bg-white border border-amber-200 rounded-lg px-3 py-2 text-sm"
-              minLength={6}
-              required
-            />
-            <input
-              type="password"
-              name="confirmPassword"
-              value={passwordForm.confirmPassword}
-              onChange={handlePasswordChange}
-              placeholder="Confirm password"
-              className="bg-white border border-amber-200 rounded-lg px-3 py-2 text-sm"
-              minLength={6}
-              required
-            />
+            <div className="relative">
+              <input
+                type={isNewPasswordVisible ? "text" : "password"}
+                name="password"
+                value={passwordForm.password}
+                onChange={handlePasswordChange}
+                placeholder="New password"
+                className="bg-white border border-amber-200 rounded-lg px-3 py-2 pr-10 text-sm w-full"
+                minLength={6}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setIsNewPasswordVisible((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-amber-700 hover:text-amber-900 focus:outline-none"
+                aria-label={isNewPasswordVisible ? "Hide password" : "Show password"}
+                title={isNewPasswordVisible ? "Hide password" : "Show password"}
+              >
+                {isNewPasswordVisible ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+            <div className="relative">
+              <input
+                type={isConfirmPasswordVisible ? "text" : "password"}
+                name="confirmPassword"
+                value={passwordForm.confirmPassword}
+                onChange={handlePasswordChange}
+                placeholder="Confirm password"
+                className="bg-white border border-amber-200 rounded-lg px-3 py-2 pr-10 text-sm w-full"
+                minLength={6}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setIsConfirmPasswordVisible((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-amber-700 hover:text-amber-900 focus:outline-none"
+                aria-label={isConfirmPasswordVisible ? "Hide password" : "Show password"}
+                title={isConfirmPasswordVisible ? "Hide password" : "Show password"}
+              >
+                {isConfirmPasswordVisible ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
             <button
               type="submit"
-              className="bg-amber-600 hover:bg-amber-700 text-white rounded-lg px-4 py-2 text-sm font-medium"
+              disabled={isLoading}
+              className="bg-amber-600 hover:bg-amber-700 disabled:opacity-70 text-white rounded-lg px-4 py-2 text-sm font-medium"
             >
-              Save Password
+              {isLoading ? "Saving..." : "Save Password"}
             </button>
           </form>
         </div>

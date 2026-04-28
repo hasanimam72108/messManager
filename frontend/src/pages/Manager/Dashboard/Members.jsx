@@ -1,37 +1,34 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
-import useAuth from "../../../hooks/useAuth";
 import {
-  addMemberByManager,
-  listMembersByManager,
-} from "../../../mock/mockBackend";
+  useAddMemberMutation,
+  useGetMembersQuery,
+} from "../../../features/management/managementSlice";
 
 const Members = () => {
-  const { user } = useAuth();
   const [lastTempPassword, setLastTempPassword] = useState("");
   const [formData, setFormData] = useState({ name: "", email: "" });
-
-  const members = user?.id ? listMembersByManager(user.id) : [];
+  const { data, isLoading } = useGetMembersQuery();
+  const members = data?.data || [];
+  const [addMember, { isLoading: isSubmitting }] = useAddMemberMutation();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddMember = (event) => {
+  const handleAddMember = async (event) => {
     event.preventDefault();
-    if (!user?.id) return;
 
     try {
-      const result = addMemberByManager({
-        managerUserId: user.id,
+      const result = await addMember({
         ...formData,
-      });
+      }).unwrap();
       setFormData({ name: "", email: "" });
       setLastTempPassword(`Temporary password: ${result.tempPassword}`);
       toast.success("Member added successfully.");
     } catch (error) {
-      toast.error(error.message || "Failed to add member.");
+      toast.error(error?.data?.message || "Failed to add member.");
     }
   };
 
@@ -81,9 +78,10 @@ const Members = () => {
           </div>
           <button
             type="submit"
-            className="bg-[#00a859] hover:bg-green-600 text-white font-medium py-2.5 px-6 rounded-lg transition text-sm"
+            disabled={isSubmitting}
+            className="bg-[#00a859] hover:bg-green-600 disabled:opacity-70 text-white font-medium py-2.5 px-6 rounded-lg transition text-sm"
           >
-            Add Member
+            {isSubmitting ? "Adding..." : "Add Member"}
           </button>
         </form>
       </div>
@@ -118,7 +116,13 @@ const Members = () => {
               </tr>
             </thead>
             <tbody className="text-sm text-gray-800">
-              {members.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td className="py-4 px-2 text-gray-500" colSpan={6}>
+                    Loading members...
+                  </td>
+                </tr>
+              ) : members.length === 0 ? (
                 <tr>
                   <td className="py-4 px-2 text-gray-500" colSpan={6}>
                     No members added yet.

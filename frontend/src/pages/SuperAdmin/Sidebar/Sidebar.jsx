@@ -7,9 +7,17 @@ import {
   LogOut,
   Users,
 } from "lucide-react";
+import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
+import {
+  logoutSuccess,
+  useLogoutMutation,
+} from "../../../features/auth/authSlice";
 
 const Sidebar = ({ onClose }) => {
+  const dispatch = useDispatch();
+  const [logout] = useLogoutMutation();
+
   const menuItems = [
     {
       name: "Dashboard",
@@ -41,9 +49,17 @@ const Sidebar = ({ onClose }) => {
     },
   ];
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+    } finally {
+      dispatch(logoutSuccess());
+      if (onClose) onClose();
+      window.location.replace("/home");
+    }
+  };
+
+  const handleGoHome = () => {
     if (onClose) onClose();
     window.location.replace("/home");
   };
@@ -88,7 +104,7 @@ const Sidebar = ({ onClose }) => {
       <div className="p-4 border-t border-gray-100 space-y-2">
         <NavLink
           to="/home"
-          onClick={() => onClose && onClose()}
+          onClick={handleGoHome}
           className="flex items-center gap-3 px-4 py-3 rounded-xl w-full transition-all font-medium border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:shadow-sm hover:-translate-y-0.5"
         >
           <Home className="w-5 h-5 text-green-600" />

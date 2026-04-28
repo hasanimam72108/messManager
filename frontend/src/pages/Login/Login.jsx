@@ -1,31 +1,44 @@
-import { ChefHat } from "lucide-react";
+import { ChefHat, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { loginSuccess } from "../../features/auth/authSlice";
-import { getRoleHomePath, loginMock } from "../../mock/mockBackend";
+import { loginSuccess, useLoginMutation } from "../../features/auth/authSlice";
+import { getRoleHomePath } from "../../utils/roleBasedNavigation";
+
+const getErrorMessage = (error) => {
+  const validationErrors = error?.data?.errors;
+  if (validationErrors) {
+    const firstErrorField = Object.keys(validationErrors)[0];
+    const firstMessage = validationErrors[firstErrorField]?.[0];
+    if (firstMessage) return firstMessage;
+  }
+
+  return error?.data?.message || error?.error || "Login failed.";
+};
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [login, { isLoading }] = useLoginMutation();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const result = loginMock(formData);
+      const result = await login(formData).unwrap();
       dispatch(loginSuccess(result));
       toast.success("Login successful.");
       navigate(getRoleHomePath(result.user.role), { replace: true });
     } catch (error) {
-      toast.error(error.message || "Login failed.");
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -85,22 +98,38 @@ const Login = () => {
 
             <div className="flex flex-col">
               <label className="mb-1">Password</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                className="bg-gray-100 border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={isPasswordVisible ? "text" : "password"}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  className="bg-gray-100 border border-gray-200 px-3 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 w-full"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsPasswordVisible((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                  title={isPasswordVisible ? "Hide password" : "Show password"}
+                >
+                  {isPasswordVisible ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
             </div>
 
             <button
               type="submit"
-              className="bg-green-600 hover:bg-green-700 text-white w-full py-2 rounded-lg mt-2"
+              disabled={isLoading}
+              className="bg-green-600 hover:bg-green-700 disabled:opacity-70 text-white w-full py-2 rounded-lg mt-2"
             >
-              Login
+              {isLoading ? "Logging in..." : "Login"}
             </button>
 
             <p className="text-center text-sm mt-3">

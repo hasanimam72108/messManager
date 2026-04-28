@@ -1,8 +1,8 @@
-import { useMemo } from "react";
-import { listManagers } from "../../../mock/mockBackend";
+import { useGetManagersQuery } from "../../../features/management/managementSlice";
 
 const Manager = () => {
-  const managers = useMemo(() => listManagers(), []);
+  const { data, isLoading } = useGetManagersQuery();
+  const managers = data?.data || [];
 
   return (
     <div className="space-y-6">
@@ -24,7 +24,13 @@ const Manager = () => {
               </tr>
             </thead>
             <tbody>
-              {managers.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td className="py-4 text-gray-500" colSpan={3}>
+                    Loading managers...
+                  </td>
+                </tr>
+              ) : managers.length === 0 ? (
                 <tr>
                   <td className="py-4 text-gray-500" colSpan={3}>
                     No manager found.

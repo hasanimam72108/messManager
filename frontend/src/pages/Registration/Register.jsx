@@ -2,7 +2,18 @@ import { ChefHat } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { requestMess } from "../../mock/mockBackend";
+import { useRegisterMutation } from "../../features/auth/authSlice";
+
+const getErrorMessage = (error) => {
+  const validationErrors = error?.data?.errors;
+  if (validationErrors) {
+    const firstErrorField = Object.keys(validationErrors)[0];
+    const firstMessage = validationErrors[firstErrorField]?.[0];
+    if (firstMessage) return firstMessage;
+  }
+
+  return error?.data?.message || error?.error || "Request failed.";
+};
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -10,21 +21,22 @@ const Register = () => {
     managerName: "",
     managerEmail: "",
   });
+  const [registerMess, { isLoading }] = useRegisterMutation();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      requestMess(formData);
+      await registerMess(formData).unwrap();
       toast.success("Mess request sent to super admin.");
       setFormData({ messName: "", managerName: "", managerEmail: "" });
     } catch (error) {
-      toast.error(error.message || "Request failed.");
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -89,9 +101,10 @@ const Register = () => {
 
           <button
             type="submit"
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg mt-2"
+            disabled={isLoading}
+            className="w-full bg-green-600 hover:bg-green-700 disabled:opacity-70 text-white py-2 rounded-lg mt-2"
           >
-            Create Mess
+            {isLoading ? "Submitting..." : "Create Mess"}
           </button>
 
           <p className="text-center text-sm mt-3">
