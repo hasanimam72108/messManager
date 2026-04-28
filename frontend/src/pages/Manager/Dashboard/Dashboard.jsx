@@ -122,7 +122,9 @@ const Dashboard = () => {
                 type="button"
                 onClick={() => setIsNewPasswordVisible((prev) => !prev)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-amber-700 hover:text-amber-900 focus:outline-none"
-                aria-label={isNewPasswordVisible ? "Hide password" : "Show password"}
+                aria-label={
+                  isNewPasswordVisible ? "Hide password" : "Show password"
+                }
                 title={isNewPasswordVisible ? "Hide password" : "Show password"}
               >
                 {isNewPasswordVisible ? (
@@ -147,8 +149,12 @@ const Dashboard = () => {
                 type="button"
                 onClick={() => setIsConfirmPasswordVisible((prev) => !prev)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-amber-700 hover:text-amber-900 focus:outline-none"
-                aria-label={isConfirmPasswordVisible ? "Hide password" : "Show password"}
-                title={isConfirmPasswordVisible ? "Hide password" : "Show password"}
+                aria-label={
+                  isConfirmPasswordVisible ? "Hide password" : "Show password"
+                }
+                title={
+                  isConfirmPasswordVisible ? "Hide password" : "Show password"
+                }
               >
                 {isConfirmPasswordVisible ? (
                   <EyeOff className="w-5 h-5" />
