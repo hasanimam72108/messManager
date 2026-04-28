@@ -88,16 +88,16 @@ const Sidebar = ({ onClose }) => {
         <NavLink
           to="/home"
           onClick={() => onClose && onClose()}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full transition-all font-medium bg-gradient-to-r from-green-500 to-teal-500 text-white hover:shadow-lg hover:-translate-y-0.5"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full transition-all font-medium border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:shadow-sm hover:-translate-y-0.5"
         >
-          <Home className="w-5 h-5" />
+          <Home className="w-5 h-5 text-green-600" />
           Back to Home
         </NavLink>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full transition-all font-medium bg-gradient-to-r from-red-500 to-pink-500 text-white hover:shadow-lg hover:-translate-y-0.5"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl w-full transition-all font-medium border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:shadow-sm hover:-translate-y-0.5"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="w-5 h-5 text-red-500" />
           Logout
         </button>
       </div>
