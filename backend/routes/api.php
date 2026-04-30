@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ExpenseController;
 use App\Http\Controllers\Api\ManagementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,5 +36,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('manager')->group(function () {
         Route::get('/members', [ManagementController::class, 'members']);
         Route::post('/members', [ManagementController::class, 'storeMember']);
+
+        Route::get('/dashboard/stats', [ExpenseController::class, 'dashboardStats']);
+        Route::get('/fixed-costs', [ExpenseController::class, 'fixedCosts']);
+        Route::get('/expenses/summary', [ExpenseController::class, 'monthlyExpenseSummary']);
+        Route::put('/fixed-costs', [ExpenseController::class, 'upsertFixedCosts']);
+        Route::post('/expenses', [ExpenseController::class, 'storeExpense']);
     });
 });

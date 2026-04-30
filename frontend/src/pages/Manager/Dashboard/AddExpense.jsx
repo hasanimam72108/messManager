@@ -1,22 +1,33 @@
 import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
-import useAuth from "../../../hooks/useAuth";
 import {
-  getFixedCostsByMess,
-  upsertFixedCostsByManager,
-} from "../../../mock/mockBackend";
+  useAddExpenseMutation,
+  useGetFixedCostsQuery,
+  useGetMonthlyExpenseSummaryQuery,
+  useUpsertFixedCostsMutation,
+} from "../../../features/expenses/expensesSlice";
+import useAuth from "../../../hooks/useAuth";
 
 const getCurrentMonthKey = () => new Date().toISOString().slice(0, 7);
 
+const DEFAULT_FIXED_FORM = {
+  rent: "0",
+  khala: "0",
+  utilities: "0",
+  wifi: "0",
+};
+
 const getFormFromCosts = (costs) => ({
-  rent: String(costs.rent),
-  khala: String(costs.khala),
-  utilities: String(costs.utilities),
-  wifi: String(costs.wifi),
+  rent: String(costs?.rent ?? 0),
+  khala: String(costs?.khala ?? 0),
+  utilities: String(costs?.utilities ?? 0),
+  wifi: String(costs?.wifi ?? 0),
 });
 
 const AddExpense = () => {
   const { user } = useAuth();
+  const [addExpense] = useAddExpenseMutation();
+  const [upsertFixedCosts] = useUpsertFixedCostsMutation();
   const [generalExpenseForm, setGeneralExpenseForm] = useState({
     title: "Bazaar",
     amount: "",
@@ -24,62 +35,65 @@ const AddExpense = () => {
     description: "",
   });
   const [monthKey, setMonthKey] = useState(getCurrentMonthKey());
-  const [form, setForm] = useState(() => {
-    const messId = user?.messId;
-    if (!messId) {
-      return {
-        rent: "0",
-        khala: "0",
-        utilities: "0",
-        wifi: "0",
-      };
-    }
-    return getFormFromCosts(
-      getFixedCostsByMess({ messId, monthKey: getCurrentMonthKey() }),
-    );
-  });
+  const [draftForm, setDraftForm] = useState(null);
+
+  const { data: fixedCostsResponse } = useGetFixedCostsQuery(
+    { monthKey },
+    { skip: !user?.id },
+  );
+  const { data: monthlyExpenseSummaryResponse } =
+    useGetMonthlyExpenseSummaryQuery({ monthKey }, { skip: !user?.id });
+
+  const fixedForm = useMemo(() => {
+    if (draftForm) return draftForm;
+    const fixedCosts = fixedCostsResponse?.data;
+    if (!fixedCosts) return DEFAULT_FIXED_FORM;
+    return getFormFromCosts(fixedCosts);
+  }, [draftForm, fixedCostsResponse]);
 
   const fixedTotal = useMemo(() => {
-    const rent = Number(form.rent) || 0;
-    const khala = Number(form.khala) || 0;
-    const utilities = Number(form.utilities) || 0;
-    const wifi = Number(form.wifi) || 0;
+    const rent = Number(fixedForm.rent) || 0;
+    const khala = Number(fixedForm.khala) || 0;
+    const utilities = Number(fixedForm.utilities) || 0;
+    const wifi = Number(fixedForm.wifi) || 0;
     return rent + khala + utilities + wifi;
-  }, [form]);
+  }, [fixedForm]);
+
+  const bazaarTotal = Number(
+    monthlyExpenseSummaryResponse?.data?.bazaarTotal || 0,
+  );
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    setDraftForm((prev) => ({ ...(prev ?? fixedForm), [name]: value }));
   };
 
   const handleMonthChange = (event) => {
     const nextMonthKey = event.target.value;
     setMonthKey(nextMonthKey);
-
-    if (!user?.messId) return;
-    const existing = getFixedCostsByMess({
-      messId: user.messId,
-      monthKey: nextMonthKey,
-    });
-    setForm(getFormFromCosts(existing));
+    setDraftForm(null);
   };
 
-  const handleSave = (event) => {
+  const handleSave = async (event) => {
     event.preventDefault();
     if (!user?.id) return;
 
     try {
-      upsertFixedCostsByManager({
-        managerUserId: user.id,
+      await upsertFixedCosts({
         monthKey,
-        rent: form.rent,
-        khala: form.khala,
-        utilities: form.utilities,
-        wifi: form.wifi,
-      });
+        rent: fixedForm.rent,
+        khala: fixedForm.khala,
+        utilities: fixedForm.utilities,
+        wifi: fixedForm.wifi,
+      }).unwrap();
       toast.success("Monthly fixed expenses saved.");
     } catch (error) {
-      toast.error(error.message || "Failed to save fixed expenses.");
+      const message =
+        error?.data?.message ||
+        error?.data?.errors?.mess?.[0] ||
+        error?.data?.errors?.monthKey?.[0] ||
+        "Failed to save fixed expenses.";
+      toast.error(message);
     }
   };
 
@@ -88,14 +102,31 @@ const AddExpense = () => {
     setGeneralExpenseForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleGeneralExpenseSubmit = (event) => {
+  const handleGeneralExpenseSubmit = async (event) => {
     event.preventDefault();
-    toast.success("Expense added.");
-    setGeneralExpenseForm((prev) => ({
-      ...prev,
-      amount: "",
-      description: "",
-    }));
+
+    try {
+      await addExpense({
+        title: generalExpenseForm.title,
+        amount: generalExpenseForm.amount,
+        date: generalExpenseForm.date,
+        description: generalExpenseForm.description,
+      }).unwrap();
+
+      toast.success("Expense added.");
+      setGeneralExpenseForm((prev) => ({
+        ...prev,
+        amount: "",
+        description: "",
+      }));
+    } catch (error) {
+      const message =
+        error?.data?.message ||
+        error?.data?.errors?.amount?.[0] ||
+        error?.data?.errors?.date?.[0] ||
+        "Failed to add expense.";
+      toast.error(message);
+    }
   };
 
   return (
@@ -107,14 +138,23 @@ const AddExpense = () => {
         </p>
       </div>
 
-      {/* Total Expenses Card */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
-        <p className="text-gray-600 font-medium mb-2">
-          Total Fixed Expenses This Month
-        </p>
-        <h2 className="text-4xl font-bold text-red-600">
-          ৳{fixedTotal.toFixed(2)}
-        </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <p className="text-gray-600 font-medium mb-2">
+            Total Fixed Expenses This Month
+          </p>
+          <h2 className="text-4xl font-bold text-red-600">
+            ৳{fixedTotal.toFixed(2)}
+          </h2>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <p className="text-gray-600 font-medium mb-2">
+            Total Bazaar Expenses This Month
+          </p>
+          <h2 className="text-4xl font-bold text-green-600">
+            ৳{bazaarTotal.toFixed(2)}
+          </h2>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
@@ -232,7 +272,7 @@ const AddExpense = () => {
                 type="number"
                 min="0"
                 name="rent"
-                value={form.rent}
+                value={fixedForm.rent}
                 onChange={handleChange}
                 className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
                 required
@@ -246,7 +286,7 @@ const AddExpense = () => {
                 type="number"
                 min="0"
                 name="khala"
-                value={form.khala}
+                value={fixedForm.khala}
                 onChange={handleChange}
                 className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
                 required
@@ -260,7 +300,7 @@ const AddExpense = () => {
                 type="number"
                 min="0"
                 name="utilities"
-                value={form.utilities}
+                value={fixedForm.utilities}
                 onChange={handleChange}
                 className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
                 required
@@ -274,7 +314,7 @@ const AddExpense = () => {
                 type="number"
                 min="0"
                 name="wifi"
-                value={form.wifi}
+                value={fixedForm.wifi}
                 onChange={handleChange}
                 className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
                 required

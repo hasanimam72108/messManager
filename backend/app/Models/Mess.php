@@ -31,4 +31,9 @@ class Mess extends Model
     {
         return $this->hasMany(User::class, 'mess_id');
     }
+
+    public function meals(): HasMany
+    {
+        return $this->hasMany(Meal::class);
+    }
 }

@@ -1,15 +1,33 @@
 import { Eye, EyeOff } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import {
   updateAuthenticatedUser,
   useCompleteFirstLoginPasswordSetupMutation,
 } from "../../../features/auth/authSlice";
+import { useGetManagerDashboardStatsQuery } from "../../../features/expenses/expensesSlice";
 import useAuth from "../../../hooks/useAuth";
-import { getMessMonthlyReportStatsByManager } from "../../../mock/mockBackend";
 
 const getCurrentMonthKey = () => new Date().toISOString().slice(0, 7);
+
+const DEFAULT_DASHBOARD_STATS = {
+  monthKey: getCurrentMonthKey(),
+  memberCount: 0,
+  totalMealsAllMembers: 0,
+  costPerMeal: 0,
+  mealCostTotal: 0,
+  fixedBreakdown: {
+    rent: 0,
+    khala: 0,
+    utilities: 0,
+    wifi: 0,
+  },
+  fixedTotal: 0,
+  fixedCostPerPerson: 0,
+  totalExpenses: 0,
+  breakdownRows: [],
+};
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -17,38 +35,15 @@ const Dashboard = () => {
   const [completeFirstLoginPasswordSetup, { isLoading }] =
     useCompleteFirstLoginPasswordSetupMutation();
   const managerUserId = user?.id;
+  const currentMonthKey = getCurrentMonthKey();
 
-  const fixedStats = useMemo(() => {
-    if (!managerUserId) {
-      return {
-        monthKey: getCurrentMonthKey(),
-        fixedTotal: 0,
-        memberCount: 0,
-        perPersonRate: 0,
-      };
-    }
+  const { data: dashboardStatsResponse } = useGetManagerDashboardStatsQuery(
+    { monthKey: currentMonthKey },
+    { skip: !managerUserId },
+  );
 
-    try {
-      const report = getMessMonthlyReportStatsByManager({
-        managerUserId,
-        monthKey: getCurrentMonthKey(),
-      });
-      return {
-        monthKey: report.monthKey,
-        fixedTotal: report.fixedTotal,
-        memberCount: report.memberCount,
-        perPersonRate:
-          report.memberCount > 0 ? report.fixedTotal / report.memberCount : 0,
-      };
-    } catch {
-      return {
-        monthKey: getCurrentMonthKey(),
-        fixedTotal: 0,
-        memberCount: 0,
-        perPersonRate: 0,
-      };
-    }
-  }, [managerUserId]);
+  const dashboardStats =
+    dashboardStatsResponse?.data ?? DEFAULT_DASHBOARD_STATS;
 
   const [passwordForm, setPasswordForm] = useState({
     password: "",
@@ -176,7 +171,6 @@ const Dashboard = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {/* Card 1 */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-start mb-4">
             <p className="text-gray-500 text-sm">
@@ -200,11 +194,12 @@ const Dashboard = () => {
               </svg>
             </div>
           </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">8</h3>
+          <h3 className="text-4xl font-bold text-gray-900 mb-1">
+            {dashboardStats.memberCount}
+          </h3>
           <p className="text-gray-400 text-xs">active members</p>
         </div>
 
-        {/* Card 2 */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-start mb-4">
             <p className="text-gray-500 text-sm">Total Expenses</p>
@@ -212,11 +207,12 @@ const Dashboard = () => {
               ৳
             </div>
           </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">৳26000</h3>
+          <h3 className="text-4xl font-bold text-gray-900 mb-1">
+            ৳{dashboardStats.totalExpenses.toFixed(2)}
+          </h3>
           <p className="text-gray-400 text-xs">this month</p>
         </div>
 
-        {/* Card 3 */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-start mb-4">
             <p className="text-gray-500 text-sm">Total Meals</p>
@@ -236,11 +232,12 @@ const Dashboard = () => {
               </svg>
             </div>
           </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">360</h3>
+          <h3 className="text-4xl font-bold text-gray-900 mb-1">
+            {dashboardStats.totalMealsAllMembers}
+          </h3>
           <p className="text-gray-400 text-xs">meals consumed</p>
         </div>
 
-        {/* Card 4 */}
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-start mb-4">
             <p className="text-gray-500 text-sm">Per Meal Rate</p>
@@ -260,7 +257,9 @@ const Dashboard = () => {
               </svg>
             </div>
           </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">৳72.22</h3>
+          <h3 className="text-4xl font-bold text-gray-900 mb-1">
+            ৳{dashboardStats.costPerMeal.toFixed(2)}
+          </h3>
           <p className="text-gray-400 text-xs">per meal</p>
         </div>
       </div>
@@ -271,7 +270,7 @@ const Dashboard = () => {
             Fixed Expense Summary
           </h4>
           <p className="text-sm text-gray-500">
-            Current month: {fixedStats.monthKey}
+            Current month: {dashboardStats.monthKey}
           </p>
         </div>
 
@@ -279,16 +278,16 @@ const Dashboard = () => {
           <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
             <p className="text-sm text-gray-500 mb-2">Total Fixed Expense</p>
             <p className="text-2xl font-bold text-red-600">
-              ৳{fixedStats.fixedTotal.toFixed(2)}
+              ৳{dashboardStats.fixedTotal.toFixed(2)}
             </p>
           </div>
           <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
             <p className="text-sm text-gray-500 mb-2">Per Person Expense</p>
             <p className="text-2xl font-bold text-gray-900">
-              ৳{fixedStats.perPersonRate.toFixed(2)}
+              ৳{dashboardStats.fixedCostPerPerson.toFixed(2)}
             </p>
             <p className="text-xs text-gray-400 mt-1">
-              based on {fixedStats.memberCount} members
+              based on {dashboardStats.memberCount} members
             </p>
           </div>
         </div>

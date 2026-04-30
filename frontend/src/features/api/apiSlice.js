@@ -26,7 +26,14 @@ export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: baseQueryWithAuth,
   // Enhanced tag types for better cache invalidation
-  tagTypes: ["User", "MessRequest", "Manager", "Member"],
+  tagTypes: [
+    "User",
+    "MessRequest",
+    "Manager",
+    "Member",
+    "FixedCost",
+    "Expense",
+  ],
   // Optimal cache configuration
   keepUnusedDataFor: 300,
   refetchOnMountOrArgChange: 300,
