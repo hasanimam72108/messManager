@@ -13,12 +13,13 @@ return new class extends Migration
             $table->foreignId('mess_id')->constrained('messes')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->date('meal_date');
-            $table->string('meal_type', 20)->default('Meal');
+            $table->string('meal_type', 20)->default('Lunch');
             $table->decimal('quantity', 12, 2)->default(1);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
 
             $table->index(['mess_id', 'meal_date']);
+            $table->index(['user_id', 'meal_date']);
         });
     }
 

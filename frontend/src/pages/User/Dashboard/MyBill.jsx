@@ -1,14 +1,33 @@
-import { useMemo } from "react";
+import { useGetUserBillSummaryQuery } from "../../../features/expenses/expensesSlice";
 import useAuth from "../../../hooks/useAuth";
-import {
-  getMealBreakdownByUser,
-  getUserDashboardStats,
-} from "../../../mock/mockBackend";
 
 const MyBill = () => {
   const { user } = useAuth();
-  const stats = useMemo(() => getUserDashboardStats(user?.id), [user?.id]);
-  const breakdown = useMemo(() => getMealBreakdownByUser(user?.id), [user?.id]);
+  const monthKey = new Date().toISOString().slice(0, 7);
+  const { data: billResponse } = useGetUserBillSummaryQuery(
+    { monthKey },
+    { skip: !user?.id },
+  );
+
+  const stats = billResponse?.data ?? {
+    monthKey,
+    totalMeals: 0,
+    costPerMeal: 0,
+    mealSubtotal: 0,
+    fixedShareTotal: 0,
+    shareBreakdown: {
+      rentShare: 0,
+      khalaShare: 0,
+      utilitiesShare: 0,
+      wifiShare: 0,
+    },
+    totalBill: 0,
+    paidAmount: 0,
+    currentBalance: 0,
+    dueAmount: 0,
+    mealBreakdown: { lunch: 0, dinner: 0, off: 0 },
+  };
+  const breakdown = stats.mealBreakdown;
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -31,19 +50,19 @@ const MyBill = () => {
           <div className="flex justify-between items-center py-4 border-b border-gray-50 flex-wrap gap-2">
             <span className="text-gray-600">Total Bill</span>
             <span className="font-bold text-gray-900 text-lg">
-              ৳{stats.totalBill.toFixed(2)}
+              ৳{Number(stats.totalBill || 0).toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between items-center py-4 border-b border-gray-50 flex-wrap gap-2">
             <span className="text-gray-600">Paid Amount</span>
             <span className="font-medium text-[#16a34a]">
-              ৳{stats.paidAmount.toFixed(2)}
+              ৳{Number(stats.paidAmount || 0).toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between items-center py-4 flex-wrap gap-2">
             <span className="text-gray-600">Remaining Due</span>
             <span className="font-bold text-[#ea580c] text-lg">
-              ৳{stats.dueAmount.toFixed(2)}
+              ৳{Number(stats.dueAmount || 0).toFixed(2)}
             </span>
           </div>
         </div>
@@ -63,13 +82,13 @@ const MyBill = () => {
               <div className="flex justify-between items-center py-3 border-b border-gray-50 flex-wrap gap-2">
                 <span className="text-gray-600">Cost Per Meal</span>
                 <span className="font-medium text-gray-900">
-                  ৳{stats.costPerMeal.toFixed(2)}
+                  ৳{Number(stats.costPerMeal || 0).toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between items-center py-3 flex-wrap gap-2">
                 <span className="text-gray-600">Meal Subtotal</span>
                 <span className="font-medium text-gray-900">
-                  ৳{(stats.mealSubtotal || 0).toFixed(2)}
+                  ৳{Number(stats.mealSubtotal || 0).toFixed(2)}
                 </span>
               </div>
             </div>
@@ -83,31 +102,32 @@ const MyBill = () => {
               <div className="flex justify-between items-center py-3 border-b border-gray-50 flex-wrap gap-2">
                 <span className="text-gray-600">Fixed Bill Total</span>
                 <span className="font-medium text-gray-900">
-                  ৳{(stats.fixedShareTotal || 0).toFixed(2)}
+                  ৳{Number(stats.fixedShareTotal || 0).toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-gray-50 flex-wrap gap-2">
                 <span className="text-gray-600">Rent Bill</span>
                 <span className="font-medium text-gray-900">
-                  ৳{(stats.shareBreakdown?.rentShare || 0).toFixed(2)}
+                  ৳{Number(stats.shareBreakdown?.rentShare || 0).toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-gray-50 flex-wrap gap-2">
                 <span className="text-gray-600">Khala Bill</span>
                 <span className="font-medium text-gray-900">
-                  ৳{(stats.shareBreakdown?.khalaShare || 0).toFixed(2)}
+                  ৳{Number(stats.shareBreakdown?.khalaShare || 0).toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between items-center py-3 border-b border-gray-50 flex-wrap gap-2">
                 <span className="text-gray-600">Utilities Bill</span>
                 <span className="font-medium text-gray-900">
-                  ৳{(stats.shareBreakdown?.utilitiesShare || 0).toFixed(2)}
+                  ৳
+                  {Number(stats.shareBreakdown?.utilitiesShare || 0).toFixed(2)}
                 </span>
               </div>
               <div className="flex justify-between items-center py-3 flex-wrap gap-2">
                 <span className="text-gray-600">WiFi Bill</span>
                 <span className="font-medium text-gray-900">
-                  ৳{(stats.shareBreakdown?.wifiShare || 0).toFixed(2)}
+                  ৳{Number(stats.shareBreakdown?.wifiShare || 0).toFixed(2)}
                 </span>
               </div>
             </div>
@@ -127,18 +147,20 @@ const MyBill = () => {
           <div className="flex items-center justify-between border border-gray-100 rounded-lg px-4 py-3">
             <span className="text-gray-600">Lunch Meals</span>
             <span className="font-semibold text-gray-900">
-              {breakdown.lunch}
+              {breakdown?.lunch || 0}
             </span>
           </div>
           <div className="flex items-center justify-between border border-gray-100 rounded-lg px-4 py-3">
             <span className="text-gray-600">Dinner Meals</span>
             <span className="font-semibold text-gray-900">
-              {breakdown.dinner}
+              {breakdown?.dinner || 0}
             </span>
           </div>
           <div className="flex items-center justify-between border border-gray-100 rounded-lg px-4 py-3">
             <span className="text-gray-600">Off Days</span>
-            <span className="font-semibold text-gray-900">{breakdown.off}</span>
+            <span className="font-semibold text-gray-900">
+              {breakdown?.off || 0}
+            </span>
           </div>
         </div>
       </div>

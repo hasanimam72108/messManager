@@ -70,6 +70,11 @@ class User extends Authenticatable
         return $this->hasMany(Meal::class);
     }
 
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(UserTransaction::class);
+    }
+
     public function scopeRole(Builder $query, string $role): Builder
     {
         return $query->where('role', $role);

@@ -1,17 +1,18 @@
 import { Eye, EyeOff, FileText, Utensils, Wallet } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import {
   updateAuthenticatedUser,
   useCompleteFirstLoginPasswordSetupMutation,
+  useGetProfileQuery,
 } from "../../../features/auth/authSlice";
-import useAuth from "../../../hooks/useAuth";
 import {
-  getMessNameById,
-  getUserDashboardStats,
-  listMealsByUser,
-} from "../../../mock/mockBackend";
+  useGetUserDashboardStatsQuery,
+  useGetUserMealsQuery,
+} from "../../../features/expenses/expensesSlice";
+import useAuth from "../../../hooks/useAuth";
+import { getUserDashboardStats } from "../../../mock/mockBackend";
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -25,16 +26,37 @@ const Dashboard = () => {
   const [isNewPasswordVisible, setIsNewPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
-  const messName = getMessNameById(user?.messId);
-  const stats = useMemo(() => getUserDashboardStats(user?.id), [user?.id]);
-  const recentMeals = useMemo(
-    () => listMealsByUser(user?.id).slice(0, 6),
+  const { data: profileResponse } = useGetProfileQuery(undefined, {
+    skip: !user?.id,
+  });
+  const messName = profileResponse?.user?.messName || user?.messName || "N/A";
+  const getCurrentMonthKey = () => new Date().toISOString().slice(0, 7);
+  const monthKey = getCurrentMonthKey();
+  const { data: userStatsResponse } = useGetUserDashboardStatsQuery(
+    { monthKey },
+    { skip: !user?.id },
+  );
+  const { data: mealsResponse } = useGetUserMealsQuery(
+    { monthKey },
+    { skip: !user?.id },
+  );
+
+  const fallbackStats = useMemo(
+    () => getUserDashboardStats(user?.id),
     [user?.id],
   );
+  const stats = userStatsResponse?.data ?? fallbackStats;
+  const recentMeals = mealsResponse?.data?.slice(0, 6) ?? [];
   const fixedExpenseRemainingDue = Math.max(
     (stats.fixedShareTotal || 0) - (stats.paidAmount || 0),
     0,
   );
+
+  useEffect(() => {
+    if (profileResponse?.user) {
+      dispatch(updateAuthenticatedUser(profileResponse.user));
+    }
+  }, [dispatch, profileResponse]);
 
   const handlePasswordChange = (event) => {
     const { name, value } = event.target;

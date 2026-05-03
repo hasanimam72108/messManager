@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ExpenseController;
+use App\Http\Controllers\Api\MealController;
 use App\Http\Controllers\Api\ManagementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/mess-requests/{messRequest}/approve', [ManagementController::class, 'approveMessRequest']);
         Route::post('/mess-requests/{messRequest}/reject', [ManagementController::class, 'rejectMessRequest']);
         Route::get('/managers', [ManagementController::class, 'managers']);
+        Route::get('/system-report', [ManagementController::class, 'systemReport']);
+        Route::get('/messes-with-details', [ManagementController::class, 'messesWithDetails']);
     });
 
     Route::prefix('manager')->group(function () {
@@ -42,5 +45,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/expenses/summary', [ExpenseController::class, 'monthlyExpenseSummary']);
         Route::put('/fixed-costs', [ExpenseController::class, 'upsertFixedCosts']);
         Route::post('/expenses', [ExpenseController::class, 'storeExpense']);
+    });
+
+    // User-specific dashboard stats (authenticated users)
+    Route::get('/user/dashboard/stats', [ExpenseController::class, 'userDashboardStats']);
+    Route::get('/user/bill/summary', [ExpenseController::class, 'userBillSummary']);
+    Route::get('/user/transactions', [ExpenseController::class, 'userTransactions']);
+    Route::post('/user/transactions', [ExpenseController::class, 'storeUserDeposit']);
+
+    Route::prefix('user')->group(function () {
+        Route::get('/meals', [MealController::class, 'index']);
+        Route::post('/meals', [MealController::class, 'store']);
     });
 });

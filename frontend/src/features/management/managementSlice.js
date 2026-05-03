@@ -40,6 +40,14 @@ export const managementApiSlice = apiSlice.injectEndpoints({
       query: () => "/admin/managers",
       providesTags: (result) => toCollectionTags("Manager", result),
     }),
+    getSystemReport: builder.query({
+      query: () => "/admin/system-report",
+      providesTags: [{ type: "SystemReport", id: "MAIN" }],
+    }),
+    getMessesWithDetails: builder.query({
+      query: () => "/admin/messes-with-details",
+      providesTags: (result) => toCollectionTags("Mess", result),
+    }),
     getMembers: builder.query({
       query: () => "/manager/members",
       providesTags: (result) => toCollectionTags("Member", result),
@@ -61,6 +69,8 @@ export const {
   useApproveMessRequestMutation,
   useRejectMessRequestMutation,
   useGetManagersQuery,
+  useGetSystemReportQuery,
+  useGetMessesWithDetailsQuery,
   useGetMembersQuery,
   useAddMemberMutation,
 } = managementApiSlice;

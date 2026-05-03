@@ -43,7 +43,7 @@ const Login = () => {
   };
 
   return (
-    <div className="text-center">
+    <div className="text-center min-h-screen flex flex-col items-center justify-center">
       <div className="flex items-center justify-center gap-3 mb-2">
         <div className="bg-green-600 p-2.5 rounded-2xl flex items-center justify-center">
           <ChefHat className="w-8 h-8 text-white" />
@@ -56,24 +56,6 @@ const Login = () => {
       <p className="text-gray-500 mt-2 mb-6">
         Welcome back! Please login to your account.
       </p>
-      <div className="max-w-105 mx-auto mb-4 bg-blue-50 border border-blue-100 text-blue-800 rounded-lg px-4 py-3 text-sm text-left space-y-2">
-        <p className="font-semibold">Demo Accounts (Frontend Only)</p>
-        <div>
-          <p className="font-medium">Super Admin</p>
-          <p>Email: superadmin@mess.com</p>
-          <p>Password: admin123</p>
-        </div>
-        <div>
-          <p className="font-medium">Manager</p>
-          <p>Email: manager@mess.com</p>
-          <p>Password: manager123</p>
-        </div>
-        <div>
-          <p className="font-medium">User</p>
-          <p>Email: user@mess.com</p>
-          <p>Password: user123</p>
-        </div>
-      </div>
       <div className="flex items-center justify-center mx-auto">
         <div className="bg-white shadow-xl border border-gray-200 w-105 p-8 rounded-xl text-left ">
           <h2 className="text-xl font-semibold">Login</h2>

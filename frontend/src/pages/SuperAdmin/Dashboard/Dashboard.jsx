@@ -1,14 +1,23 @@
-import { useMemo } from "react";
 import {
-  getSystemReport,
-  listManagers,
-  listMessesWithDetails,
-} from "../../../mock/mockBackend";
+  useGetManagersQuery,
+  useGetMessesWithDetailsQuery,
+  useGetSystemReportQuery,
+} from "../../../features/management/managementSlice";
 
 const Dashboard = () => {
-  const report = useMemo(() => getSystemReport(), []);
-  const messes = useMemo(() => listMessesWithDetails(), []);
-  const managers = useMemo(() => listManagers(), []);
+  const { data: reportResponse } = useGetSystemReportQuery();
+  const { data: messesResponse } = useGetMessesWithDetailsQuery();
+  const { data: managersResponse } = useGetManagersQuery();
+
+  const report = reportResponse?.data ?? {
+    totalMesses: 0,
+    totalManagers: 0,
+    totalUsers: 0,
+    pendingRequests: 0,
+  };
+
+  const messes = messesResponse?.data ?? [];
+  const managers = managersResponse?.data ?? [];
 
   return (
     <div className="space-y-8">

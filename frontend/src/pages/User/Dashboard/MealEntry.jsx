@@ -1,13 +1,22 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
+import {
+  useAddMealMutation,
+  useGetUserMealsQuery,
+} from "../../../features/expenses/expensesSlice";
 import useAuth from "../../../hooks/useAuth";
-import { addMealByUser, listMealsByUser } from "../../../mock/mockBackend";
 
 const MealEntry = () => {
   const { user } = useAuth();
   const [date, setDate] = useState("");
   const [mealType, setMealType] = useState("Lunch");
   const [quantity, setQuantity] = useState(1);
-  const [refreshToken, setRefreshToken] = useState(0);
+  const monthKey = new Date().toISOString().slice(0, 7);
+  const { data: mealsResponse } = useGetUserMealsQuery(
+    { monthKey },
+    { skip: !user?.id },
+  );
+  const [addMeal, { isLoading }] = useAddMealMutation();
 
   const handleMealTypeChange = (e) => {
     const selectedMealType = e.target.value;
@@ -19,26 +28,26 @@ const MealEntry = () => {
     }
   };
 
-  const meals = useMemo(
-    () => listMealsByUser(user?.id),
-    [refreshToken, user?.id],
-  );
+  const meals = mealsResponse?.data ?? [];
 
-  const handleAddMeal = (e) => {
+  const handleAddMeal = async (e) => {
     e.preventDefault();
     if (!date || !user?.id) return;
 
-    addMealByUser({
-      userId: user.id,
-      date,
-      mealType,
-      quantity,
-    });
+    try {
+      await addMeal({
+        date,
+        mealType,
+        quantity: mealType === "Off" ? 0 : Number(quantity),
+      }).unwrap();
 
-    setRefreshToken((prev) => prev + 1);
-    setDate("");
-    setMealType("Lunch");
-    setQuantity(1);
+      toast.success("Meal added successfully.");
+      setDate("");
+      setMealType("Lunch");
+      setQuantity(1);
+    } catch (error) {
+      toast.error(error?.data?.message || "Meal save failed.");
+    }
   };
 
   return (
@@ -101,9 +110,10 @@ const MealEntry = () => {
           </div>
           <button
             type="submit"
+            disabled={isLoading}
             className="px-6 py-2.5 bg-[#16a34a] text-white font-medium rounded-xl hover:bg-green-700 transition-colors"
           >
-            Add Meal
+            {isLoading ? "Saving..." : "Add Meal"}
           </button>
         </form>
       </div>

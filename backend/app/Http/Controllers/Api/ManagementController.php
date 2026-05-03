@@ -238,4 +238,47 @@ class ManagementController extends Controller
             'approvedMessId' => $messRequest->approved_mess_id,
         ];
     }
+
+    public function systemReport(Request $request): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_SUPER_ADMIN);
+
+        $totalMesses = Mess::count();
+        $totalManagers = User::where('role', User::ROLE_MANAGER)->count();
+        $totalUsers = User::where('role', User::ROLE_USER)->count();
+        $pendingRequests = MessRequest::where('status', 'pending')->count();
+
+        return response()->json([
+            'data' => [
+                'totalMesses' => $totalMesses,
+                'totalManagers' => $totalManagers,
+                'totalUsers' => $totalUsers,
+                'pendingRequests' => $pendingRequests,
+            ],
+        ]);
+    }
+
+    public function messesWithDetails(Request $request): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_SUPER_ADMIN);
+
+        $messes = Mess::query()
+            ->with(['manager', 'members'])
+            ->latest()
+            ->get()
+            ->map(function (Mess $mess) {
+                return [
+                    'id' => $mess->id,
+                    'name' => $mess->name,
+                    'managerName' => $mess->manager?->name ?? 'N/A',
+                    'managerEmail' => $mess->manager?->email ?? 'N/A',
+                    'memberCount' => $mess->members()->where('role', User::ROLE_USER)->count(),
+                ];
+            })
+            ->values();
+
+        return response()->json([
+            'data' => $messes,
+        ]);
+    }
 }

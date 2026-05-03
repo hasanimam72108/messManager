@@ -1,8 +1,14 @@
-import { useMemo } from "react";
-import { getSystemReport } from "../../../mock/mockBackend";
+import { useGetSystemReportQuery } from "../../../features/management/managementSlice";
 
 const SystemReport = () => {
-  const report = useMemo(() => getSystemReport(), []);
+  const { data: reportResponse } = useGetSystemReportQuery();
+
+  const report = reportResponse?.data ?? {
+    totalMesses: 0,
+    totalManagers: 0,
+    totalUsers: 0,
+    pendingRequests: 0,
+  };
 
   return (
     <div className="space-y-6">

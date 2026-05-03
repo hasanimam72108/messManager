@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { useGetManagerDashboardStatsQuery } from "../../../features/expenses/expensesSlice";
 import useAuth from "../../../hooks/useAuth";
-import { getMessMonthlyReportStatsByManager } from "../../../mock/mockBackend";
 
 const getCurrentMonthKey = () => new Date().toISOString().slice(0, 7);
 
@@ -9,34 +9,19 @@ const MonthlyReport = () => {
   const managerUserId = user?.id;
   const [monthKey, setMonthKey] = useState(getCurrentMonthKey());
 
-  const stats = useMemo(() => {
-    if (!managerUserId) {
-      return {
-        memberCount: 0,
-        totalMealsAllMembers: 0,
-        totalExpenses: 0,
-        fixedTotal: 0,
-        costPerMeal: 0,
-        breakdownRows: [],
-      };
-    }
+  const { data: dashboardStatsResponse } = useGetManagerDashboardStatsQuery(
+    { monthKey },
+    { skip: !managerUserId },
+  );
 
-    try {
-      return getMessMonthlyReportStatsByManager({
-        managerUserId,
-        monthKey,
-      });
-    } catch {
-      return {
-        memberCount: 0,
-        totalMealsAllMembers: 0,
-        totalExpenses: 0,
-        fixedTotal: 0,
-        costPerMeal: 0,
-        breakdownRows: [],
-      };
-    }
-  }, [managerUserId, monthKey]);
+  const stats = dashboardStatsResponse?.data ?? {
+    memberCount: 0,
+    totalMealsAllMembers: 0,
+    totalExpenses: 0,
+    fixedTotal: 0,
+    costPerMeal: 0,
+    breakdownRows: [],
+  };
 
   const fixedCostPerPerson =
     stats.memberCount > 0 ? stats.fixedTotal / stats.memberCount : 0;

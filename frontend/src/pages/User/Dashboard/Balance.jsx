@@ -1,36 +1,44 @@
-import { useMemo, useState } from "react";
-import useAuth from "../../../hooks/useAuth";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
 import {
-  addDepositByUser,
-  getUserDashboardStats,
-  listTransactionsByUser,
-} from "../../../mock/mockBackend";
+  useAddDepositMutation,
+  useGetUserBillSummaryQuery,
+  useGetUserTransactionsQuery,
+} from "../../../features/expenses/expensesSlice";
+import useAuth from "../../../hooks/useAuth";
 
 const Balance = () => {
   const { user } = useAuth();
   const [amount, setAmount] = useState("");
-  const [refreshToken, setRefreshToken] = useState(0);
-
-  const transactions = useMemo(
-    () => listTransactionsByUser(user?.id),
-    [refreshToken, user?.id],
+  const monthKey = new Date().toISOString().slice(0, 7);
+  const { data: transactionsResponse } = useGetUserTransactionsQuery(
+    undefined,
+    {
+      skip: !user?.id,
+    },
   );
-  const stats = useMemo(
-    () => getUserDashboardStats(user?.id),
-    [refreshToken, user?.id],
+  const { data: billSummaryResponse } = useGetUserBillSummaryQuery(
+    { monthKey },
+    { skip: !user?.id },
   );
+  const [addDeposit, { isLoading }] = useAddDepositMutation();
 
-  const handleAddDeposit = (e) => {
+  const transactions = transactionsResponse?.data ?? [];
+  const stats = billSummaryResponse?.data ?? {
+    currentBalance: 0,
+  };
+
+  const handleAddDeposit = async (e) => {
     e.preventDefault();
     if (!amount || !user?.id) return;
 
-    addDepositByUser({
-      userId: user.id,
-      amount,
-    });
-
-    setRefreshToken((prev) => prev + 1);
-    setAmount("");
+    try {
+      await addDeposit({ amount: Number(amount) }).unwrap();
+      toast.success("Deposit added successfully.");
+      setAmount("");
+    } catch (error) {
+      toast.error(error?.data?.message || "Deposit save failed.");
+    }
   };
 
   return (
@@ -48,7 +56,7 @@ const Balance = () => {
         </h2>
         <p className="text-gray-500 text-sm mb-4">Your available balance</p>
         <div className="text-4xl font-bold text-[#16a34a]">
-          ৳{stats.currentBalance.toFixed(2)}
+          ৳{Number(stats.currentBalance || 0).toFixed(2)}
         </div>
       </div>
 
@@ -75,9 +83,10 @@ const Balance = () => {
             </div>
             <button
               type="submit"
+              disabled={isLoading}
               className="px-6 py-3 bg-[#16a34a] text-white font-medium rounded-xl hover:bg-green-700 transition-colors whitespace-nowrap"
             >
-              Add Deposit
+              {isLoading ? "Saving..." : "Add Deposit"}
             </button>
           </div>
         </form>
@@ -114,14 +123,14 @@ const Balance = () => {
                   <td className="py-4 px-4 text-gray-600">{tx.date}</td>
                   <td className="py-4 px-4 text-gray-600">{tx.type}</td>
                   <td
-                    className={`py-4 px-4 font-medium ${tx.amount < 0 ? "text-red-500" : "text-[#16a34a]"}`}
+                    className={`py-4 px-4 font-medium ${Number(tx.amount) < 0 ? "text-red-500" : "text-[#16a34a]"}`}
                   >
-                    {tx.amount < 0
-                      ? `-৳${Math.abs(tx.amount).toFixed(2)}`
-                      : `৳${tx.amount.toFixed(2)}`}
+                    {Number(tx.amount) < 0
+                      ? `-৳${Math.abs(Number(tx.amount)).toFixed(2)}`
+                      : `৳${Number(tx.amount).toFixed(2)}`}
                   </td>
                   <td className="py-4 px-4 text-gray-900 font-medium">
-                    ৳{Number(tx.balance).toFixed(2)}
+                    ৳{Number(tx.balance || 0).toFixed(2)}
                   </td>
                 </tr>
               ))}
