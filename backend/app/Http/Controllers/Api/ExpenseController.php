@@ -244,6 +244,7 @@ class ExpenseController extends Controller
 
         $totalExpenses = round($mealCostTotal + $fixedTotal + $otherExpensesTotal, 2);
         $fixedCostPerPerson = $memberCount > 0 ? round($fixedTotal / $memberCount, 2) : 0;
+        $recentActivity = $this->buildRecentActivityFeed($user->mess_id, $monthStart, $monthEnd);
 
         return response()->json([
             'data' => [
@@ -258,6 +259,7 @@ class ExpenseController extends Controller
                 'fixedTotal' => $fixedTotal,
                 'fixedCostPerPerson' => $fixedCostPerPerson,
                 'totalExpenses' => $totalExpenses,
+                'recentActivity' => $recentActivity,
                 'breakdownRows' => [
                     ['category' => 'Meal cost', 'amount' => $mealCostTotal],
                     ['category' => 'House Rent', 'amount' => $fixedBreakdown['rent']],
@@ -268,6 +270,151 @@ class ExpenseController extends Controller
                 ],
             ],
         ]);
+    }
+
+    private function buildRecentActivityFeed(int $messId, Carbon $monthStart, Carbon $monthEnd): array
+    {
+        return collect()
+            ->merge($this->recentMealActivities($messId, $monthStart, $monthEnd))
+            ->merge($this->recentExpenseActivities($messId, $monthStart, $monthEnd))
+            ->merge($this->recentTransactionActivities($messId, $monthStart, $monthEnd))
+            ->sortByDesc('sortKey')
+            ->take(6)
+            ->values()
+            ->map(function (array $item) {
+                unset($item['sortKey']);
+
+                return $item;
+            })
+            ->all();
+    }
+
+    private function recentMealActivities(int $messId, Carbon $monthStart, Carbon $monthEnd)
+    {
+        return Meal::query()
+            ->with(['user', 'createdBy'])
+            ->where('mess_id', $messId)
+            ->whereBetween('meal_date', [$monthStart, $monthEnd])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get()
+            ->map(fn (Meal $meal) => $this->formatMealActivity($meal));
+    }
+
+    private function recentExpenseActivities(int $messId, Carbon $monthStart, Carbon $monthEnd)
+    {
+        return Expense::query()
+            ->with('createdBy')
+            ->where('mess_id', $messId)
+            ->whereBetween('expense_date', [$monthStart, $monthEnd])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get()
+            ->map(fn (Expense $expense) => $this->formatExpenseActivity($expense));
+    }
+
+    private function recentTransactionActivities(int $messId, Carbon $monthStart, Carbon $monthEnd)
+    {
+        return UserTransaction::query()
+            ->with(['user', 'createdBy'])
+            ->where('mess_id', $messId)
+            ->whereBetween('transaction_date', [$monthStart, $monthEnd])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get()
+            ->map(fn (UserTransaction $transaction) => $this->formatTransactionActivity($transaction));
+    }
+
+    private function formatMealActivity(Meal $meal): array
+    {
+        $actor = $meal->createdBy ?? $meal->user;
+        $actorName = $actor?->name ?? 'Unknown user';
+        $mealType = strtolower(trim((string) $meal->meal_type));
+        $quantity = $this->formatQuantity($meal->quantity);
+        $title = $mealType === 'off'
+            ? 'Marked off duty'
+            : sprintf('Added %s %s', $quantity, $mealType);
+
+        return [
+            'id' => 'meal-' . $meal->id,
+            'type' => 'meal',
+            'name' => $actorName,
+            'title' => $title,
+            'description' => $mealType === 'off'
+                ? 'Meal off was recorded for the day.'
+                : sprintf('%s recorded for %s', ucfirst($mealType), $actorName),
+            'amount' => null,
+            'timeLabel' => $meal->created_at?->diffForHumans(),
+            'createdAt' => $meal->created_at?->toIso8601String(),
+            'avatarInitials' => $this->buildInitials($actorName),
+            'sortKey' => $meal->created_at?->getTimestamp() ?? 0,
+        ];
+    }
+
+    private function formatExpenseActivity(Expense $expense): array
+    {
+        $actorName = $expense->createdBy?->name ?? 'Unknown user';
+
+        return [
+            'id' => 'expense-' . $expense->id,
+            'type' => 'expense',
+            'name' => $actorName,
+            'title' => sprintf('Added expense %s', $this->formatMoney($expense->amount)),
+            'description' => $expense->title,
+            'amount' => (float) $expense->amount,
+            'timeLabel' => $expense->created_at?->diffForHumans(),
+            'createdAt' => $expense->created_at?->toIso8601String(),
+            'avatarInitials' => $this->buildInitials($actorName),
+            'sortKey' => $expense->created_at?->getTimestamp() ?? 0,
+        ];
+    }
+
+    private function formatTransactionActivity(UserTransaction $transaction): array
+    {
+        $actor = $transaction->createdBy ?? $transaction->user;
+        $actorName = $actor?->name ?? 'Unknown user';
+
+        return [
+            'id' => 'transaction-' . $transaction->id,
+            'type' => 'transaction',
+            'name' => $actorName,
+            'title' => sprintf('Added deposit %s', $this->formatMoney($transaction->amount)),
+            'description' => sprintf('Balance updated to %s', $this->formatMoney($transaction->balance)),
+            'amount' => (float) $transaction->amount,
+            'timeLabel' => $transaction->created_at?->diffForHumans(),
+            'createdAt' => $transaction->created_at?->toIso8601String(),
+            'avatarInitials' => $this->buildInitials($actorName),
+            'sortKey' => $transaction->created_at?->getTimestamp() ?? 0,
+        ];
+    }
+
+    private function buildInitials(string $name): string
+    {
+        $parts = preg_split('/\s+/', trim($name)) ?: [];
+        $initials = collect($parts)
+            ->filter()
+            ->take(2)
+            ->map(fn (string $part) => strtoupper(substr($part, 0, 1)))
+            ->implode('');
+
+        return $initials !== '' ? $initials : 'NA';
+    }
+
+    private function formatMoney(float|int|string $amount): string
+    {
+        return '৳' . number_format((float) $amount, 2, '.', '');
+    }
+
+    private function formatQuantity(float|int|string $quantity): string
+    {
+        $value = (float) $quantity;
+
+        return abs($value - round($value)) < 0.001
+            ? (string) (int) round($value)
+            : rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.');
     }
 
     public function userDashboardStats(Request $request): JsonResponse

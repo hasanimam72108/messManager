@@ -26,6 +26,7 @@ const DEFAULT_DASHBOARD_STATS = {
   fixedTotal: 0,
   fixedCostPerPerson: 0,
   totalExpenses: 0,
+  recentActivity: [],
   breakdownRows: [],
 };
 
@@ -44,6 +45,7 @@ const Dashboard = () => {
 
   const dashboardStats =
     dashboardStatsResponse?.data ?? DEFAULT_DASHBOARD_STATS;
+  const recentActivity = dashboardStats.recentActivity ?? [];
 
   const [passwordForm, setPasswordForm] = useState({
     password: "",
@@ -80,6 +82,8 @@ const Dashboard = () => {
       toast.error(error?.data?.message || "Password setup failed.");
     }
   };
+
+  const formatCurrency = (value) => `৳${Number(value || 0).toFixed(2)}`;
 
   return (
     <>
@@ -202,13 +206,13 @@ const Dashboard = () => {
 
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-start mb-4">
-            <p className="text-gray-500 text-sm">Total Expenses</p>
+            <p className="text-gray-500 text-sm">Total Meals Expenses</p>
             <div className="px-3 py-1 bg-red-50 text-red-500 rounded-lg text-lg font-bold">
               ৳
             </div>
           </div>
           <h3 className="text-4xl font-bold text-gray-900 mb-1">
-            ৳{dashboardStats.totalExpenses.toFixed(2)}
+            ৳{dashboardStats.mealCostTotal.toFixed(2)}
           </h3>
           <p className="text-gray-400 text-xs">this month</p>
         </div>
@@ -298,47 +302,40 @@ const Dashboard = () => {
         <h4 className="text-lg font-medium text-gray-900 mb-6">
           Recent Activity
         </h4>
-        <div className="space-y-6">
-          {/* Activity Item 1 */}
-          <div className="flex items-center">
-            <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 text-sm mr-4">
-              AK
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-900">Ahmed Khan</p>
-              <p className="text-sm text-gray-500">Added 1 dinner</p>
-              <p className="text-xs text-gray-400 mt-1">2 hours ago</p>
-            </div>
+        {recentActivity.length > 0 ? (
+          <div className="space-y-6">
+            {recentActivity.map((item, index) => (
+              <div key={item.id}>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-600 text-sm font-semibold shrink-0">
+                    {item.avatarInitials || "NA"}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-gray-900">
+                      {item.name}
+                    </p>
+                    <p className="text-sm text-gray-500 mt-1">{item.title}</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {item.timeLabel}
+                    </p>
+                  </div>
+                  {item.amount !== null && item.amount !== undefined ? (
+                    <div className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+                      {formatCurrency(item.amount)}
+                    </div>
+                  ) : null}
+                </div>
+                {index < recentActivity.length - 1 ? (
+                  <hr className="border-gray-50 mt-6" />
+                ) : null}
+              </div>
+            ))}
           </div>
-
-          <hr className="border-gray-50" />
-
-          {/* Activity Item 2 */}
-          <div className="flex items-center">
-            <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 text-sm mr-4">
-              FB
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-900">Fatima Begum</p>
-              <p className="text-sm text-gray-500">Added 1 lunch</p>
-              <p className="text-xs text-gray-400 mt-1">4 hours ago</p>
-            </div>
+        ) : (
+          <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-6 text-sm text-gray-500">
+            No recent activity yet.
           </div>
-
-          <hr className="border-gray-50" />
-
-          {/* Activity Item 3 */}
-          <div className="flex items-center">
-            <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 text-sm mr-4">
-              RH
-            </div>
-            <div>
-              <p className="text-sm font-medium text-gray-900">Rakib Hasan</p>
-              <p className="text-sm text-gray-500">Added deposit ৳3000</p>
-              <p className="text-xs text-gray-400 mt-1">5 hours ago</p>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </>
   );

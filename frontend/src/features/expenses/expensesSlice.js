@@ -26,6 +26,7 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
           ? `/manager/dashboard/stats?monthKey=${encodeURIComponent(monthKey)}`
           : "/manager/dashboard/stats",
       providesTags: (result, error, arg) => [
+        { type: "Dashboard", id: arg?.monthKey || "CURRENT" },
         { type: "FixedCost", id: arg?.monthKey || "CURRENT" },
         { type: "Expense", id: `SUMMARY-${arg?.monthKey || "CURRENT"}` },
       ],
@@ -74,6 +75,7 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
         body,
       }),
       invalidatesTags: (result, error, arg) => [
+        { type: "Dashboard", id: arg?.monthKey || "CURRENT" },
         { type: "FixedCost", id: arg?.monthKey || "CURRENT" },
       ],
     }),
@@ -89,6 +91,7 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
         ).slice(0, 7);
 
         return [
+          { type: "Dashboard", id: monthKey },
           { type: "Expense", id: "LIST" },
           { type: "Expense", id: `SUMMARY-${monthKey}` },
         ];
@@ -105,7 +108,10 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
           arg?.date || new Date().toISOString().split("T")[0],
         ).slice(0, 7);
 
-        return [{ type: "Meal", id: `USER-MEALS-${monthKey}` }];
+        return [
+          { type: "Dashboard", id: monthKey },
+          { type: "Meal", id: `USER-MEALS-${monthKey}` },
+        ];
       },
     }),
     addDeposit: builder.mutation({
@@ -114,7 +120,16 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: [{ type: "Transaction", id: "LIST" }],
+      invalidatesTags: (result, error, arg) => {
+        const monthKey = String(
+          arg?.date || new Date().toISOString().split("T")[0],
+        ).slice(0, 7);
+
+        return [
+          { type: "Dashboard", id: monthKey },
+          { type: "Transaction", id: "LIST" },
+        ];
+      },
     }),
   }),
   overrideExisting: false,

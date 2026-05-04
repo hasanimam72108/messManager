@@ -31,6 +31,7 @@ export const apiSlice = createApi({
     "MessRequest",
     "Manager",
     "Member",
+    "Dashboard",
     "FixedCost",
     "Expense",
     "Meal",

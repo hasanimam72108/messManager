@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Mess;
 use App\Models\MessRequest;
+use App\Models\Meal;
 use App\Models\User;
+use App\Models\UserTransaction;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -191,6 +194,50 @@ class ManagementController extends Controller
         ], 201);
     }
 
+    public function updateMember(Request $request, User $member): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_MANAGER);
+        $this->ensureMemberBelongsToManager($request->user(), $member);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+        ]);
+
+        $normalizedEmail = Str::lower(trim($data['email']));
+
+        if (User::query()
+            ->where('email', $normalizedEmail)
+            ->where('id', '!=', $member->id)
+            ->exists()) {
+            throw ValidationException::withMessages([
+                'email' => 'A user with this email already exists.',
+            ]);
+        }
+
+        $member->forceFill([
+            'name' => trim($data['name']),
+            'email' => $normalizedEmail,
+        ])->save();
+
+        return response()->json([
+            'message' => 'Member updated successfully.',
+            'user' => $this->formatUser($member->fresh(['mess'])),
+        ]);
+    }
+
+    public function destroyMember(Request $request, User $member): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_MANAGER);
+        $this->ensureMemberBelongsToManager($request->user(), $member);
+
+        $member->delete();
+
+        return response()->json([
+            'message' => 'Member deleted successfully.',
+        ]);
+    }
+
     private function ensureRole(?User $user, string $role): void
     {
         if (! $user || $user->role !== $role) {
@@ -198,18 +245,30 @@ class ManagementController extends Controller
         }
     }
 
+    private function ensureMemberBelongsToManager(User $manager, User $member): void
+    {
+        if ($member->role !== User::ROLE_USER || (int) $member->mess_id !== (int) $manager->mess_id) {
+            abort(404, 'Member not found.');
+        }
+    }
+
     private function formatUser(User $user): array
     {
         $user->loadMissing('mess');
+        $totalMeals = (float) $user->meals()->sum('quantity');
+        $currentBalance = (float) ($user->transactions()->latest('transaction_date')->latest('id')->value('balance') ?? 0);
 
         return [
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
+            'phone' => $user->phone,
             'role' => $user->role,
             'messId' => $user->mess_id,
             'messName' => $user->mess?->name,
             'mustChangePassword' => (bool) $user->must_change_password,
+            'totalMeals' => $totalMeals,
+            'balance' => $currentBalance,
         ];
     }
 

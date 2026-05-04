@@ -181,8 +181,6 @@ const AddExpense = () => {
                 className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 <option>Bazaar</option>
-                <option>House Rent</option>
-                <option>Utility Bill</option>
                 <option>Others</option>
               </select>
             </div>

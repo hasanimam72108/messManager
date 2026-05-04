@@ -18,6 +18,7 @@ const MonthlyReport = () => {
     memberCount: 0,
     totalMealsAllMembers: 0,
     totalExpenses: 0,
+    mealCostTotal: 0,
     fixedTotal: 0,
     costPerMeal: 0,
     breakdownRows: [],
@@ -60,10 +61,10 @@ const MonthlyReport = () => {
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
           <p className="text-gray-500 text-sm font-medium mb-1">
-            Total Expenses
+            Total Meals Expenses
           </p>
           <h2 className="text-3xl font-bold text-red-600">
-            ৳{stats.totalExpenses.toFixed(2)}
+            ৳{stats.mealCostTotal.toFixed(2)}
           </h2>
         </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">

@@ -39,6 +39,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('manager')->group(function () {
         Route::get('/members', [ManagementController::class, 'members']);
         Route::post('/members', [ManagementController::class, 'storeMember']);
+        Route::put('/members/{member}', [ManagementController::class, 'updateMember']);
+        Route::delete('/members/{member}', [ManagementController::class, 'destroyMember']);
 
         Route::get('/dashboard/stats', [ExpenseController::class, 'dashboardStats']);
         Route::get('/fixed-costs', [ExpenseController::class, 'fixedCosts']);

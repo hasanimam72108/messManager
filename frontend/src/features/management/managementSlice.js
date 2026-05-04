@@ -60,6 +60,21 @@ export const managementApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [{ type: "Member", id: "LIST" }],
     }),
+    updateMember: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `/manager/members/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: [{ type: "Member", id: "LIST" }],
+    }),
+    deleteMember: builder.mutation({
+      query: (id) => ({
+        url: `/manager/members/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "Member", id: "LIST" }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -73,4 +88,6 @@ export const {
   useGetMessesWithDetailsQuery,
   useGetMembersQuery,
   useAddMemberMutation,
+  useUpdateMemberMutation,
+  useDeleteMemberMutation,
 } = managementApiSlice;
