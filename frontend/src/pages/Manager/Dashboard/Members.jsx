@@ -15,7 +15,6 @@ const Members = () => {
   const [editFormData, setEditFormData] = useState({
     name: "",
     email: "",
-    phone: "",
   });
   const { data, isLoading } = useGetMembersQuery();
   const members = data?.data || [];
@@ -49,14 +48,13 @@ const Members = () => {
     setEditFormData({
       name: member.name || "",
       email: member.email || "",
-      phone: member.phone || "",
     });
     setLastTempPassword("");
   };
 
   const closeEditModal = () => {
     setEditingMember(null);
-    setEditFormData({ name: "", email: "", phone: "" });
+    setEditFormData({ name: "", email: "" });
   };
 
   const handleUpdateMember = async (event) => {
@@ -69,7 +67,6 @@ const Members = () => {
         id: editingMember.id,
         name: editFormData.name,
         email: editFormData.email,
-        phone: editFormData.phone,
       }).unwrap();
       toast.success("Member updated successfully.");
       closeEditModal();
@@ -107,7 +104,7 @@ const Members = () => {
         )}
 
         <form onSubmit={handleAddMember}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-900 mb-2">
                 Full Name
@@ -163,9 +160,6 @@ const Members = () => {
                   Email
                 </th>
                 <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
-                  Phone
-                </th>
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
                   Total Meals
                 </th>
                 <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
@@ -179,13 +173,13 @@ const Members = () => {
             <tbody className="text-sm text-gray-800">
               {isLoading ? (
                 <tr>
-                  <td className="py-4 px-2 text-gray-500" colSpan={6}>
+                  <td className="py-4 px-2 text-gray-500" colSpan={5}>
                     Loading members...
                   </td>
                 </tr>
               ) : members.length === 0 ? (
                 <tr>
-                  <td className="py-4 px-2 text-gray-500" colSpan={6}>
+                  <td className="py-4 px-2 text-gray-500" colSpan={5}>
                     No members added yet.
                   </td>
                 </tr>
@@ -205,7 +199,6 @@ const Members = () => {
                     <td className="py-4 px-2 wrap-break-word">
                       {member.email}
                     </td>
-                    <td className="py-4 px-2">{member.phone || "N/A"}</td>
                     <td className="py-4 px-2">{member.totalMeals ?? 0}</td>
                     <td className="py-4 px-2">
                       ৳{Number(member.balance || 0).toFixed(2)}
@@ -248,7 +241,7 @@ const Members = () => {
                   Edit Member
                 </h4>
                 <p className="text-sm text-gray-500">
-                  Update member name, email, and phone
+                  Update member name and email
                 </p>
               </div>
               <button
@@ -292,21 +285,6 @@ const Members = () => {
                   }}
                   className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-gray-300 focus:bg-white"
                   required
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-900 mb-2">
-                  Phone
-                </label>
-                <input
-                  type="text"
-                  name="phone"
-                  value={editFormData.phone}
-                  onChange={(event) => {
-                    const { name, value } = event.target;
-                    setEditFormData((prev) => ({ ...prev, [name]: value }));
-                  }}
-                  className="w-full rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-gray-300 focus:bg-white"
                 />
               </div>
               <div className="flex items-center justify-end gap-3 pt-2">

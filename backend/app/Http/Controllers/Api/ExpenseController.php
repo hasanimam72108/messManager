@@ -376,12 +376,13 @@ class ExpenseController extends Controller
     {
         $actor = $transaction->createdBy ?? $transaction->user;
         $actorName = $actor?->name ?? 'Unknown user';
+        $transactionType = $transaction->type ?: 'Deposit';
 
         return [
             'id' => 'transaction-' . $transaction->id,
             'type' => 'transaction',
             'name' => $actorName,
-            'title' => sprintf('Added deposit %s', $this->formatMoney($transaction->amount)),
+            'title' => sprintf('Added %s %s', $transactionType, $this->formatMoney($transaction->amount)),
             'description' => sprintf('Balance updated to %s', $this->formatMoney($transaction->balance)),
             'amount' => (float) $transaction->amount,
             'timeLabel' => $transaction->created_at?->diffForHumans(),
@@ -473,6 +474,7 @@ class ExpenseController extends Controller
         $data = $request->validate([
             'amount' => ['required', 'numeric', 'gt:0'],
             'date' => ['nullable', 'date'],
+            'type' => ['nullable', 'string', 'in:Deposit,Meals Expense,Fixed Expense'],
         ]);
 
         $previousBalance = (float) (UserTransaction::query()
@@ -488,7 +490,7 @@ class ExpenseController extends Controller
             'mess_id' => $user->mess_id,
             'user_id' => $user->id,
             'transaction_date' => $data['date'] ?? now()->format('Y-m-d'),
-            'type' => 'Deposit',
+            'type' => $data['type'] ?? 'Deposit',
             'amount' => $amount,
             'balance' => $nextBalance,
             'created_by' => $user->id,
@@ -583,11 +585,19 @@ class ExpenseController extends Controller
 
         $fixedShareTotal = $memberCount > 0 ? round($fixedTotal / $memberCount, 2) : 0;
 
-        $paidAmount = (float) UserTransaction::query()
+        $mealPaidAmount = (float) UserTransaction::query()
             ->where('user_id', $user->id)
-            ->where('type', 'Deposit')
+            ->whereIn('type', ['Deposit', 'Meals Expense'])
             ->whereBetween('transaction_date', [$monthStart, $monthEnd])
             ->sum('amount');
+
+        $fixedPaidAmount = (float) UserTransaction::query()
+            ->where('user_id', $user->id)
+            ->where('type', 'Fixed Expense')
+            ->whereBetween('transaction_date', [$monthStart, $monthEnd])
+            ->sum('amount');
+
+        $paidAmount = round($mealPaidAmount + $fixedPaidAmount, 2);
 
         $currentBalance = (float) (UserTransaction::query()
             ->where('user_id', $user->id)
@@ -595,8 +605,11 @@ class ExpenseController extends Controller
             ->orderByDesc('id')
             ->value('balance') ?? 0);
 
+        $mealDueAmount = max(round($mealSubtotal - $mealPaidAmount, 2), 0);
+        $fixedDueAmount = max(round($fixedShareTotal - $fixedPaidAmount, 2), 0);
+
         $totalBill = round($mealSubtotal + $fixedShareTotal, 2);
-        $dueAmount = max(round($totalBill - $paidAmount, 2), 0);
+        $dueAmount = round($mealDueAmount + $fixedDueAmount, 2);
 
         return [
             'monthKey' => $monthKey,
@@ -611,9 +624,13 @@ class ExpenseController extends Controller
                 'wifiShare' => $memberCount > 0 ? round($fixedBreakdown['wifi'] / $memberCount, 2) : 0,
             ],
             'totalBill' => $totalBill,
-            'paidAmount' => round($paidAmount, 2),
+            'paidAmount' => $paidAmount,
+            'mealPaidAmount' => round($mealPaidAmount, 2),
+            'fixedPaidAmount' => round($fixedPaidAmount, 2),
             'currentBalance' => round($currentBalance, 2),
             'dueAmount' => $dueAmount,
+            'mealDueAmount' => $mealDueAmount,
+            'fixedDueAmount' => $fixedDueAmount,
             'mealBreakdown' => $mealBreakdown,
         ];
     }

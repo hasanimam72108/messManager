@@ -14,7 +14,6 @@ import Register from "../pages/Registration/Register";
 import SuperAdminDashboard from "../pages/SuperAdmin/Dashboard/Dashboard";
 import ManagerDetails from "../pages/SuperAdmin/Dashboard/Manager";
 import MessGroup from "../pages/SuperAdmin/Dashboard/MessGroup";
-import SystemReport from "../pages/SuperAdmin/Dashboard/SystemReport";
 import Unauthorized from "../pages/Unauthorized";
 import Balance from "../pages/User/Dashboard/Balance";
 import UserDashboard from "../pages/User/Dashboard/Dashboard";
@@ -54,7 +53,6 @@ const Routers = () => {
         <Route path="dashboard" element={<SuperAdminDashboard />} />
         <Route path="mess-group" element={<MessGroup />} />
         <Route path="manager" element={<ManagerDetails />} />
-        <Route path="system-report" element={<SystemReport />} />
       </Route>
 
       {/* Manager Routes */}

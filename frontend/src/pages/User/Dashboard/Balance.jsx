@@ -9,7 +9,8 @@ import useAuth from "../../../hooks/useAuth";
 
 const Balance = () => {
   const { user } = useAuth();
-  const [amount, setAmount] = useState("");
+  const [mealExpenseAmount, setMealExpenseAmount] = useState("");
+  const [fixedExpenseAmount, setFixedExpenseAmount] = useState("");
   const monthKey = new Date().toISOString().slice(0, 7);
   const { data: transactionsResponse } = useGetUserTransactionsQuery(
     undefined,
@@ -28,16 +29,16 @@ const Balance = () => {
     currentBalance: 0,
   };
 
-  const handleAddDeposit = async (e) => {
-    e.preventDefault();
+  const handleAddDeposit = async (event, amount, type, resetAmount) => {
+    event.preventDefault();
     if (!amount || !user?.id) return;
 
     try {
-      await addDeposit({ amount: Number(amount) }).unwrap();
-      toast.success("Deposit added successfully.");
-      setAmount("");
+      await addDeposit({ amount: Number(amount), type }).unwrap();
+      toast.success(`${type} added successfully.`);
+      resetAmount("");
     } catch (error) {
-      toast.error(error?.data?.message || "Deposit save failed.");
+      toast.error(error?.data?.message || `${type} save failed.`);
     }
   };
 
@@ -60,36 +61,92 @@ const Balance = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-1">
-          Add Deposit
-        </h2>
-        <p className="text-gray-500 text-sm mb-6">Add money to your account</p>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-1">
+            Meals Expense
+          </h2>
+          <p className="text-gray-500 text-sm mb-6">
+            Add meal-related deposit amount
+          </p>
 
-        <form onSubmit={handleAddDeposit}>
-          <div className="flex flex-col sm:flex-row gap-4 items-end">
-            <div className="flex-1 w-full">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Amount (৳)
-              </label>
-              <input
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="Enter amount"
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors"
-                required
-              />
+          <form
+            onSubmit={(event) =>
+              handleAddDeposit(
+                event,
+                mealExpenseAmount,
+                "Meals Expense",
+                setMealExpenseAmount,
+              )
+            }
+          >
+            <div className="flex flex-col sm:flex-row gap-4 items-end">
+              <div className="flex-1 w-full">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Amount (৳)
+                </label>
+                <input
+                  type="number"
+                  value={mealExpenseAmount}
+                  onChange={(e) => setMealExpenseAmount(e.target.value)}
+                  placeholder="Enter amount"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="px-6 py-3 bg-[#16a34a] text-white font-medium rounded-xl hover:bg-green-700 transition-colors whitespace-nowrap"
+              >
+                {isLoading ? "Saving..." : "Add Meals Expense"}
+              </button>
             </div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="px-6 py-3 bg-[#16a34a] text-white font-medium rounded-xl hover:bg-green-700 transition-colors whitespace-nowrap"
-            >
-              {isLoading ? "Saving..." : "Add Deposit"}
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+          <h2 className="text-xl font-semibold text-gray-900 mb-1">
+            Fixed Expense
+          </h2>
+          <p className="text-gray-500 text-sm mb-6">
+            Add fixed-cost deposit amount
+          </p>
+
+          <form
+            onSubmit={(event) =>
+              handleAddDeposit(
+                event,
+                fixedExpenseAmount,
+                "Fixed Expense",
+                setFixedExpenseAmount,
+              )
+            }
+          >
+            <div className="flex flex-col sm:flex-row gap-4 items-end">
+              <div className="flex-1 w-full">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Amount (৳)
+                </label>
+                <input
+                  type="number"
+                  value={fixedExpenseAmount}
+                  onChange={(e) => setFixedExpenseAmount(e.target.value)}
+                  placeholder="Enter amount"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="px-6 py-3 bg-[#16a34a] text-white font-medium rounded-xl hover:bg-green-700 transition-colors whitespace-nowrap"
+              >
+                {isLoading ? "Saving..." : "Add Fixed Expense"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">

@@ -47,10 +47,9 @@ const Dashboard = () => {
   );
   const stats = userStatsResponse?.data ?? fallbackStats;
   const recentMeals = mealsResponse?.data?.slice(0, 6) ?? [];
-  const fixedExpenseRemainingDue = Math.max(
-    (stats.fixedShareTotal || 0) - (stats.paidAmount || 0),
-    0,
-  );
+  const fixedExpenseRemainingDue =
+    stats.fixedDueAmount ??
+    Math.max((stats.fixedShareTotal || 0) - (stats.fixedPaidAmount || 0), 0);
 
   useEffect(() => {
     if (profileResponse?.user) {
@@ -216,15 +215,15 @@ const Dashboard = () => {
 
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-start mb-4">
-            <p className="text-gray-500 text-sm">Current Bill</p>
+            <p className="text-gray-500 text-sm">Total Meal Cost</p>
             <div className="p-2 bg-orange-50 text-orange-500 rounded-lg">
               <FileText className="w-5 h-5" />
             </div>
           </div>
           <h3 className="text-4xl font-bold text-gray-900 mb-1">
-            ৳{stats.totalBill.toFixed(2)}
+            ৳{(stats.mealSubtotal || 0).toFixed(2)}
           </h3>
-          <p className="text-gray-400 text-xs">meal based total</p>
+          <p className="text-gray-400 text-xs">this month meals</p>
         </div>
 
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -235,19 +234,19 @@ const Dashboard = () => {
             </div>
           </div>
           <h3 className="text-4xl font-bold text-gray-900 mb-1">
-            ৳{stats.dueAmount.toFixed(2)}
+            ৳{Number(stats.mealDueAmount || 0).toFixed(2)}
           </h3>
-          <p className="text-gray-400 text-xs">after deposits</p>
+          <p className="text-gray-400 text-xs">meal dues after deposits</p>
         </div>
       </div>
 
       <div className="mb-8">
         <div className="mb-4">
           <h3 className="text-lg font-semibold text-gray-900">
-            Fixed Expense Per Person
+            Fixed Expense Summary
           </h3>
           <p className="text-sm text-gray-500">
-            Your current fixed expense summary for this month
+            Your fixed expense details for this month
           </p>
         </div>
 
@@ -267,15 +266,15 @@ const Dashboard = () => {
 
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
             <div className="flex justify-between items-start mb-4">
-              <p className="text-gray-500 text-sm">Current Bill</p>
+              <p className="text-gray-500 text-sm">Paid Amount</p>
               <div className="p-2 bg-orange-50 text-orange-500 rounded-lg">
                 <FileText className="w-5 h-5" />
               </div>
             </div>
             <h3 className="text-4xl font-bold text-gray-900 mb-1">
-              ৳{(stats.fixedShareTotal || 0).toFixed(2)}
+              ৳{(stats.fixedPaidAmount || 0).toFixed(2)}
             </h3>
-            <p className="text-gray-400 text-xs">this month fixed bill</p>
+            <p className="text-gray-400 text-xs">fixed expense deposits</p>
           </div>
 
           <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">

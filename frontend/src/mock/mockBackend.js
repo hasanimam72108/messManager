@@ -503,7 +503,7 @@ export const listTransactionsByUser = (userId) => {
   return transactions;
 };
 
-export const addDepositByUser = ({ userId, amount }) => {
+export const addDepositByUser = ({ userId, amount, type = "Deposit" }) => {
   if (!userId) {
     throw new Error("User not found.");
   }
@@ -524,7 +524,7 @@ export const addDepositByUser = ({ userId, amount }) => {
   const entry = {
     id: uid("txn"),
     date: new Date().toISOString().split("T")[0],
-    type: "Deposit",
+    type,
     amount: parsedAmount,
     balance: nextBalance,
   };
@@ -673,7 +673,11 @@ export const getUserMonthlyBillDetails = ({ userId, monthKey }) => {
       },
       totalBill: 0,
       paidAmount: 0,
+      mealPaidAmount: 0,
+      fixedPaidAmount: 0,
       dueAmount: 0,
+      mealDueAmount: 0,
+      fixedDueAmount: 0,
       memberCount: 0,
     };
   }
@@ -693,18 +697,32 @@ export const getUserMonthlyBillDetails = ({ userId, monthKey }) => {
       monthKey: normalizedMonthKey,
     });
 
-  const paidAmount = round2(
-    listTransactionsByUser(userId)
+  const monthTransactions = listTransactionsByUser(userId).filter(
+    (item) =>
+      Number(item.amount) > 0 &&
+      String(item.date || "").startsWith(normalizedMonthKey),
+  );
+
+  const mealPaidAmount = round2(
+    monthTransactions
       .filter(
-        (item) =>
-          Number(item.amount) > 0 &&
-          String(item.date || "").startsWith(normalizedMonthKey),
+        (item) => item.type === "Deposit" || item.type === "Meals Expense",
       )
       .reduce((sum, item) => sum + Number(item.amount), 0),
   );
 
+  const fixedPaidAmount = round2(
+    monthTransactions
+      .filter((item) => item.type === "Fixed Expense")
+      .reduce((sum, item) => sum + Number(item.amount), 0),
+  );
+
+  const paidAmount = round2(mealPaidAmount + fixedPaidAmount);
+
   const totalBill = round2(mealSubtotal + fixedShareTotal);
-  const dueAmount = Math.max(round2(totalBill - paidAmount), 0);
+  const mealDueAmount = Math.max(round2(mealSubtotal - mealPaidAmount), 0);
+  const fixedDueAmount = Math.max(round2(fixedShareTotal - fixedPaidAmount), 0);
+  const dueAmount = round2(mealDueAmount + fixedDueAmount);
 
   return {
     monthKey: normalizedMonthKey,
@@ -715,7 +733,11 @@ export const getUserMonthlyBillDetails = ({ userId, monthKey }) => {
     shareBreakdown,
     totalBill,
     paidAmount,
+    mealPaidAmount,
+    fixedPaidAmount,
     dueAmount,
+    mealDueAmount,
+    fixedDueAmount,
     memberCount,
   };
 };
@@ -790,8 +812,12 @@ export const getUserDashboardStats = (userId) => {
     shareBreakdown: monthly.shareBreakdown,
     totalBill: monthly.totalBill,
     paidAmount: monthly.paidAmount,
+    mealPaidAmount: monthly.mealPaidAmount,
+    fixedPaidAmount: monthly.fixedPaidAmount,
     currentBalance,
     dueAmount: monthly.dueAmount,
+    mealDueAmount: monthly.mealDueAmount,
+    fixedDueAmount: monthly.fixedDueAmount,
     monthKey: monthly.monthKey,
   };
 };

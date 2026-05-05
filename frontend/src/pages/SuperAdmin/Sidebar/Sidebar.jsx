@@ -1,7 +1,6 @@
 import {
   Building2,
   ChefHat,
-  FileText,
   Home,
   LayoutDashboard,
   LogOut,
@@ -39,13 +38,6 @@ const Sidebar = ({ onClose }) => {
       icon: Users,
       color: "text-indigo-600",
       bg: "bg-indigo-100",
-    },
-    {
-      name: "System Report",
-      path: "/super-admin/system-report",
-      icon: FileText,
-      color: "text-amber-600",
-      bg: "bg-amber-100",
     },
   ];
 
