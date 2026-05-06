@@ -41,6 +41,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/members', [ManagementController::class, 'storeMember']);
         Route::put('/members/{member}', [ManagementController::class, 'updateMember']);
         Route::delete('/members/{member}', [ManagementController::class, 'destroyMember']);
+        Route::get('/deposit-requests', [ExpenseController::class, 'pendingDepositRequests']);
+        Route::post('/deposit-requests/{depositRequest}/approve', [ExpenseController::class, 'approvePendingDeposit']);
 
         Route::get('/dashboard/stats', [ExpenseController::class, 'dashboardStats']);
         Route::get('/fixed-costs', [ExpenseController::class, 'fixedCosts']);

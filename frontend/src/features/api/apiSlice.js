@@ -36,6 +36,7 @@ export const apiSlice = createApi({
     "Expense",
     "Meal",
     "Transaction",
+    "PendingDeposit",
   ],
   // Optimal cache configuration
   keepUnusedDataFor: 300,

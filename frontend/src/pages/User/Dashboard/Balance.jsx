@@ -34,8 +34,11 @@ const Balance = () => {
     if (!amount || !user?.id) return;
 
     try {
-      await addDeposit({ amount: Number(amount), type }).unwrap();
-      toast.success(`${type} added successfully.`);
+      const response = await addDeposit({
+        amount: Number(amount),
+        type,
+      }).unwrap();
+      toast.success(response?.message || "Request sent for manager approval.");
       resetAmount("");
     } catch (error) {
       toast.error(error?.data?.message || `${type} save failed.`);

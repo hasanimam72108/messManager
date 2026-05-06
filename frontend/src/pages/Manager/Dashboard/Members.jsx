@@ -1,10 +1,12 @@
-import { PencilLine, Trash2, X } from "lucide-react";
+import { CheckCircle2, PencilLine, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   useAddMemberMutation,
+  useApprovePendingDepositRequestMutation,
   useDeleteMemberMutation,
   useGetMembersQuery,
+  useGetPendingDepositRequestsQuery,
   useUpdateMemberMutation,
 } from "../../../features/management/managementSlice";
 
@@ -18,9 +20,14 @@ const Members = () => {
   });
   const { data, isLoading } = useGetMembersQuery();
   const members = data?.data || [];
+  const { data: pendingDepositResponse, isLoading: isPendingRequestsLoading } =
+    useGetPendingDepositRequestsQuery();
+  const pendingDepositRequests = pendingDepositResponse?.data || [];
   const [addMember, { isLoading: isSubmitting }] = useAddMemberMutation();
   const [updateMember, { isLoading: isUpdating }] = useUpdateMemberMutation();
   const [deleteMember, { isLoading: isDeleting }] = useDeleteMemberMutation();
+  const [approveRequest, { isLoading: isApproving }] =
+    useApprovePendingDepositRequestMutation();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -90,6 +97,15 @@ const Members = () => {
     }
   };
 
+  const handleApproveDepositRequest = async (request) => {
+    try {
+      await approveRequest(request.id).unwrap();
+      toast.success("Deposit approved successfully.");
+    } catch (error) {
+      toast.error(error?.data?.message || "Failed to approve deposit.");
+    }
+  };
+
   return (
     <div className="space-y-8 font-sans">
       {/* Add New Member Section */}
@@ -146,6 +162,89 @@ const Members = () => {
 
       {/* Member List Section */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+        <h3 className="text-xl font-semibold text-gray-900">
+          Pending Deposit Approvals
+        </h3>
+        <p className="text-sm text-gray-500 mb-6">
+          Approve member balance requests from this section
+        </p>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-gray-100">
+                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                  Member
+                </th>
+                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                  Email
+                </th>
+                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                  Date
+                </th>
+                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                  Type
+                </th>
+                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                  Amount
+                </th>
+                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody className="text-sm text-gray-800">
+              {isPendingRequestsLoading ? (
+                <tr>
+                  <td className="py-4 px-2 text-gray-500" colSpan={6}>
+                    Loading pending requests...
+                  </td>
+                </tr>
+              ) : pendingDepositRequests.length === 0 ? (
+                <tr>
+                  <td className="py-4 px-2 text-gray-500" colSpan={6}>
+                    No pending requests.
+                  </td>
+                </tr>
+              ) : (
+                pendingDepositRequests.map((request, index) => (
+                  <tr
+                    key={request.id}
+                    className={
+                      index !== pendingDepositRequests.length - 1
+                        ? "border-b border-gray-100"
+                        : ""
+                    }
+                  >
+                    <td className="py-4 px-2 font-medium">
+                      {request.userName || "-"}
+                    </td>
+                    <td className="py-4 px-2">{request.userEmail || "-"}</td>
+                    <td className="py-4 px-2">{request.date || "-"}</td>
+                    <td className="py-4 px-2">{request.type || "-"}</td>
+                    <td className="py-4 px-2 font-medium text-[#16a34a]">
+                      ৳{Number(request.amount || 0).toFixed(2)}
+                    </td>
+                    <td className="py-4 px-2">
+                      <button
+                        type="button"
+                        onClick={() => handleApproveDepositRequest(request)}
+                        disabled={isApproving}
+                        className="inline-flex items-center gap-1 rounded-lg border border-green-200 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-50 transition disabled:opacity-60"
+                      >
+                        <CheckCircle2 className="h-4 w-4" />
+                        Approve
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
         <h3 className="text-xl font-semibold text-gray-900">Member List</h3>
         <p className="text-sm text-gray-500 mb-6">All members in your mess</p>
 
@@ -163,7 +262,7 @@ const Members = () => {
                   Total Meals
                 </th>
                 <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
-                  Balance
+                  Deposit
                 </th>
                 <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
                   Actions

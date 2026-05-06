@@ -52,6 +52,21 @@ export const managementApiSlice = apiSlice.injectEndpoints({
       query: () => "/manager/members",
       providesTags: (result) => toCollectionTags("Member", result),
     }),
+    getPendingDepositRequests: builder.query({
+      query: () => "/manager/deposit-requests",
+      providesTags: (result) => toCollectionTags("PendingDeposit", result),
+    }),
+    approvePendingDepositRequest: builder.mutation({
+      query: (id) => ({
+        url: `/manager/deposit-requests/${id}/approve`,
+        method: "POST",
+      }),
+      invalidatesTags: [
+        { type: "PendingDeposit", id: "LIST" },
+        { type: "Member", id: "LIST" },
+        { type: "Transaction", id: "LIST" },
+      ],
+    }),
     addMember: builder.mutation({
       query: (body) => ({
         url: "/manager/members",
@@ -87,6 +102,8 @@ export const {
   useGetSystemReportQuery,
   useGetMessesWithDetailsQuery,
   useGetMembersQuery,
+  useGetPendingDepositRequestsQuery,
+  useApprovePendingDepositRequestMutation,
   useAddMemberMutation,
   useUpdateMemberMutation,
   useDeleteMemberMutation,

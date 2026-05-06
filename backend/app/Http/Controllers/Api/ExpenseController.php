@@ -7,10 +7,12 @@ use App\Models\Expense;
 use App\Models\FixedCost;
 use App\Models\Meal;
 use App\Models\User;
+use App\Models\UserDepositRequest;
 use App\Models\UserTransaction;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class ExpenseController extends Controller
@@ -459,6 +461,92 @@ class ExpenseController extends Controller
         ]);
     }
 
+    public function pendingDepositRequests(Request $request): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_MANAGER);
+
+        $user = $request->user();
+
+        if (! $user->mess_id) {
+            throw ValidationException::withMessages([
+                'mess' => 'Manager mess not found.',
+            ]);
+        }
+
+        $requests = UserDepositRequest::query()
+            ->with('user')
+            ->where('mess_id', $user->mess_id)
+            ->where('status', 'pending')
+            ->orderBy('transaction_date')
+            ->orderBy('id')
+            ->get()
+            ->map(fn (UserDepositRequest $depositRequest) => $this->formatUserDepositRequest($depositRequest))
+            ->values();
+
+        return response()->json([
+            'data' => $requests,
+        ]);
+    }
+
+    public function approvePendingDeposit(Request $request, UserDepositRequest $depositRequest): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_MANAGER);
+
+        $manager = $request->user();
+
+        if (! $manager->mess_id) {
+            throw ValidationException::withMessages([
+                'mess' => 'Manager mess not found.',
+            ]);
+        }
+
+        if ((int) $depositRequest->mess_id !== (int) $manager->mess_id) {
+            abort(404, 'Deposit request not found.');
+        }
+
+        if ($depositRequest->status !== 'pending') {
+            throw ValidationException::withMessages([
+                'depositRequest' => 'Only pending requests can be approved.',
+            ]);
+        }
+
+        [$approvedRequest, $transaction] = DB::transaction(function () use ($depositRequest, $manager) {
+            $previousBalance = (float) (UserTransaction::query()
+                ->where('user_id', $depositRequest->user_id)
+                ->orderByDesc('transaction_date')
+                ->orderByDesc('id')
+                ->value('balance') ?? 0);
+
+            $amount = round((float) $depositRequest->amount, 2);
+            $nextBalance = round($previousBalance + $amount, 2);
+
+            $transaction = UserTransaction::create([
+                'mess_id' => $depositRequest->mess_id,
+                'user_id' => $depositRequest->user_id,
+                'transaction_date' => $depositRequest->transaction_date?->format('Y-m-d') ?? now()->format('Y-m-d'),
+                'type' => $depositRequest->type,
+                'amount' => $amount,
+                'balance' => $nextBalance,
+                'created_by' => $manager->id,
+            ]);
+
+            $depositRequest->forceFill([
+                'status' => 'approved',
+                'approved_by' => $manager->id,
+                'approved_transaction_id' => $transaction->id,
+                'approved_at' => now(),
+            ])->save();
+
+            return [$depositRequest->fresh(['user']), $transaction->fresh()];
+        });
+
+        return response()->json([
+            'message' => 'Deposit request approved successfully.',
+            'request' => $this->formatUserDepositRequest($approvedRequest),
+            'data' => $this->formatUserTransaction($transaction),
+        ]);
+    }
+
     public function storeUserDeposit(Request $request): JsonResponse
     {
         $this->ensureRole($request->user(), User::ROLE_USER);
@@ -477,28 +565,19 @@ class ExpenseController extends Controller
             'type' => ['nullable', 'string', 'in:Deposit,Meals Expense,Fixed Expense'],
         ]);
 
-        $previousBalance = (float) (UserTransaction::query()
-            ->where('user_id', $user->id)
-            ->orderByDesc('transaction_date')
-            ->orderByDesc('id')
-            ->value('balance') ?? 0);
-
-        $amount = round((float) $data['amount'], 2);
-        $nextBalance = round($previousBalance + $amount, 2);
-
-        $transaction = UserTransaction::create([
+        $depositRequest = UserDepositRequest::create([
             'mess_id' => $user->mess_id,
             'user_id' => $user->id,
             'transaction_date' => $data['date'] ?? now()->format('Y-m-d'),
             'type' => $data['type'] ?? 'Deposit',
-            'amount' => $amount,
-            'balance' => $nextBalance,
-            'created_by' => $user->id,
+            'amount' => round((float) $data['amount'], 2),
+            'status' => 'pending',
+            'requested_by' => $user->id,
         ]);
 
         return response()->json([
-            'message' => 'Deposit added successfully.',
-            'data' => $this->formatUserTransaction($transaction->fresh()),
+            'message' => 'Deposit request sent for manager approval.',
+            'data' => $this->formatUserDepositRequest($depositRequest->fresh(['user'])),
         ], 201);
     }
 
@@ -701,6 +780,24 @@ class ExpenseController extends Controller
             'balance' => (float) $transaction->balance,
             'createdBy' => $transaction->created_by,
             'createdAt' => $transaction->created_at?->toIso8601String(),
+        ];
+    }
+
+    private function formatUserDepositRequest(UserDepositRequest $depositRequest): array
+    {
+        return [
+            'id' => $depositRequest->id,
+            'messId' => $depositRequest->mess_id,
+            'userId' => $depositRequest->user_id,
+            'userName' => $depositRequest->user?->name,
+            'userEmail' => $depositRequest->user?->email,
+            'date' => $depositRequest->transaction_date?->format('Y-m-d'),
+            'type' => $depositRequest->type,
+            'amount' => (float) $depositRequest->amount,
+            'status' => $depositRequest->status,
+            'approvedBy' => $depositRequest->approved_by,
+            'approvedAt' => $depositRequest->approved_at?->toIso8601String(),
+            'createdAt' => $depositRequest->created_at?->toIso8601String(),
         ];
     }
 }
