@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1200" viewBox="0 0 1800 1200">
+  <style>
+    .title { font: 700 32px Georgia, serif; fill: #111 }
+    .subtitle { font: 14px sans-serif; fill: #666 }
+    .process { fill: #fff; stroke: #2c5aa0; stroke-width: 3 }
+    .processText { font: 700 16px sans-serif; fill: #000; text-anchor: middle }
+    .processNum { font: 700 24px sans-serif; fill: #2c5aa0; text-anchor: middle }
+    .dataStore { fill: #fff; stroke: #d97706; stroke-width: 2 }
+    .storeText { font: 13px sans-serif; fill: #000; text-anchor: middle }
+    .entityBox { fill: #f0f9ff; stroke: #0369a1; stroke-width: 2 }
+    .entityText { font: 700 13px sans-serif; fill: #000; text-anchor: middle }
+    .dataFlow { stroke: #2c5aa0; stroke-width: 2; fill: none; marker-end: url(#arrowhead) }
+    .dataFlowAlt { stroke: #d97706; stroke-width: 2; fill: none; marker-end: url(#arrowheadOrange) }
+    .flowLabel { font: 11px sans-serif; fill: #333; font-weight: 600 }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2c5aa0" />
+    </marker>
+    <marker id="arrowheadOrange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#d97706" />
+    </marker>
+  </defs>
+
+  <text class="title" x="50" y="50">Level 1: Main Processes</text>
+  <text class="subtitle" x="50" y="80">Decomposition of the Mess Manager System into 4 primary processes</text>
+
+  <!-- External Entities -->
+  
+  <!-- Manager -->
+  <rect class="entityBox" x="50" y="150" width="140" height="80" rx="4" />
+  <text class="entityText" x="120" y="195">Manager</text>
+
+  <!-- SuperAdmin -->
+  <rect class="entityBox" x="1610" y="150" width="140" height="80" rx="4" />
+  <text class="entityText" x="1680" y="195">SuperAdmin</text>
+
+  <!-- Member -->
+  <rect class="entityBox" x="50" y="900" width="140" height="80" rx="4" />
+  <text class="entityText" x="120" y="945">Member</text>
+
+  <!-- Process 1: Manage Mess Registration -->
+  <circle class="process" cx="300" cy="350" r="70" />
+  <text class="processNum" x="300" y="360">1</text>
+  <text class="processText" x="300" y="430">Manage Mess</text>
+  <text class="processText" x="300" y="450">Registration</text>
+
+  <!-- Process 2: Manage Members -->
+  <circle class="process" cx="700" cy="350" r="70" />
+  <text class="processNum" x="700" y="360">2</text>
+  <text class="processText" x="700" y="430">Manage</text>
+  <text class="processText" x="700" y="450">Members</text>
+
+  <!-- Process 3: Track Expenses -->
+  <circle class="process" cx="1100" cy="350" r="70" />
+  <text class="processNum" x="1100" y="360">3</text>
+  <text class="processText" x="1100" y="430">Track</text>
+  <text class="processText" x="1100" y="450">Expenses</text>
+
+  <!-- Process 4: Manage Billing -->
+  <circle class="process" cx="1500" cy="350" r="70" />
+  <text class="processNum" x="1500" y="360">4</text>
+  <text class="processText" x="1500" y="430">Manage Billing</text>
+  <text class="processText" x="1500" y="450">& Transactions</text>
+
+  <!-- Data Stores -->
+  
+  <!-- MessRequest Store -->
+  <line x1="250" y1="600" x2="350" y2="600" stroke="#d97706" stroke-width="3" />
+  <line x1="250" y1="640" x2="350" y2="640" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="300" y="625">D1: MessRequest</text>
+
+  <!-- User Store -->
+  <line x1="600" y1="600" x2="800" y2="600" stroke="#d97706" stroke-width="3" />
+  <line x1="600" y1="640" x2="800" y2="640" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="700" y="625">D2: User</text>
+
+  <!-- Mess Store -->
+  <line x1="950" y1="600" x2="1250" y2="600" stroke="#d97706" stroke-width="3" />
+  <line x1="950" y1="640" x2="1250" y2="640" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="1100" y="625">D3: Mess</text>
+
+  <!-- Expense/Transaction Stores -->
+  <line x1="1350" y1="600" x2="1650" y2="600" stroke="#d97706" stroke-width="3" />
+  <line x1="1350" y1="640" x2="1650" y2="640" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="1500" y="625">D4: Expense/FixedCost</text>
+
+  <line x1="1350" y1="700" x2="1650" y2="700" stroke="#d97706" stroke-width="3" />
+  <line x1="1350" y1="740" x2="1650" y2="740" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="1500" y="725">D5: Transaction</text>
+
+  <!-- Data Flows from Manager -->
+  <path class="dataFlow" d="M 190 190 L 250 300" />
+  <text class="flowLabel" x="200" y="250">Mess request</text>
+
+  <path class="dataFlow" d="M 190 190 L 650 300" />
+  <text class="flowLabel" x="400" y="220">Member emails</text>
+
+  <path class="dataFlow" d="M 190 190 L 1050 300" />
+  <text class="flowLabel" x="600" y="220">Expense data</text>
+
+  <!-- Data Flows from SuperAdmin -->
+  <path class="dataFlow" d="M 1610 190 L 1550 300" />
+  <text class="flowLabel" x="1540" y="250">Approval decision</text>
+
+  <!-- P1 to/from Stores -->
+  <path class="dataFlowAlt" d="M 300 420 L 300 600" />
+  <text class="flowLabel" x="310" y="520">Request data</text>
+
+  <path class="dataFlowAlt" d="M 300 600 L 300 420" />
+  <text class="flowLabel" x="310" y="580">Read requests</text>
+
+  <!-- P1 to P2 (Manager approved) -->
+  <path class="dataFlow" d="M 370 350 L 630 350" />
+  <text class="flowLabel" x="500" y="340">Manager account</text>
+
+  <!-- P2 to/from Stores -->
+  <path class="dataFlowAlt" d="M 700 420 L 700 600" />
+  <text class="flowLabel" x="710" y="520">Member data</text>
+
+  <path class="dataFlowAlt" d="M 700 600 L 700 420" />
+  <text class="flowLabel" x="710" y="580">Read users</text>
+
+  <!-- P2 to P3 -->
+  <path class="dataFlow" d="M 770 350 L 1030 350" />
+  <text class="flowLabel" x="900" y="340">Member list</text>
+
+  <!-- P3 to/from Stores -->
+  <path class="dataFlowAlt" d="M 1100 420 L 1100 600" />
+  <text class="flowLabel" x="1110" y="520">Expense data</text>
+
+  <path class="dataFlowAlt" d="M 1100 600 L 1100 420" />
+  <text class="flowLabel" x="1110" y="580">Read expenses</text>
+
+  <!-- P3 to P4 -->
+  <path class="dataFlow" d="M 1170 350 L 1430 350" />
+  <text class="flowLabel" x="1300" y="340">Summary</text>
+
+  <!-- P4 to/from Stores -->
+  <path class="dataFlowAlt" d="M 1500 420 L 1500 600" />
+  <text class="flowLabel" x="1510" y="520">Expense</text>
+
+  <path class="dataFlowAlt" d="M 1500 420 L 1500 700" />
+  <text class="flowLabel" x="1510" y="620">Transaction</text>
+
+  <!-- P4 back to Member -->
+  <path class="dataFlow" d="M 1430 350 L 190 940" />
+  <text class="flowLabel" x="800" y="650">Monthly bill</text>
+
+  <!-- Summary Box -->
+  <rect x="50" y="1000" width="1700" height="150" fill="#f5f5f5" stroke="#999" stroke-width="2" rx="6" />
+  <text class="flowLabel" x="60" y="1030" style="font: 700 14px sans-serif; fill: #111;">Processes Overview:</text>
+  <text class="flowLabel" x="60" y="1055">1. Manage Mess Registration: Handles MessRequest creation, SuperAdmin approval, and Mess/Manager account setup</text>
+  <text class="flowLabel" x="60" y="1080">2. Manage Members: Manager adds members to mess, creates User accounts with temporary passwords</text>
+  <text class="flowLabel" x="60" y="1105">3. Track Expenses: Manager records expenses, members log meals, fixed costs set monthly</text>
+  <text class="flowLabel" x="60" y="1130">4. Manage Billing & Transactions: Calculate bills, track transactions, generate statements for members</text>
+</svg>

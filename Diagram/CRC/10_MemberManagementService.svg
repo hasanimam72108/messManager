@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <style>
+    .card { fill: #fff; stroke: #333; stroke-width: 2 }
+    .header { fill: #fff; stroke: #333; stroke-width: 2 }
+    .headerText { font: 700 20px sans-serif; fill: #000; text-anchor: middle }
+    .content { font: 12px sans-serif; fill: #222 }
+    .sectionTitle { font: 700 14px sans-serif; fill: #333 }
+    .divider { stroke: #ccc; stroke-width: 1 }
+  </style>
+
+  <rect class="card" x="40" y="40" width="720" height="920" rx="8" />
+  <rect class="header" x="40" y="40" width="720" height="60" rx="8" />
+  <text class="headerText" x="400" y="75">MemberManagementService</text>
+  <text class="content" x="400" y="95" style="font: 11px sans-serif; fill: #666; text-anchor: middle;">(Service Class)</text>
+
+  <line class="divider" x1="40" y1="120" x2="760" y2="120" stroke-width="2" />
+  <line class="divider" x1="400" y1="120" x2="400" y2="960" stroke-width="2" />
+
+  <text class="sectionTitle" x="60" y="150">Responsibilities:</text>
+  <text class="content" x="60" y="180">â€¢ Create member accounts</text>
+  <text class="content" x="60" y="205">â€¢ Validate member emails</text>
+  <text class="content" x="60" y="230">â€¢ Assign members to mess</text>
+  <text class="content" x="60" y="255">â€¢ Generate temp passwords</text>
+  <text class="content" x="60" y="280">â€¢ Update member details</text>
+  <text class="content" x="60" y="305">  (name, email)</text>
+  <text class="content" x="60" y="330">â€¢ Delete member accounts</text>
+  <text class="content" x="60" y="355">â€¢ Validate manager</text>
+  <text class="content" x="60" y="380">  permissions</text>
+
+  <text class="sectionTitle" x="420" y="150">Collaborators:</text>
+  <text class="content" x="420" y="180">User</text>
+  <text class="content" x="420" y="205">Mess</text>
+  <text class="content" x="420" y="230">AuthService</text>
+
+  <text class="sectionTitle" x="60" y="480">Public Methods:</text>
+  <text class="content" x="60" y="510">â€¢ storeMember(manager,</text>
+  <text class="content" x="60" y="530">  name, email)</text>
+  <text class="content" x="60" y="555">â€¢ updateMember(member,</text>
+  <text class="content" x="60" y="575">  name, email)</text>
+  <text class="content" x="60" y="600">â€¢ destroyMember(member)</text>
+  <text class="content" x="60" y="625">â€¢ getMembersList(manager)</text>
+  <text class="content" x="60" y="650">â€¢ validateBelongsToMess</text>
+  <text class="content" x="60" y="670">  (manager, member)</text>
+
+  <text class="content" x="60" y="780" style="font: 11px sans-serif; fill: #666;">Used By:</text>
+  <text class="content" x="60" y="800" style="font: 11px sans-serif; fill: #666;">ManagementController</text>
+</svg>

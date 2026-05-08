@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <style>
+    .title { font: 700 32px Georgia, serif; fill: #111 }
+    .subtitle { font: 14px sans-serif; fill: #666 }
+    .processBox { fill: #e8f4f8; stroke: #2c5aa0; stroke-width: 3 }
+    .processText { font: 700 18px sans-serif; fill: #000 }
+    .entityBox { fill: #fff; stroke: #333; stroke-width: 2 }
+    .entityText { font: 700 14px sans-serif; fill: #000 }
+    .dataFlow { stroke: #2c5aa0; stroke-width: 2.5; fill: none; marker-end: url(#arrowhead) }
+    .flowLabel { font: 12px sans-serif; fill: #2c5aa0; font-weight: 700 }
+    .note { font: 13px sans-serif; fill: #555 }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2c5aa0" />
+    </marker>
+  </defs>
+
+  <text class="title" x="50" y="50">Level 0: Context Diagram</text>
+  <text class="subtitle" x="50" y="80">Mess Manager System with External Entities and Data Flows</text>
+
+  <!-- Central System -->
+  <rect class="processBox" x="450" y="300" width="500" height="280" rx="12" />
+  <text class="processText" x="700" y="430" text-anchor="middle">MESS MANAGER</text>
+  <text class="processText" x="700" y="465" text-anchor="middle">SYSTEM</text>
+
+  <!-- External Entities -->
+  
+  <!-- Manager (top-left) -->
+  <rect class="entityBox" x="80" y="120" width="200" height="100" rx="6" />
+  <text class="entityText" x="180" y="170" text-anchor="middle">Manager</text>
+
+  <!-- SuperAdmin (top-right) -->
+  <rect class="entityBox" x="1120" y="120" width="200" height="100" rx="6" />
+  <text class="entityText" x="1220" y="170" text-anchor="middle">SuperAdmin</text>
+
+  <!-- Member (bottom-left) -->
+  <rect class="entityBox" x="80" y="650" width="200" height="100" rx="6" />
+  <text class="entityEntity" x="180" y="700" text-anchor="middle">Member</text>
+
+  <!-- Data Flows -->
+
+  <!-- Manager -> System -->
+  <path class="dataFlow" d="M 280 170 L 450 380" />
+  <text class="flowLabel" x="350" y="260">1. Register mess request</text>
+  <text class="flowLabel" x="350" y="280">2. Add members, expenses</text>
+
+  <!-- System -> Manager -->
+  <path class="dataFlow" d="M 450 420 L 280 220" />
+  <text class="flowLabel" x="320" y="320">5. Approval notification</text>
+  <text class="flowLabel" x="320" y="340">6. Monthly bill summary</text>
+
+  <!-- SuperAdmin -> System -->
+  <path class="dataFlow" d="M 1120 170 L 950 380" />
+  <text class="flowLabel" x="1020" y="260">3. Review requests</text>
+  <text class="flowLabel" x="1020" y="280">4. Approve/reject</text>
+
+  <!-- System -> SuperAdmin -->
+  <path class="dataFlow" d="M 950 420 L 1120 220" />
+  <text class="flowLabel" x="1000" y="340">7. System report</text>
+  <text class="flowLabel" x="1000" y="360">8. Admin dashboard</text>
+
+  <!-- Member -> System -->
+  <path class="dataFlow" d="M 280 700 L 450 580" />
+  <text class="flowLabel" x="330" y="650">9. Log meals</text>
+  <text class="flowLabel" x="330" y="670">10. Request deposits</text>
+
+  <!-- System -> Member -->
+  <path class="dataFlow" d="M 450 580 L 280 750" />
+  <text class="flowLabel" x="320" y="680">11. Personal bill</text>
+  <text class="flowLabel" x="320" y="700">12. Transaction history</text>
+
+  <!-- Legend -->
+  <text class="note" x="50" y="860" style="font: 700 14px sans-serif;">Level 0 Scope:</text>
+  <text class="note" x="50" y="885">The system manages mess registration, member onboarding, expense tracking, and billing for shared housing units.</text>
+</svg>

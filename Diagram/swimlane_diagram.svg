@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2080" height="1260" viewBox="0 0 2080 1260">
+  <style>
+    .title { font: 700 30px Georgia, serif; fill: #111 }
+    .subtitle { font: 14px sans-serif; fill: #555 }
+    .lane { fill: #fbfbfd; stroke: #dedede }
+    .laneAlt { fill: #f4f7ff; stroke: #dedede }
+    .laneHead { fill: #5a4df0; }
+    .laneTitle { font: 700 16px sans-serif; fill: #fff; letter-spacing: 0.4px }
+    .step { fill: #ffffff; stroke: #6f63ff; stroke-width: 2 }
+    .stepSoft { fill: #f9f8ff; stroke: #8a80ff; stroke-width: 2 }
+    .decision { fill: #f2a43d; stroke: #cc8300; stroke-width: 2 }
+    .text { font: 13px sans-serif; fill: #222 }
+    .small { font: 12px sans-serif; fill: #444 }
+    .line { stroke: #222; stroke-width: 2.1; fill: none }
+    .lineSoft { stroke: #666; stroke-width: 1.8; fill: none; stroke-dasharray: 6 5 }
+    .note { fill: #5a4df0; }
+    .noteText { font: 700 12px sans-serif; fill: #fff }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#222" />
+    </marker>
+    <marker id="arrowSoft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666" />
+    </marker>
+  </defs>
+
+  <text class="title" x="38" y="56">Swimlane Diagram</text>
+  <text class="subtitle" x="38" y="82">Vertical lanes with a detailed mess-management flow: request, approval, onboarding, members, and expenses</text>
+
+  <!-- Vertical lanes -->
+  <rect class="lane" x="20" y="110" width="330" height="1110" />
+  <rect class="laneAlt" x="350" y="110" width="330" height="1110" />
+  <rect class="lane" x="680" y="110" width="350" height="1110" />
+  <rect class="laneAlt" x="1030" y="110" width="360" height="1110" />
+  <rect class="lane" x="1390" y="110" width="330" height="1110" />
+  <rect class="laneAlt" x="1720" y="110" width="340" height="1110" />
+
+  <rect class="laneHead" x="20" y="110" width="330" height="46" />
+  <rect class="laneHead" x="350" y="110" width="330" height="46" />
+  <rect class="laneHead" x="680" y="110" width="350" height="46" />
+  <rect class="laneHead" x="1030" y="110" width="360" height="46" />
+  <rect class="laneHead" x="1390" y="110" width="330" height="46" />
+  <rect class="laneHead" x="1720" y="110" width="340" height="46" />
+
+  <text class="laneTitle" x="185" y="139" text-anchor="middle">Manager</text>
+  <text class="laneTitle" x="515" y="139" text-anchor="middle">Web / UI</text>
+  <text class="laneTitle" x="855" y="139" text-anchor="middle">Laravel API</text>
+  <text class="laneTitle" x="1210" y="139" text-anchor="middle">Super Admin</text>
+  <text class="laneTitle" x="1555" y="139" text-anchor="middle">Database</text>
+  <text class="laneTitle" x="1890" y="139" text-anchor="middle">Member</text>
+
+  <!-- Phase 1: request submission -->
+  <rect class="note" x="48" y="176" width="254" height="32" rx="6" />
+  <text class="noteText" x="175" y="197" text-anchor="middle">Phase 1: Request mess creation</text>
+
+  <rect class="step" x="56" y="226" width="220" height="56" rx="8" />
+  <text class="text" x="166" y="248" text-anchor="middle">Open registration page</text>
+  <text class="small" x="166" y="266" text-anchor="middle">Enter mess name and manager email</text>
+
+  <path class="line" d="M 276 254 L 350 254" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="372" y="226" width="235" height="56" rx="8" />
+  <text class="text" x="490" y="248" text-anchor="middle">Validate form fields</text>
+  <text class="small" x="490" y="266" text-anchor="middle">Required fields, email format, duplicate checks</text>
+
+  <path class="line" d="M 607 254 L 680 254" marker-end="url(#arrow)" />
+  <rect class="step" x="705" y="226" width="300" height="56" rx="8" />
+  <text class="text" x="855" y="248" text-anchor="middle">POST /register</text>
+  <text class="small" x="855" y="266" text-anchor="middle">Create pending MessRequest record</text>
+
+  <path class="line" d="M 1005 254 L 1030 254" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1070" y="226" width="285" height="56" rx="8" />
+  <text class="text" x="1212" y="248" text-anchor="middle">Review request queue</text>
+  <text class="small" x="1212" y="266" text-anchor="middle">See pending requests with manager email</text>
+
+  <path class="line" d="M 1100 309 C 1040 309, 995 309, 955 309" marker-end="url(#arrow)" />
+  <rect class="step" x="705" y="300" width="300" height="56" rx="8" />
+  <text class="text" x="855" y="322" text-anchor="middle">Store pending request</text>
+  <text class="small" x="855" y="340" text-anchor="middle">status = pending, approved_mess_id = null</text>
+
+  <path class="lineSoft" d="M 855 356 L 855 404" marker-end="url(#arrowSoft)" />
+
+  <!-- Phase 2: approval decision -->
+  <rect class="note" x="715" y="416" width="280" height="32" rx="6" />
+  <text class="noteText" x="855" y="437" text-anchor="middle">Phase 2: Super Admin approval</text>
+
+  <path class="line" d="M 1212 282 L 1212 482" marker-end="url(#arrow)" />
+  <rect class="decision" x="1110" y="470" width="204" height="88" transform="rotate(45 1212 514)" />
+  <text class="text" x="1212" y="504" text-anchor="middle">Approve?</text>
+
+  <path class="line" d="M 1110 514 L 995 514" marker-end="url(#arrow)" />
+  <text class="small" x="1048" y="503" text-anchor="middle">No</text>
+  <rect class="step" x="705" y="478" width="300" height="56" rx="8" />
+  <text class="text" x="855" y="500" text-anchor="middle">Reject request</text>
+  <text class="small" x="855" y="518" text-anchor="middle">Update status rejected and notify manager</text>
+
+  <path class="line" d="M 1005 514 L 1030 514" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1070" y="478" width="285" height="56" rx="8" />
+  <text class="text" x="1212" y="500" text-anchor="middle">Record rejection reason</text>
+  <text class="small" x="1212" y="518" text-anchor="middle">approved_by, rejected_at, message</text>
+
+  <path class="line" d="M 1130 602 C 1050 602, 980 602, 930 602" marker-end="url(#arrow)" />
+  <rect class="step" x="705" y="584" width="300" height="56" rx="8" />
+  <text class="text" x="855" y="606" text-anchor="middle">Approval branch continues</text>
+  <text class="small" x="855" y="624" text-anchor="middle">Create Mess and manager account in one transaction</text>
+
+  <path class="line" d="M 1005 612 L 1030 612" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1070" y="584" width="285" height="56" rx="8" />
+  <text class="text" x="1212" y="606" text-anchor="middle">Approve request</text>
+  <text class="small" x="1212" y="624" text-anchor="middle">status = approved and approved_mess_id set</text>
+
+  <path class="line" d="M 1355 612 L 1390 612" marker-end="url(#arrow)" />
+  <rect class="step" x="1420" y="584" width="270" height="56" rx="8" />
+  <text class="text" x="1555" y="606" text-anchor="middle">Insert Mess</text>
+  <text class="small" x="1555" y="624" text-anchor="middle">name, manager_user_id, mess_request_id</text>
+
+  <path class="line" d="M 1690 612 L 1720 612" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1770" y="584" width="240" height="56" rx="8" />
+  <text class="text" x="1890" y="606" text-anchor="middle">Receive approval notice</text>
+  <text class="small" x="1890" y="624" text-anchor="middle">Temp password and first-login required</text>
+
+  <path class="lineSoft" d="M 1890 640 L 1890 686" marker-end="url(#arrowSoft)" />
+
+  <!-- Phase 3: first login -->
+  <rect class="note" x="1740" y="698" width="300" height="32" rx="6" />
+  <text class="noteText" x="1890" y="719" text-anchor="middle">Phase 3: First login password setup</text>
+
+  <rect class="step" x="1770" y="744" width="240" height="56" rx="8" />
+  <text class="text" x="1890" y="766" text-anchor="middle">Login with temporary password</text>
+  <text class="small" x="1890" y="784" text-anchor="middle">mustChangePassword = true</text>
+
+  <path class="line" d="M 1770 772 L 1030 772" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1070" y="744" width="285" height="56" rx="8" />
+  <text class="text" x="1212" y="766" text-anchor="middle">Submit new password</text>
+  <text class="small" x="1212" y="784" text-anchor="middle">completeFirstLoginPasswordSetup()</text>
+
+  <path class="line" d="M 1070 800 L 1030 800" marker-end="url(#arrow)" />
+  <rect class="step" x="705" y="772" width="300" height="56" rx="8" />
+  <text class="text" x="855" y="794" text-anchor="middle">Update user credentials</text>
+  <text class="small" x="855" y="812" text-anchor="middle">Save hashed password and clear flag</text>
+
+  <path class="line" d="M 705 800 L 680 800" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="372" y="772" width="235" height="56" rx="8" />
+  <text class="text" x="490" y="794" text-anchor="middle">Show dashboard</text>
+  <text class="small" x="490" y="812" text-anchor="middle">Manager can now manage members and expenses</text>
+
+  <!-- Phase 4: member onboarding -->
+  <rect class="note" x="48" y="860" width="254" height="32" rx="6" />
+  <text class="noteText" x="175" y="881" text-anchor="middle">Phase 4: Add members</text>
+
+  <rect class="step" x="56" y="906" width="220" height="56" rx="8" />
+  <text class="text" x="166" y="928" text-anchor="middle">Enter member name and email</text>
+  <text class="small" x="166" y="946" text-anchor="middle">Manager collects emails from the mess group</text>
+
+  <path class="line" d="M 276 934 L 350 934" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="372" y="906" width="235" height="56" rx="8" />
+  <text class="text" x="490" y="928" text-anchor="middle">POST /manager/members</text>
+  <text class="small" x="490" y="946" text-anchor="middle">Validate mess ownership and duplicate email</text>
+
+  <path class="line" d="M 607 934 L 680 934" marker-end="url(#arrow)" />
+  <rect class="step" x="705" y="906" width="300" height="56" rx="8" />
+  <text class="text" x="855" y="928" text-anchor="middle">Create member user</text>
+  <text class="small" x="855" y="946" text-anchor="middle">role = user, mess_id assigned, temp password set</text>
+
+  <path class="line" d="M 1005 934 L 1030 934" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1070" y="906" width="285" height="56" rx="8" />
+  <text class="text" x="1212" y="928" text-anchor="middle">Send first-login instructions</text>
+  <text class="small" x="1212" y="946" text-anchor="middle">Member must change password on first login</text>
+
+  <path class="line" d="M 1355 934 L 1720 934" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1770" y="906" width="240" height="56" rx="8" />
+  <text class="text" x="1890" y="928" text-anchor="middle">Member receives account</text>
+  <text class="small" x="1890" y="946" text-anchor="middle">Can log in after first password setup</text>
+
+  <!-- Phase 5: expenses -->
+  <rect class="note" x="48" y="1024" width="254" height="32" rx="6" />
+  <text class="noteText" x="175" y="1045" text-anchor="middle">Phase 5: Add and track expenses</text>
+
+  <rect class="step" x="56" y="1070" width="220" height="56" rx="8" />
+  <text class="text" x="166" y="1092" text-anchor="middle">Add expense details</text>
+  <text class="small" x="166" y="1110" text-anchor="middle">title, amount, date, description</text>
+
+  <path class="line" d="M 276 1098 L 350 1098" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="372" y="1070" width="235" height="56" rx="8" />
+  <text class="text" x="490" y="1092" text-anchor="middle">POST /manager/expenses</text>
+  <text class="small" x="490" y="1110" text-anchor="middle">Manager role and mess_id required</text>
+
+  <path class="line" d="M 607 1098 L 680 1098" marker-end="url(#arrow)" />
+  <rect class="step" x="705" y="1070" width="300" height="56" rx="8" />
+  <text class="text" x="855" y="1092" text-anchor="middle">Save expense</text>
+  <text class="small" x="855" y="1110" text-anchor="middle">Create expense row against the mess</text>
+
+  <path class="line" d="M 1005 1098 L 1390 1098" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1420" y="1070" width="270" height="56" rx="8" />
+  <text class="text" x="1555" y="1092" text-anchor="middle">Persist to database</text>
+  <text class="small" x="1555" y="1110" text-anchor="middle">Monthly summary, fixed costs, transactions</text>
+
+  <path class="line" d="M 1690 1098 L 1720 1098" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1770" y="1070" width="240" height="56" rx="8" />
+  <text class="text" x="1890" y="1092" text-anchor="middle">Members view updates</text>
+  <text class="small" x="1890" y="1110" text-anchor="middle">Bills, meals, deposits, and balances refresh</text>
+
+  <!-- Footer -->
+  <text class="text" x="38" y="1218">This swimlane uses vertical lanes to show how the mess app moves from manager input, through the API, into approval and onboarding, and then into member and expense management.</text>
+</svg>

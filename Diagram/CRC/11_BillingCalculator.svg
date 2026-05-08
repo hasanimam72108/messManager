@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <style>
+    .card { fill: #fff; stroke: #333; stroke-width: 2 }
+    .header { fill: #fff; stroke: #333; stroke-width: 2 }
+    .headerText { font: 700 20px sans-serif; fill: #000; text-anchor: middle }
+    .content { font: 12px sans-serif; fill: #222 }
+    .sectionTitle { font: 700 14px sans-serif; fill: #333 }
+    .divider { stroke: #ccc; stroke-width: 1 }
+  </style>
+
+  <rect class="card" x="40" y="40" width="720" height="920" rx="8" />
+  <rect class="header" x="40" y="40" width="720" height="60" rx="8" />
+  <text class="headerText" x="400" y="75">BillingCalculator</text>
+  <text class="content" x="400" y="95" style="font: 11px sans-serif; fill: #666; text-anchor: middle;">(Service Class)</text>
+
+  <line class="divider" x1="40" y1="120" x2="760" y2="120" stroke-width="2" />
+  <line class="divider" x1="400" y1="120" x2="400" y2="960" stroke-width="2" />
+
+  <text class="sectionTitle" x="60" y="150">Responsibilities:</text>
+  <text class="content" x="60" y="180">â€¢ Calculate cost per meal</text>
+  <text class="content" x="60" y="205">  (bazaar / total meals)</text>
+  <text class="content" x="60" y="230">â€¢ Sum total meals</text>
+  <text class="content" x="60" y="255">â€¢ Aggregate fixed costs</text>
+  <text class="content" x="60" y="280">â€¢ Calculate member share</text>
+  <text class="content" x="60" y="305">â€¢ Generate monthly bill</text>
+  <text class="content" x="60" y="330">  for each member</text>
+  <text class="content" x="60" y="355">â€¢ Calculate breakdown</text>
+  <text class="content" x="60" y="380">  (meals, fixed, other)</text>
+
+  <text class="sectionTitle" x="420" y="150">Collaborators:</text>
+  <text class="content" x="420" y="180">Meal</text>
+  <text class="content" x="420" y="205">Expense</text>
+  <text class="content" x="420" y="230">FixedCost</text>
+  <text class="content" x="420" y="255">Mess</text>
+  <text class="content" x="420" y="280">User</text>
+
+  <text class="sectionTitle" x="60" y="480">Public Methods:</text>
+  <text class="content" x="60" y="510">â€¢ calculateMonthlyBill</text>
+  <text class="content" x="60" y="530">  (mess, monthKey)</text>
+  <text class="content" x="60" y="555">â€¢ calculateCostPerMeal</text>
+  <text class="content" x="60" y="575">  (mess, monthKey)</text>
+  <text class="content" x="60" y="600">â€¢ getTotalMeals(mess,</text>
+  <text class="content" x="60" y="620">  monthKey)</text>
+  <text class="content" x="60" y="645">â€¢ getFixedCosts(mess,</text>
+  <text class="content" x="60" y="665">  monthKey)</text>
+
+  <text class="content" x="60" y="780" style="font: 11px sans-serif; fill: #666;">Used By:</text>
+  <text class="content" x="60" y="800" style="font: 11px sans-serif; fill: #666;">ExpenseController, TransactionManager</text>
+</svg>

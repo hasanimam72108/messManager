@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1600" viewBox="0 0 2200 1600">
+  <style>
+    .title { font: 700 32px Georgia, serif; fill: #111 }
+    .subtitle { font: 14px sans-serif; fill: #666 }
+    .classBox { fill: #ffffff; stroke: #333; stroke-width: 2 }
+    .classHeader { fill: #4a5ff0; stroke: #333; stroke-width: 2 }
+    .classHeaderText { font: 700 14px sans-serif; fill: #ffffff }
+    .section { fill: #f9f9f9; stroke: #ccc; stroke-width: 1 }
+    .attribute { font: 12px monospace; fill: #222 }
+    .method { font: 12px monospace; fill: #333 }
+    .divider { stroke: #ccc; stroke-width: 1 }
+    .relationship { stroke: #555; stroke-width: 2; fill: none }
+    .inheritLine { stroke: #555; stroke-width: 2; fill: none; stroke-dasharray: 8 4 }
+    .arrow { fill: #555 }
+    .label { font: 11px sans-serif; fill: #444 }
+    .cardinalityLabel { font: 700 11px sans-serif; fill: #d9534f }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" class="arrow" />
+    </marker>
+    <marker id="diamondInherit" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="white" stroke="#555" stroke-width="1.5" />
+    </marker>
+  </defs>
+
+  <text class="title" x="40" y="50">Class Diagram</text>
+  <text class="subtitle" x="40" y="76">Entity-Relationship model with attributes, methods, and associations</text>
+
+  <!-- User Class -->
+  <rect class="classBox" x="50" y="110" width="320" height="380" rx="4" />
+  <rect class="classHeader" x="50" y="110" width="320" height="32" rx="4" />
+  <text class="classHeaderText" x="210" y="133" text-anchor="middle">User</text>
+  <line class="divider" x1="50" y1="142" x2="370" y2="142" />
+  
+  <text class="attribute" x="60" y="165">+ id: bigint (PK)</text>
+  <text class="attribute" x="60" y="183">+ name: string</text>
+  <text class="attribute" x="60" y="201">+ email: string (UK)</text>
+  <text class="attribute" x="60" y="219">+ phone: string</text>
+  <text class="attribute" x="60" y="237">+ password: string (hashed)</text>
+  <text class="attribute" x="60" y="255">+ role: enum</text>
+  <text class="label" x="70" y="273">{superAdmin, manager, user}</text>
+  <text class="attribute" x="60" y="291">+ mess_id: bigint (FK)</text>
+  <text class="attribute" x="60" y="309">+ must_change_password: bool</text>
+  <text class="attribute" x="60" y="327">+ timestamps</text>
+  
+  <line class="divider" x1="50" y1="335" x2="370" y2="335" />
+  <text class="method" x="60" y="358">+ mess(): BelongsTo</text>
+  <text class="method" x="60" y="376">+ managedMess(): HasOne</text>
+  <text class="method" x="60" y="394">+ meals(): HasMany</text>
+  <text class="method" x="60" y="412">+ transactions(): HasMany</text>
+  <text class="method" x="60" y="430">+ scopeRole($role)</text>
+
+  <!-- Mess Class -->
+  <rect class="classBox" x="450" y="110" width="320" height="280" rx="4" />
+  <rect class="classHeader" x="450" y="110" width="320" height="32" rx="4" />
+  <text class="classHeaderText" x="610" y="133" text-anchor="middle">Mess</text>
+  <line class="divider" x1="450" y1="142" x2="770" y2="142" />
+  
+  <text class="attribute" x="460" y="165">+ id: bigint (PK)</text>
+  <text class="attribute" x="460" y="183">+ name: string</text>
+  <text class="attribute" x="460" y="201">+ manager_user_id: bigint (FK)</text>
+  <text class="attribute" x="460" y="219">+ mess_request_id: bigint (FK)</text>
+  <text class="attribute" x="460" y="237">+ timestamps</text>
+  
+  <line class="divider" x1="450" y1="245" x2="770" y2="245" />
+  <text class="method" x="460" y="268">+ manager(): BelongsTo</text>
+  <text class="method" x="460" y="286">+ request(): BelongsTo</text>
+  <text class="method" x="460" y="304">+ members(): HasMany</text>
+  <text class="method" x="460" y="322">+ meals(): HasMany</text>
+  <text class="method" x="460" y="340">+ expenses(): HasMany</text>
+  <text class="method" x="460" y="358">+ transactions(): HasMany</text>
+
+  <!-- MessRequest Class -->
+  <rect class="classBox" x="850" y="110" width="340" height="340" rx="4" />
+  <rect class="classHeader" x="850" y="110" width="340" height="32" rx="4" />
+  <text class="classHeaderText" x="1020" y="133" text-anchor="middle">MessRequest</text>
+  <line class="divider" x1="850" y1="142" x2="1190" y2="142" />
+  
+  <text class="attribute" x="860" y="165">+ id: bigint (PK)</text>
+  <text class="attribute" x="860" y="183">+ mess_name: string</text>
+  <text class="attribute" x="860" y="201">+ manager_name: string</text>
+  <text class="attribute" x="860" y="219">+ manager_email: string (UK)</text>
+  <text class="attribute" x="860" y="237">+ status: enum</text>
+  <text class="label" x="870" y="255">{pending, approved, rejected}</text>
+  <text class="attribute" x="860" y="273">+ approved_mess_id: bigint (FK)</text>
+  <text class="attribute" x="860" y="291">+ manager_user_id: bigint (FK)</text>
+  <text class="attribute" x="860" y="309">+ approved_by: bigint (FK)</text>
+  <text class="attribute" x="860" y="327">+ approved_at: timestamp</text>
+  <text class="attribute" x="860" y="345">+ rejected_at: timestamp</text>
+  <text class="attribute" x="860" y="363">+ rejection_reason: text</text>
+  <text class="attribute" x="860" y="381">+ timestamps</text>
+  
+  <line class="divider" x1="850" y1="389" x2="1190" y2="389" />
+  <text class="method" x="860" y="412">+ approvedMess(): BelongsTo</text>
+  <text class="method" x="860" y="430">+ manager(): BelongsTo</text>
+  <text class="method" x="860" y="448">+ approvedBy(): BelongsTo</text>
+
+  <!-- Meal Class -->
+  <rect class="classBox" x="1300" y="110" width="340" height="300" rx="4" />
+  <rect class="classHeader" x="1300" y="110" width="340" height="32" rx="4" />
+  <text class="classHeaderText" x="1470" y="133" text-anchor="middle">Meal</text>
+  <line class="divider" x1="1300" y1="142" x2="1640" y2="142" />
+  
+  <text class="attribute" x="1310" y="165">+ id: bigint (PK)</text>
+  <text class="attribute" x="1310" y="183">+ mess_id: bigint (FK)</text>
+  <text class="attribute" x="1310" y="201">+ user_id: bigint (FK)</text>
+  <text class="attribute" x="1310" y="219">+ meal_date: date</text>
+  <text class="attribute" x="1310" y="237">+ meal_type: string</text>
+  <text class="label" x="1320" y="255">{breakfast, lunch, dinner}</text>
+  <text class="attribute" x="1310" y="273">+ quantity: decimal(5,2)</text>
+  <text class="attribute" x="1310" y="291">+ created_by: bigint (FK)</text>
+  <text class="attribute" x="1310" y="309">+ timestamps</text>
+  
+  <line class="divider" x1="1300" y1="317" x2="1640" y2="317" />
+  <text class="method" x="1310" y="340">+ mess(): BelongsTo</text>
+  <text class="method" x="1310" y="358">+ user(): BelongsTo</text>
+  <text class="method" x="1310" y="376">+ createdBy(): BelongsTo</text>
+
+  <!-- Expense Class -->
+  <rect class="classBox" x="1750" y="110" width="340" height="280" rx="4" />
+  <rect class="classHeader" x="1750" y="110" width="340" height="32" rx="4" />
+  <text class="classHeaderText" x="1920" y="133" text-anchor="middle">Expense</text>
+  <line class="divider" x1="1750" y1="142" x2="2090" y2="142" />
+  
+  <text class="attribute" x="1760" y="165">+ id: bigint (PK)</text>
+  <text class="attribute" x="1760" y="183">+ mess_id: bigint (FK)</text>
+  <text class="attribute" x="1760" y="201">+ created_by: bigint (FK)</text>
+  <text class="attribute" x="1760" y="219">+ title: string</text>
+  <text class="attribute" x="1760" y="237">+ amount: decimal(10,2)</text>
+  <text class="attribute" x="1760" y="255">+ expense_date: date</text>
+  <text class="attribute" x="1760" y="273">+ description: text</text>
+  <text class="attribute" x="1760" y="291">+ timestamps</text>
+  
+  <line class="divider" x1="1750" y1="299" x2="2090" y2="299" />
+  <text class="method" x="1760" y="322">+ mess(): BelongsTo</text>
+  <text class="method" x="1760" y="340">+ createdBy(): BelongsTo</text>
+
+  <!-- FixedCost Class -->
+  <rect class="classBox" x="50" y="550" width="320" height="300" rx="4" />
+  <rect class="classHeader" x="50" y="550" width="320" height="32" rx="4" />
+  <text class="classHeaderText" x="210" y="573" text-anchor="middle">FixedCost</text>
+  <line class="divider" x1="50" y1="582" x2="370" y2="582" />
+  
+  <text class="attribute" x="60" y="605">+ id: bigint (PK)</text>
+  <text class="attribute" x="60" y="623">+ mess_id: bigint (FK)</text>
+  <text class="attribute" x="60" y="641">+ month_key: string</text>
+  <text class="label" x="70" y="659">{YYYY-MM format}</text>
+  <text class="attribute" x="60" y="677">+ rent: decimal(10,2)</text>
+  <text class="attribute" x="60" y="695">+ khala: decimal(10,2)</text>
+  <text class="attribute" x="60" y="713">+ utilities: decimal(10,2)</text>
+  <text class="attribute" x="60" y="731">+ wifi: decimal(10,2)</text>
+  <text class="attribute" x="60" y="749">+ created_by: bigint (FK)</text>
+  <text class="attribute" x="60" y="767">+ updated_by: bigint (FK)</text>
+  <text class="attribute" x="60" y="785">+ timestamps</text>
+  
+  <line class="divider" x1="50" y1="793" x2="370" y2="793" />
+  <text class="method" x="60" y="816">+ mess(): BelongsTo</text>
+  <text class="method" x="60" y="834">+ createdBy(): BelongsTo</text>
+
+  <!-- UserTransaction Class -->
+  <rect class="classBox" x="450" y="550" width="340" height="320" rx="4" />
+  <rect class="classHeader" x="450" y="550" width="340" height="32" rx="4" />
+  <text class="classHeaderText" x="620" y="573" text-anchor="middle">UserTransaction</text>
+  <line class="divider" x1="450" y1="582" x2="790" y2="582" />
+  
+  <text class="attribute" x="460" y="605">+ id: bigint (PK)</text>
+  <text class="attribute" x="460" y="623">+ mess_id: bigint (FK)</text>
+  <text class="attribute" x="460" y="641">+ user_id: bigint (FK)</text>
+  <text class="attribute" x="460" y="659">+ transaction_date: date</text>
+  <text class="attribute" x="460" y="677">+ type: string</text>
+  <text class="label" x="470" y="695">{deposit, debit, credit}</text>
+  <text class="attribute" x="460" y="713">+ amount: decimal(10,2)</text>
+  <text class="attribute" x="460" y="731">+ balance: decimal(10,2)</text>
+  <text class="attribute" x="460" y="749">+ created_by: bigint (FK)</text>
+  <text class="attribute" x="460" y="767">+ timestamps</text>
+  
+  <line class="divider" x1="450" y1="775" x2="790" y2="775" />
+  <text class="method" x="460" y="798">+ mess(): BelongsTo</text>
+  <text class="method" x="460" y="816">+ user(): BelongsTo</text>
+  <text class="method" x="460" y="834">+ createdBy(): BelongsTo</text>
+
+  <!-- UserDepositRequest Class -->
+  <rect class="classBox" x="850" y="550" width="360" height="320" rx="4" />
+  <rect class="classHeader" x="850" y="550" width="360" height="32" rx="4" />
+  <text class="classHeaderText" x="1030" y="573" text-anchor="middle">UserDepositRequest</text>
+  <line class="divider" x1="850" y1="582" x2="1210" y2="582" />
+  
+  <text class="attribute" x="860" y="605">+ id: bigint (PK)</text>
+  <text class="attribute" x="860" y="623">+ mess_id: bigint (FK)</text>
+  <text class="attribute" x="860" y="641">+ user_id: bigint (FK)</text>
+  <text class="attribute" x="860" y="659">+ amount_requested: decimal(10,2)</text>
+  <text class="attribute" x="860" y="677">+ status: enum</text>
+  <text class="label" x="870" y="695">{pending, approved, rejected}</text>
+  <text class="attribute" x="860" y="713">+ requested_date: timestamp</text>
+  <text class="attribute" x="860" y="731">+ approved_date: timestamp</text>
+  <text class="attribute" x="860" y="749">+ approved_by: bigint (FK)</text>
+  <text class="attribute" x="860" y="767">+ rejection_reason: text</text>
+  <text class="attribute" x="860" y="785">+ timestamps</text>
+  
+  <line class="divider" x1="850" y1="793" x2="1210" y2="793" />
+  <text class="method" x="860" y="816">+ mess(): BelongsTo</text>
+  <text class="method" x="860" y="834">+ user(): BelongsTo</text>
+  <text class="method" x="860" y="852">+ approvedBy(): BelongsTo</text>
+
+  <!-- Relationships -->
+  <!-- User -> Mess (1 manager to many members) -->
+  <path class="relationship" d="M 210 490 L 210 520 L 610 520 L 610 390" marker-end="url(#arrowhead)" />
+  <text class="label" x="350" y="515">manages</text>
+  <text class="cardinalityLabel" x="215" y="510">1</text>
+  <text class="cardinalityLabel" x="605" y="405">*</text>
+
+  <!-- Mess -> MessRequest -->
+  <path class="relationship" d="M 770 250 L 850 250" marker-end="url(#arrowhead)" />
+  <text class="label" x="800" y="245">originates</text>
+  <text class="cardinalityLabel" x="775" y="245">1</text>
+  <text class="cardinalityLabel" x="845" y="245">1</text>
+
+  <!-- Mess -> Meal -->
+  <path class="relationship" d="M 770 250 L 1300 250" marker-end="url(#arrowhead)" />
+  <text class="label" x="1020" y="245">tracks</text>
+  <text class="cardinalityLabel" x="775" y="245">1</text>
+  <text class="cardinalityLabel" x="1295" y="245">*</text>
+
+  <!-- Mess -> Expense -->
+  <path class="relationship" d="M 770 250 L 1750 250" marker-end="url(#arrowhead)" />
+  <text class="label" x="1250" y="245">records</text>
+  <text class="cardinalityLabel" x="775" y="245">1</text>
+  <text class="cardinalityLabel" x="1745" y="245">*</text>
+
+  <!-- Mess -> FixedCost -->
+  <path class="relationship" d="M 610 390 L 210 550" marker-end="url(#arrowhead)" />
+  <text class="label" x="380" y="475">defines</text>
+  <text class="cardinalityLabel" x="605" y="395">1</text>
+  <text class="cardinalityLabel" x="215" y="545">*</text>
+
+  <!-- Mess -> UserTransaction -->
+  <path class="relationship" d="M 610 390 L 620 550" marker-end="url(#arrowhead)" />
+  <text class="label" x="630" y="475">records</text>
+  <text class="cardinalityLabel" x="605" y="395">1</text>
+  <text class="cardinalityLabel" x="615" y="545">*</text>
+
+  <!-- User -> Meal (user takes meals) -->
+  <path class="relationship" d="M 370 200 L 1300 200" marker-end="url(#arrowhead)" />
+  <text class="label" x="820" y="195">adds</text>
+  <text class="cardinalityLabel" x="375" y="195">1</text>
+  <text class="cardinalityLabel" x="1295" y="195">*</text>
+
+  <!-- User -> UserTransaction -->
+  <path class="relationship" d="M 370 350 L 450 650" marker-end="url(#arrowhead)" />
+  <text class="label" x="400" y="510">performs</text>
+  <text class="cardinalityLabel" x="375" y="355">1</text>
+  <text class="cardinalityLabel" x="445" y="645">*</text>
+
+  <!-- User -> UserDepositRequest -->
+  <path class="relationship" d="M 370 400 L 850 700" marker-end="url(#arrowhead)" />
+  <text class="label" x="600" y="575">requests</text>
+  <text class="cardinalityLabel" x="375" y="405">1</text>
+  <text class="cardinalityLabel" x="845" y="695">*</text>
+
+  <!-- Mess -> UserDepositRequest -->
+  <path class="relationship" d="M 770 300 L 1030 550" marker-end="url(#arrowhead)" />
+  <text class="label" x="890" y="440">processes</text>
+  <text class="cardinalityLabel" x="775" y="305">1</text>
+  <text class="cardinalityLabel" x="1025" y="545">*</text>
+
+  <!-- Legend -->
+  <text class="label" x="50" y="950" style="font: 14px sans-serif; font-weight: 700;">Legend:</text>
+  <line x1="50" y1="970" x2="150" y2="970" class="relationship" marker-end="url(#arrowhead)" />
+  <text class="label" x="160" y="975">Association / Reference (1 to Many)</text>
+
+  <text class="label" x="50" y="1020">PK = Primary Key | FK = Foreign Key | UK = Unique Key</text>
+  <text class="label" x="50" y="1045">* = Multiple | 1 = Single</text>
+
+  <!-- Summary -->
+  <text class="label" x="50" y="1100" style="font: 14px sans-serif; font-weight: 700;">Key Relationships:</text>
+  <text class="label" x="50" y="1125">• A User can be a SuperAdmin (system-wide), Manager (manages one Mess), or Member (belongs to one Mess)</text>
+  <text class="label" x="50" y="1150">• A Mess has one Manager (User), multiple Members (Users), and tracks Meals and Expenses</text>
+  <text class="label" x="50" y="1175">• Members record Meals; Managers record Expenses and set FixedCosts monthly</text>
+  <text class="label" x="50" y="1200">• UserTransactions track all financial activity (deposits, debits) for each user per mess</text>
+  <text class="label" x="50" y="1225">• UserDepositRequest allows members to request deposits which managers can approve</text>
+  <text class="label" x="50" y="1250">• MessRequest initiates the mess creation workflow (pending → approved/rejected)</text>
+</svg>

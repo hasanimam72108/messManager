@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1300" viewBox="0 0 1800 1300">
+  <style>
+    .title { font: 700 32px Georgia, serif; fill: #111 }
+    .subtitle { font: 14px sans-serif; fill: #666 }
+    .process { fill: #fff; stroke: #2c5aa0; stroke-width: 3 }
+    .processText { font: 700 14px sans-serif; fill: #000; text-anchor: middle }
+    .processNum { font: 700 20px sans-serif; fill: #2c5aa0; text-anchor: middle }
+    .dataStore { fill: #fff; stroke: #d97706; stroke-width: 2 }
+    .storeText { font: 13px sans-serif; fill: #000; text-anchor: middle }
+    .entityBox { fill: #f0f9ff; stroke: #0369a1; stroke-width: 2 }
+    .entityText { font: 700 13px sans-serif; fill: #000; text-anchor: middle }
+    .dataFlow { stroke: #2c5aa0; stroke-width: 2; fill: none; marker-end: url(#arrowhead) }
+    .dataFlowAlt { stroke: #d97706; stroke-width: 2; fill: none; marker-end: url(#arrowheadOrange) }
+    .flowLabel { font: 11px sans-serif; fill: #333; font-weight: 600 }
+    .note { font: 12px sans-serif; fill: #666 }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2c5aa0" />
+    </marker>
+    <marker id="arrowheadOrange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#d97706" />
+    </marker>
+  </defs>
+
+  <text class="title" x="50" y="50">Level 2.2: Transactions & Settlement</text>
+  <text class="subtitle" x="50" y="80">Detailed decomposition of Process 4.0 (Manage Billing & Transactions)</text>
+
+  <!-- External Entities -->
+  
+  <!-- Manager -->
+  <rect class="entityBox" x="50" y="150" width="140" height="80" rx="4" />
+  <text class="entityText" x="120" y="195">Manager</text>
+
+  <!-- Member -->
+  <rect class="entityBox" x="50" y="1000" width="140" height="80" rx="4" />
+  <text class="entityText" x="120" y="1045">Member</text>
+
+  <!-- Processes -->
+  
+  <!-- 4.1 Create Transaction -->
+  <circle class="process" cx="400" cy="250" r="60" />
+  <text class="processNum" x="400" y="260">4.1</text>
+  <text class="processText" x="400" y="325">Create</text>
+  <text class="processText" x="400" y="345">Transaction</text>
+
+  <!-- 4.2 Process Deposit -->
+  <circle class="process" cx="400" cy="550" r="60" />
+  <text class="processNum" x="400" y="560">4.2</text>
+  <text class="processText" x="400" y="625">Process Deposit</text>
+  <text class="processText" x="400" y="645">Request</text>
+
+  <!-- 4.3 Calculate Balance -->
+  <circle class="process" cx="900" cy="250" r="60" />
+  <text class="processNum" x="900" y="260">4.3</text>
+  <text class="processText" x="900" y="325">Calculate</text>
+  <text class="processText" x="900" y="345">Balance</text>
+
+  <!-- 4.4 Query User Ledger -->
+  <circle class="process" cx="900" cy="550" r="60" />
+  <text class="processNum" x="900" y="560">4.4</text>
+  <text class="processText" x="900" y="625">Query User</text>
+  <text class="processText" x="900" y="645">Ledger</text>
+
+  <!-- 4.5 Generate Dashboard -->
+  <circle class="process" cx="1400" cy="400" r="60" />
+  <text class="processNum" x="1400" y="410">4.5</text>
+  <text class="processText" x="1400" y="475">Generate</text>
+  <text class="processText" x="1400" y="495">Dashboard</text>
+
+  <!-- Data Stores -->
+  
+  <!-- UserTransaction Store -->
+  <line x1="200" y1="400" x2="350" y2="400" stroke="#d97706" stroke-width="3" />
+  <line x1="200" y1="440" x2="350" y2="440" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="275" y="425">D4.1: Transaction</text>
+
+  <!-- DepositRequest Store -->
+  <line x1="200" y1="500" x2="350" y2="500" stroke="#d97706" stroke-width="3" />
+  <line x1="200" y1="540" x2="350" y2="540" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="275" y="525">D4.2: DepositRequest</text>
+
+  <!-- Bill Store -->
+  <line x1="750" y1="380" x2="1000" y2="380" stroke="#d97706" stroke-width="3" />
+  <line x1="750" y1="420" x2="1000" y2="420" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="875" y="405">D4.3: Bill</text>
+
+  <!-- User Store -->
+  <line x1="1250" y1="550" x2="1550" y2="550" stroke="#d97706" stroke-width="3" />
+  <line x1="1250" y1="590" x2="1550" y2="590" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="1400" y="575">D4.4: User</text>
+
+  <!-- Data Flows from Bill Summary -->
+  <path class="dataFlow" d="M 190 190 L 350 250" />
+  <text class="flowLabel" x="250" y="210">Bill created</text>
+
+  <!-- 4.1 to Transaction Store -->
+  <path class="dataFlowAlt" d="M 340 280 L 300 400" />
+  <text class="flowLabel" x="310" y="340">Save transaction</text>
+
+  <path class="dataFlowAlt" d="M 300 400 L 340 290" />
+  <text class="flowLabel" x="310" y="380">Query transactions</text>
+
+  <!-- Member to 4.2 -->
+  <path class="dataFlow" d="M 190 1040 L 350 550" />
+  <text class="flowLabel" x="220" y="800">Deposit request</text>
+
+  <!-- 4.2 to DepositRequest Store -->
+  <path class="dataFlowAlt" d="M 340 580 L 300 500" />
+  <text class="flowLabel" x="310" y="540">Update status</text>
+
+  <path class="dataFlowAlt" d="M 300 500 L 340 570" />
+  <text class="flowLabel" x="310" y="520">Read request</text>
+
+  <!-- 4.2 to 4.1 -->
+  <path class="dataFlow" d="M 460 380 L 460 310" />
+  <text class="flowLabel" x="470" y="350">Create deposit tx</text>
+
+  <!-- 4.3 to Bill Store -->
+  <path class="dataFlowAlt" d="M 860 310 L 875 380" />
+  <text class="flowLabel" x="850" y="350">Read bill</text>
+
+  <!-- 4.3 to 4.1 -->
+  <path class="dataFlowAlt" d="M 900 310 L 450 280" />
+  <text class="flowLabel" x="650" y="290">All transactions</text>
+
+  <!-- 4.3 to 4.4 -->
+  <path class="dataFlow" d="M 900 310 L 900 490" />
+  <text class="flowLabel" x="910" y="410">Query balance</text>
+
+  <!-- 4.4 to Transaction Store -->
+  <path class="dataFlowAlt" d="M 840 580 L 300 410" />
+  <text class="flowLabel" x="550" y="500">Get latest balance</text>
+
+  <!-- 4.4 to User Store -->
+  <path class="dataFlowAlt" d="M 960 550 L 1250 570" />
+  <text class="flowLabel" x="1090" y="560">Get member info</text>
+
+  <!-- 4.4 to 4.5 -->
+  <path class="dataFlow" d="M 960 550 L 1340 470" />
+  <text class="flowLabel" x="1130" y="520">Ledger data</text>
+
+  <!-- 4.5 to Member -->
+  <path class="dataFlow" d="M 1340 400 L 190 1040" />
+  <text class="flowLabel" x="700" y="750">Dashboard display</text>
+  <text class="flowLabel" x="700" y="770">(meals, balance, tx history)</text>
+
+  <!-- 4.5 to Manager -->
+  <path class="dataFlow" d="M 1340 350 L 190 190" />
+  <text class="flowLabel" x="700" y="260">System report</text>
+  <text class="flowLabel" x="700" y="280">(member ledgers, deposits)</text>
+
+  <!-- Legend/Notes -->
+  <rect x="50" y="1080" width="1700" height="180" fill="#f5f5f5" stroke="#999" stroke-width="2" rx="6" />
+  <text class="flowLabel" x="60" y="1110" style="font: 700 14px sans-serif; fill: #111;">Detailed Process Flow:</text>
+  <text class="note" x="60" y="1135">4.1 Create Transaction: System generates transaction records (type: deposit, debit, credit with amount and running balance)</text>
+  <text class="note" x="60" y="1160">4.2 Process Deposit: Member requests deposit → Manager approves → Creates deposit transaction and updates balance</text>
+  <text class="note" x="60" y="1185">4.3 Calculate Balance: Reads bill and transactions to compute current balance (sum of all tx for the member in a mess)</text>
+  <text class="note" x="60" y="1210">4.4 Query User Ledger: Retrieves transaction history and member details for statement generation</text>
+  <text class="note" x="60" y="1235">4.5 Generate Dashboard: Displays member's personal dashboard with meals, balance, transaction history, and pending deposits</text>
+  <text class="note" x="60" y="1260">Role: Manager can view all member ledgers and approve/reject deposit requests; Members see only their own data</text>
+</svg>

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <style>
+    .card { fill: #fff; stroke: #333; stroke-width: 2 }
+    .header { fill: #fff; stroke: #333; stroke-width: 2 }
+    .headerText { font: 700 20px sans-serif; fill: #000; text-anchor: middle }
+    .content { font: 12px sans-serif; fill: #222 }
+    .sectionTitle { font: 700 14px sans-serif; fill: #333 }
+    .divider { stroke: #ccc; stroke-width: 1 }
+  </style>
+
+  <rect class="card" x="40" y="40" width="720" height="920" rx="8" />
+  <rect class="header" x="40" y="40" width="720" height="60" rx="8" />
+  <text class="headerText" x="400" y="75">UserDepositRequest</text>
+
+  <line class="divider" x1="40" y1="120" x2="760" y2="120" stroke-width="2" />
+  <line class="divider" x1="400" y1="120" x2="400" y2="960" stroke-width="2" />
+
+  <text class="sectionTitle" x="60" y="150">Responsibilities:</text>
+  <text class="content" x="60" y="180">â€¢ Store deposit amount</text>
+  <text class="content" x="60" y="205">â€¢ Track request status</text>
+  <text class="content" x="60" y="230">  (pending/approved/rejected)</text>
+  <text class="content" x="60" y="255">â€¢ Track requested date</text>
+  <text class="content" x="60" y="280">â€¢ Track approval date</text>
+  <text class="content" x="60" y="305">â€¢ Track who approved</text>
+  <text class="content" x="60" y="330">â€¢ Store rejection reason</text>
+  <text class="content" x="60" y="355">â€¢ Track which user &amp; mess</text>
+
+  <text class="sectionTitle" x="420" y="150">Collaborators:</text>
+  <text class="content" x="420" y="180">Mess</text>
+  <text class="content" x="420" y="205">User</text>
+  <text class="content" x="420" y="230">TransactionManager</text>
+
+  <text class="sectionTitle" x="60" y="460">Attributes:</text>
+  <text class="content" x="60" y="485">id, mess_id, user_id,</text>
+  <text class="content" x="60" y="510">amount_requested (decimal),</text>
+  <text class="content" x="60" y="535">status, requested_date,</text>
+  <text class="content" x="60" y="560">approved_date, approved_by,</text>
+  <text class="content" x="60" y="585">rejection_reason,</text>
+  <text class="content" x="60" y="610">created_at, updated_at</text>
+
+  <text class="content" x="60" y="700" style="font: 11px sans-serif; fill: #666;">Key Relations:</text>
+  <text class="content" x="60" y="720" style="font: 11px sans-serif; fill: #666;">- belongsTo(Mess, User, User)</text>
+  <text class="content" x="60" y="740" style="font: 11px sans-serif; fill: #666;">- Manager approves â†’ creates</text>
+  <text class="content" x="60" y="760" style="font: 11px sans-serif; fill: #666;">  deposit transaction</text>
+</svg>

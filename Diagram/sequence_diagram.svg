@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="1260" viewBox="0 0 1360 1260">
+  <style>
+    .title { font: 700 28px Georgia, serif; fill: #111 }
+    .subtitle { font: 14px sans-serif; fill: #555 }
+    .header { fill: #fafafa; stroke: #cfcfcf }
+    .headerText { font: 13px sans-serif; fill: #444 }
+    .lifeline { stroke: #b8b8b8; stroke-dasharray: 4 4 }
+    .phase { fill: #dbe9ff; stroke: #b9d0f5 }
+    .phaseText { font: 700 14px sans-serif; fill: #213a63 }
+    .msg { stroke: #222; fill: none; marker-end: url(#arrow) }
+    .returnMsg { stroke: #777; fill: none; stroke-dasharray: 4 4; marker-end: url(#arrowGray) }
+    .label { font: 12px sans-serif; fill: #222 }
+    .foot { font: 13px sans-serif; fill: #444 }
+    .step { fill: #111 }
+    .stepText { font: 700 11px sans-serif; fill: #fff }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#222" />
+    </marker>
+    <marker id="arrowGray" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#777" />
+    </marker>
+  </defs>
+
+  <text class="title" x="34" y="56">4.4 Sequence Diagram</text>
+  <text class="subtitle" x="34" y="82">Mess Manager flow, organized phase by phase from request submission to expense tracking</text>
+
+  <!-- Actor headers -->
+  <g transform="translate(70,100)">
+    <rect class="header" x="0" y="0" width="120" height="48" rx="1" />
+    <text class="headerText" x="60" y="28" text-anchor="middle">Manager</text>
+  </g>
+  <g transform="translate(250,100)">
+    <rect class="header" x="0" y="0" width="130" height="48" rx="1" />
+    <text class="headerText" x="65" y="28" text-anchor="middle">Web / UI</text>
+  </g>
+  <g transform="translate(430,100)">
+    <rect class="header" x="0" y="0" width="150" height="48" rx="1" />
+    <text class="headerText" x="75" y="28" text-anchor="middle">Laravel API</text>
+  </g>
+  <g transform="translate(650,100)">
+    <rect class="header" x="0" y="0" width="150" height="48" rx="1" />
+    <text class="headerText" x="75" y="28" text-anchor="middle">Database</text>
+  </g>
+  <g transform="translate(860,100)">
+    <rect class="header" x="0" y="0" width="150" height="48" rx="1" />
+    <text class="headerText" x="75" y="28" text-anchor="middle">Super Admin</text>
+  </g>
+  <g transform="translate(1070,100)">
+    <rect class="header" x="0" y="0" width="220" height="48" rx="1" />
+    <text class="headerText" x="110" y="28" text-anchor="middle">Members / Manager Account</text>
+  </g>
+
+  <!-- Lifelines -->
+  <line class="lifeline" x1="130" y1="148" x2="130" y2="1180" />
+  <line class="lifeline" x1="315" y1="148" x2="315" y2="1180" />
+  <line class="lifeline" x1="505" y1="148" x2="505" y2="1180" />
+  <line class="lifeline" x1="725" y1="148" x2="725" y2="1180" />
+  <line class="lifeline" x1="935" y1="148" x2="935" y2="1180" />
+  <line class="lifeline" x1="1180" y1="148" x2="1180" y2="1180" />
+
+  <!-- Phase 1 -->
+  <rect class="phase" x="70" y="168" width="980" height="34" rx="0" />
+  <text class="phaseText" x="560" y="190" text-anchor="middle">Phase 1: Mess Request Submission</text>
+
+  <circle class="step" cx="92" cy="238" r="8" />
+  <text class="stepText" x="92" y="242" text-anchor="middle">1</text>
+  <path class="msg" d="M 100 238 L 254 238" />
+  <text class="label" x="176" y="228" text-anchor="middle">Fill mess name + manager email</text>
+
+  <circle class="step" cx="274" cy="278" r="8" />
+  <text class="stepText" x="274" y="282" text-anchor="middle">2</text>
+  <path class="msg" d="M 282 278 L 430 278" />
+  <text class="label" x="356" y="268" text-anchor="middle">POST /register</text>
+
+  <circle class="step" cx="452" cy="318" r="8" />
+  <text class="stepText" x="452" y="322" text-anchor="middle">3</text>
+  <path class="msg" d="M 460 318 L 650 318" />
+  <text class="label" x="555" y="308" text-anchor="middle">Create pending mess request</text>
+
+  <circle class="step" cx="670" cy="358" r="8" />
+  <text class="stepText" x="670" y="362" text-anchor="middle">4</text>
+  <path class="returnMsg" d="M 660 358 L 470 358" />
+  <text class="label" x="565" y="348" text-anchor="middle">Request stored successfully</text>
+
+  <!-- Phase 2 -->
+  <rect class="phase" x="70" y="404" width="980" height="34" rx="0" />
+  <text class="phaseText" x="560" y="426" text-anchor="middle">Phase 2: Super Admin Approval</text>
+
+  <circle class="step" cx="935" cy="474" r="8" />
+  <text class="stepText" x="935" y="478" text-anchor="middle">5</text>
+  <path class="msg" d="M 935 474 L 650 474" />
+  <text class="label" x="792" y="464" text-anchor="middle">Review pending request</text>
+
+  <circle class="step" cx="650" cy="514" r="8" />
+  <text class="stepText" x="650" y="518" text-anchor="middle">6</text>
+  <path class="msg" d="M 650 514 L 935 514" />
+  <text class="label" x="792" y="504" text-anchor="middle">Approve request</text>
+
+  <circle class="step" cx="505" cy="554" r="8" />
+  <text class="stepText" x="505" y="558" text-anchor="middle">7</text>
+  <path class="msg" d="M 505 554 L 725 554" />
+  <text class="label" x="615" y="544" text-anchor="middle">Create Mess + Manager records</text>
+
+  <circle class="step" cx="725" cy="594" r="8" />
+  <text class="stepText" x="725" y="598" text-anchor="middle">8</text>
+  <path class="returnMsg" d="M 725 594 L 505 594" />
+  <text class="label" x="615" y="584" text-anchor="middle">Persist approved mess</text>
+
+  <!-- Phase 3 -->
+  <rect class="phase" x="70" y="640" width="980" height="34" rx="0" />
+  <text class="phaseText" x="560" y="662" text-anchor="middle">Phase 3: First Login and Password Setup</text>
+
+  <circle class="step" cx="1180" cy="710" r="8" />
+  <text class="stepText" x="1180" y="714" text-anchor="middle">9</text>
+  <path class="msg" d="M 1180 710 L 505 710" />
+  <text class="label" x="842" y="700" text-anchor="middle">Login with temporary password</text>
+
+  <circle class="step" cx="505" cy="750" r="8" />
+  <text class="stepText" x="505" y="754" text-anchor="middle">10</text>
+  <path class="msg" d="M 505 750 L 1180 750" />
+  <text class="label" x="842" y="740" text-anchor="middle">Submit new password</text>
+
+  <circle class="step" cx="725" cy="790" r="8" />
+  <text class="stepText" x="725" y="794" text-anchor="middle">11</text>
+  <path class="returnMsg" d="M 725 790 L 505 790" />
+  <text class="label" x="615" y="780" text-anchor="middle">must_change_password = false</text>
+
+  <!-- Phase 4 -->
+  <rect class="phase" x="70" y="826" width="980" height="34" rx="0" />
+  <text class="phaseText" x="560" y="848" text-anchor="middle">Phase 4: Manager Adds Members and Expenses</text>
+
+  <circle class="step" cx="130" cy="896" r="8" />
+  <text class="stepText" x="130" y="900" text-anchor="middle">12</text>
+  <path class="msg" d="M 138 896 L 315 896" />
+  <text class="label" x="226" y="886" text-anchor="middle">Enter member name + email</text>
+
+  <circle class="step" cx="315" cy="936" r="8" />
+  <text class="stepText" x="315" y="940" text-anchor="middle">13</text>
+  <path class="msg" d="M 315 936 L 505 936" />
+  <text class="label" x="410" y="926" text-anchor="middle">POST /manager/members</text>
+
+  <circle class="step" cx="505" cy="976" r="8" />
+  <text class="stepText" x="505" y="980" text-anchor="middle">14</text>
+  <path class="msg" d="M 505 976 L 725 976" />
+  <text class="label" x="615" y="966" text-anchor="middle">Save member with temp password</text>
+
+  <circle class="step" cx="130" cy="1016" r="8" />
+  <text class="stepText" x="130" y="1020" text-anchor="middle">15</text>
+  <path class="msg" d="M 138 1016 L 315 1016" />
+  <text class="label" x="226" y="1006" text-anchor="middle">Add expense title / amount / date</text>
+
+  <circle class="step" cx="315" cy="1056" r="8" />
+  <text class="stepText" x="315" y="1060" text-anchor="middle">16</text>
+  <path class="msg" d="M 315 1056 L 505 1056" />
+  <text class="label" x="410" y="1046" text-anchor="middle">POST /manager/expenses</text>
+
+  <circle class="step" cx="505" cy="1096" r="8" />
+  <text class="stepText" x="505" y="1100" text-anchor="middle">17</text>
+  <path class="msg" d="M 505 1096 L 725 1096" />
+  <text class="label" x="615" y="1086" text-anchor="middle">Create expense row in database</text>
+
+  <circle class="step" cx="725" cy="1136" r="8" />
+  <text class="stepText" x="725" y="1140" text-anchor="middle">18</text>
+  <path class="returnMsg" d="M 725 1136 L 315 1136" />
+  <text class="label" x="520" y="1126" text-anchor="middle">Expense added successfully</text>
+
+  <text class="foot" x="34" y="1220">Sequence diagram: Manager submits a mess request, Super Admin approves it, the manager completes first-login password setup, then the manager adds members and expenses for the mess.</text>
+</svg>

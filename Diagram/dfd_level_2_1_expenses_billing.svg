@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1300" viewBox="0 0 1800 1300">
+  <style>
+    .title { font: 700 32px Georgia, serif; fill: #111 }
+    .subtitle { font: 14px sans-serif; fill: #666 }
+    .process { fill: #fff; stroke: #2c5aa0; stroke-width: 3 }
+    .processText { font: 700 14px sans-serif; fill: #000; text-anchor: middle }
+    .processNum { font: 700 20px sans-serif; fill: #2c5aa0; text-anchor: middle }
+    .dataStore { fill: #fff; stroke: #d97706; stroke-width: 2 }
+    .storeText { font: 13px sans-serif; fill: #000; text-anchor: middle }
+    .entityBox { fill: #f0f9ff; stroke: #0369a1; stroke-width: 2 }
+    .entityText { font: 700 13px sans-serif; fill: #000; text-anchor: middle }
+    .dataFlow { stroke: #2c5aa0; stroke-width: 2; fill: none; marker-end: url(#arrowhead) }
+    .dataFlowAlt { stroke: #d97706; stroke-width: 2; fill: none; marker-end: url(#arrowheadOrange) }
+    .flowLabel { font: 11px sans-serif; fill: #333; font-weight: 600 }
+    .note { font: 12px sans-serif; fill: #666 }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#2c5aa0" />
+    </marker>
+    <marker id="arrowheadOrange" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#d97706" />
+    </marker>
+  </defs>
+
+  <text class="title" x="50" y="50">Level 2.1: Track Expenses & Billing Calculation</text>
+  <text class="subtitle" x="50" y="80">Detailed decomposition of Process 3.0 (Track Expenses)</text>
+
+  <!-- External Entities -->
+  
+  <!-- Manager -->
+  <rect class="entityBox" x="50" y="150" width="140" height="80" rx="4" />
+  <text class="entityText" x="120" y="195">Manager</text>
+
+  <!-- Member -->
+  <rect class="entityBox" x="50" y="1000" width="140" height="80" rx="4" />
+  <text class="entityText" x="120" y="1045">Member</text>
+
+  <!-- Processes -->
+  
+  <!-- 3.1 Add Expense -->
+  <circle class="process" cx="400" cy="250" r="60" />
+  <text class="processNum" x="400" y="260">3.1</text>
+  <text class="processText" x="400" y="325">Add Expense</text>
+
+  <!-- 3.2 Set Fixed Costs -->
+  <circle class="process" cx="400" cy="550" r="60" />
+  <text class="processNum" x="400" y="560">3.2</text>
+  <text class="processText" x="400" y="625">Set Fixed Costs</text>
+
+  <!-- 3.3 Member Log Meals -->
+  <circle class="process" cx="900" cy="250" r="60" />
+  <text class="processNum" x="900" y="260">3.3</text>
+  <text class="processText" x="900" y="325">Member Log Meals</text>
+
+  <!-- 3.4 Calculate Meal Cost -->
+  <circle class="process" cx="1400" cy="300" r="60" />
+  <text class="processNum" x="1400" y="310">3.4</text>
+  <text class="processText" x="1400" y="375">Calculate Meal Cost</text>
+
+  <!-- 3.5 Calculate Total Bill -->
+  <circle class="process" cx="900" cy="650" r="60" />
+  <text class="processNum" x="900" y="660">3.5</text>
+  <text class="processText" x="900" y="725">Calculate Total Bill</text>
+
+  <!-- 3.6 Generate Summary -->
+  <circle class="process" cx="1400" cy="650" r="60" />
+  <text class="processNum" x="1400" y="660">3.6</text>
+  <text class="processText" x="1400" y="725">Generate Summary</text>
+
+  <!-- Data Stores -->
+  
+  <!-- Expense Store -->
+  <line x1="200" y1="400" x2="350" y2="400" stroke="#d97706" stroke-width="3" />
+  <line x1="200" y1="440" x2="350" y2="440" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="275" y="425">D3.1: Expense</text>
+
+  <!-- FixedCost Store -->
+  <line x1="200" y1="500" x2="350" y2="500" stroke="#d97706" stroke-width="3" />
+  <line x1="200" y1="540" x2="350" y2="540" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="275" y="525">D3.2: FixedCost</text>
+
+  <!-- Meal Store -->
+  <line x1="750" y1="400" x2="900" y2="400" stroke="#d97706" stroke-width="3" />
+  <line x1="750" y1="440" x2="900" y2="440" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="825" y="425">D3.3: Meal</text>
+
+  <!-- Mess Store -->
+  <line x1="1250" y1="450" x2="1550" y2="450" stroke="#d97706" stroke-width="3" />
+  <line x1="1250" y1="490" x2="1550" y2="490" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="1400" y="475">D3.4: Mess</text>
+
+  <!-- Bill/Summary Store -->
+  <line x1="1250" y1="800" x2="1550" y2="800" stroke="#d97706" stroke-width="3" />
+  <line x1="1250" y1="840" x2="1550" y2="840" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="1400" y="825">D3.5: Bill Summary</text>
+
+  <!-- Data Flows from Manager -->
+  <path class="dataFlow" d="M 190 190 L 350 250" />
+  <text class="flowLabel" x="250" y="210">Expense entry</text>
+
+  <path class="dataFlow" d="M 190 190 L 350 550" />
+  <text class="flowLabel" x="220" y="380">Fixed costs entry</text>
+
+  <!-- 3.1 to Store -->
+  <path class="dataFlowAlt" d="M 340 280 L 300 400" />
+  <text class="flowLabel" x="310" y="340">Save expense</text>
+
+  <path class="dataFlowAlt" d="M 300 400 L 340 290" />
+  <text class="flowLabel" x="310" y="380">Read expense</text>
+
+  <!-- 3.2 to Store -->
+  <path class="dataFlowAlt" d="M 340 580 L 300 500" />
+  <text class="flowLabel" x="310" y="540">Save costs</text>
+
+  <path class="dataFlowAlt" d="M 300 500 L 340 570" />
+  <text class="flowLabel" x="310" y="520">Read costs</text>
+
+  <!-- Member to 3.3 -->
+  <path class="dataFlow" d="M 190 1040 L 850 310" />
+  <text class="flowLabel" x="400" y="650">Meal data</text>
+
+  <!-- 3.3 to Meal Store -->
+  <path class="dataFlowAlt" d="M 860 310 L 825 400" />
+  <text class="flowLabel" x="840" y="350">Save meal</text>
+
+  <path class="dataFlowAlt" d="M 825 400 L 860 300" />
+  <text class="flowLabel" x="840" y="380">Query meals</text>
+
+  <!-- 3.3 to 3.4 -->
+  <path class="dataFlow" d="M 960 270 L 1340 300" />
+  <text class="flowLabel" x="1140" y="280">Meal quantity</text>
+
+  <!-- 3.4 to Meal Store -->
+  <path class="dataFlowAlt" d="M 1400 360 L 900 400" />
+  <text class="flowLabel" x="1120" y="380">All meals</text>
+
+  <!-- 3.4 to FixedCost Store -->
+  <path class="dataFlowAlt" d="M 1340 350 L 300 530" />
+  <text class="flowLabel" x="800" y="420">Read fixed costs</text>
+
+  <!-- 3.4 to Mess Store -->
+  <path class="dataFlowAlt" d="M 1400 360 L 1400 450" />
+  <text class="flowLabel" x="1410" y="410">Read mess info</text>
+
+  <!-- 3.4 to 3.5 -->
+  <path class="dataFlow" d="M 1340 350 L 960 600" />
+  <text class="flowLabel" x="1120" y="460">Cost per meal</text>
+
+  <!-- 3.5 to Store -->
+  <path class="dataFlowAlt" d="M 900 710 L 1400 800" />
+  <text class="flowLabel" x="1120" y="760">Save bill</text>
+
+  <path class="dataFlowAlt" d="M 1400 800 L 900 710" />
+  <text class="flowLabel" x="1120" y="780">Read bill</text>
+
+  <!-- 3.6 -->
+  <path class="dataFlow" d="M 960 650 L 1340 650" />
+  <text class="flowLabel" x="1140" y="640">Generate</text>
+
+  <!-- 3.6 to Member -->
+  <path class="dataFlow" d="M 1340 650 L 190 1040" />
+  <text class="flowLabel" x="800" y="850">Monthly statement</text>
+
+  <!-- Legend/Notes -->
+  <rect x="50" y="1080" width="1700" height="180" fill="#f5f5f5" stroke="#999" stroke-width="2" rx="6" />
+  <text class="flowLabel" x="60" y="1110" style="font: 700 14px sans-serif; fill: #111;">Detailed Process Flow:</text>
+  <text class="note" x="60" y="1135">3.1 Add Expense: Manager creates expense records (title, amount, date, description)</text>
+  <text class="note" x="60" y="1160">3.2 Set Fixed Costs: Manager enters monthly rent, khala, utilities, wifi costs per month</text>
+  <text class="note" x="60" y="1185">3.3 Member Log Meals: Members record daily meals (breakfast/lunch/dinner) with quantity</text>
+  <text class="note" x="60" y="1210">3.4 Calculate Meal Cost: System calculates cost per meal from total bazaar expenses ÷ total meals</text>
+  <text class="note" x="60" y="1235">3.5 Calculate Total Bill: Aggregate meal costs + fixed costs / member count = per-member bill</text>
+  <text class="note" x="60" y="1260">3.6 Generate Summary: Create monthly bill summary with breakdown (meals, fixed, other expenses, balance)</text>
+</svg>
