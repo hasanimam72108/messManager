@@ -135,6 +135,49 @@ class ManagementController extends Controller
         ]);
     }
 
+    public function managerMess(Request $request): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_MANAGER);
+
+        $mess = $this->resolveManagedMess($request->user());
+
+        return response()->json([
+            'data' => $this->formatMess($mess),
+        ]);
+    }
+
+    public function updateManagerMess(Request $request): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_MANAGER);
+
+        $mess = $this->resolveManagedMess($request->user());
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:messes,name,'.$mess->id],
+        ]);
+
+        $mess->forceFill([
+            'name' => trim($data['name']),
+        ])->save();
+
+        return response()->json([
+            'message' => 'Mess name updated successfully.',
+            'mess' => $this->formatMess($mess->fresh(['manager', 'request'])),
+        ]);
+    }
+
+    public function destroyManagerMess(Request $request): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_MANAGER);
+
+        $mess = $this->resolveManagedMess($request->user());
+        $mess->delete();
+
+        return response()->json([
+            'message' => 'Mess deleted successfully.',
+        ]);
+    }
+
     public function members(Request $request): JsonResponse
     {
         $this->ensureRole($request->user(), User::ROLE_MANAGER);
@@ -238,6 +281,38 @@ class ManagementController extends Controller
         ]);
     }
 
+    public function destroyMessAsAdmin(Request $request, Mess $mess): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_SUPER_ADMIN);
+
+        $mess->delete();
+
+        return response()->json([
+            'message' => 'Mess deleted successfully.',
+        ]);
+    }
+
+    public function destroyManagerAsAdmin(Request $request, User $manager): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_SUPER_ADMIN);
+
+        if ($manager->role !== User::ROLE_MANAGER) {
+            abort(404, 'Manager not found.');
+        }
+
+        if ($manager->mess_id) {
+            throw ValidationException::withMessages([
+                'manager' => 'Manager cannot be deleted until their mess is deleted first.',
+            ]);
+        }
+
+        $manager->delete();
+
+        return response()->json([
+            'message' => 'Manager deleted successfully.',
+        ]);
+    }
+
     private function ensureRole(?User $user, string $role): void
     {
         if (! $user || $user->role !== $role) {
@@ -250,6 +325,17 @@ class ManagementController extends Controller
         if ($member->role !== User::ROLE_USER || (int) $member->mess_id !== (int) $manager->mess_id) {
             abort(404, 'Member not found.');
         }
+    }
+
+    private function resolveManagedMess(User $manager): Mess
+    {
+        $mess = Mess::query()->with(['manager', 'request'])->find($manager->mess_id);
+
+        if (! $mess || (int) $mess->manager_user_id !== (int) $manager->id) {
+            abort(404, 'Mess not found.');
+        }
+
+        return $mess;
     }
 
     private function formatUser(User $user): array

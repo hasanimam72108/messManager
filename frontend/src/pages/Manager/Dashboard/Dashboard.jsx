@@ -38,9 +38,11 @@ const Dashboard = () => {
   const managerUserId = user?.id;
   const currentMonthKey = getCurrentMonthKey();
 
+  const hasDeletedMess = !user?.messId;
+
   const { data: dashboardStatsResponse } = useGetManagerDashboardStatsQuery(
     { monthKey: currentMonthKey },
-    { skip: !managerUserId },
+    { skip: !managerUserId || hasDeletedMess },
   );
 
   const dashboardStats =
@@ -84,6 +86,22 @@ const Dashboard = () => {
   };
 
   const formatCurrency = (value) => `৳${Number(value || 0).toFixed(2)}`;
+
+  if (hasDeletedMess) {
+    return (
+      <div className="max-w-3xl mx-auto bg-white border border-red-100 rounded-2xl p-8 shadow-sm">
+        <h2 className="text-3xl font-bold text-red-700 mb-3">
+          Manager Dashboard
+        </h2>
+        <p className="text-gray-700 text-base">
+          Your mess is deleted by admin.
+        </p>
+        <p className="text-gray-500 text-sm mt-2">
+          Please contact the super admin if you think this was a mistake.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>

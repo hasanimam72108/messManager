@@ -9,6 +9,7 @@ import AddExpense from "../pages/Manager/Dashboard/AddExpense";
 import Dashboard from "../pages/Manager/Dashboard/Dashboard";
 import MealsChart from "../pages/Manager/Dashboard/MealsChart";
 import Members from "../pages/Manager/Dashboard/Members";
+import MessSettings from "../pages/Manager/Dashboard/MessSettings";
 import MonthlyReport from "../pages/Manager/Dashboard/MonthlyReport";
 import NotFound from "../pages/NotFound";
 import Register from "../pages/Registration/Register";
@@ -71,6 +72,7 @@ const Routers = () => {
         <Route path="add-expense" element={<AddExpense />} />
         <Route path="meals-chart" element={<MealsChart />} />
         <Route path="monthly-report" element={<MonthlyReport />} />
+        <Route path="mess-settings" element={<MessSettings />} />
       </Route>
 
       {/* User Routes */}

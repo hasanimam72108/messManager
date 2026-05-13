@@ -34,9 +34,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/managers', [ManagementController::class, 'managers']);
         Route::get('/system-report', [ManagementController::class, 'systemReport']);
         Route::get('/messes-with-details', [ManagementController::class, 'messesWithDetails']);
+        Route::delete('/messes/{mess}', [ManagementController::class, 'destroyMessAsAdmin']);
+        Route::delete('/managers/{manager}', [ManagementController::class, 'destroyManagerAsAdmin']);
     });
 
     Route::prefix('manager')->group(function () {
+        Route::get('/mess', [ManagementController::class, 'managerMess']);
+        Route::put('/mess', [ManagementController::class, 'updateManagerMess']);
+        Route::delete('/mess', [ManagementController::class, 'destroyManagerMess']);
         Route::get('/members', [ManagementController::class, 'members']);
         Route::post('/members', [ManagementController::class, 'storeMember']);
         Route::put('/members/{member}', [ManagementController::class, 'updateMember']);

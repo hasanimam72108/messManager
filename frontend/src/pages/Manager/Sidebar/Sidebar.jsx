@@ -6,6 +6,7 @@ import {
   LogOut,
   PieChart,
   Receipt,
+  Settings,
   Users,
 } from "lucide-react";
 import { useDispatch } from "react-redux";
@@ -69,6 +70,13 @@ const Sidebar = ({ onClose }) => {
       icon: PieChart,
       color: "text-fuchsia-600",
       bg: "bg-fuchsia-100",
+    },
+    {
+      name: "Mess Settings",
+      path: "/manager/mess-settings",
+      icon: Settings,
+      color: "text-amber-600",
+      bg: "bg-amber-100",
     },
   ];
 

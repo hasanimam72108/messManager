@@ -48,6 +48,53 @@ export const managementApiSlice = apiSlice.injectEndpoints({
       query: () => "/admin/messes-with-details",
       providesTags: (result) => toCollectionTags("Mess", result),
     }),
+    deleteMessAsAdmin: builder.mutation({
+      query: (messId) => ({
+        url: `/admin/messes/${messId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [
+        { type: "Mess", id: "LIST" },
+        { type: "Manager", id: "LIST" },
+        { type: "SystemReport", id: "MAIN" },
+      ],
+    }),
+    deleteManagerAsAdmin: builder.mutation({
+      query: (managerId) => ({
+        url: `/admin/managers/${managerId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [
+        { type: "Manager", id: "LIST" },
+        { type: "SystemReport", id: "MAIN" },
+      ],
+    }),
+    getManagerMess: builder.query({
+      query: () => "/manager/mess",
+      providesTags: [{ type: "Mess", id: "CURRENT" }],
+    }),
+    updateManagerMess: builder.mutation({
+      query: (body) => ({
+        url: "/manager/mess",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: [
+        { type: "Mess", id: "CURRENT" },
+        { type: "Mess", id: "LIST" },
+      ],
+    }),
+    deleteManagerMess: builder.mutation({
+      query: () => ({
+        url: "/manager/mess",
+        method: "DELETE",
+      }),
+      invalidatesTags: [
+        { type: "Mess", id: "CURRENT" },
+        { type: "Mess", id: "LIST" },
+        { type: "SystemReport", id: "MAIN" },
+      ],
+    }),
     getMembers: builder.query({
       query: () => "/manager/members",
       providesTags: (result) => toCollectionTags("Member", result),
@@ -101,6 +148,11 @@ export const {
   useGetManagersQuery,
   useGetSystemReportQuery,
   useGetMessesWithDetailsQuery,
+  useDeleteMessAsAdminMutation,
+  useDeleteManagerAsAdminMutation,
+  useGetManagerMessQuery,
+  useUpdateManagerMessMutation,
+  useDeleteManagerMessMutation,
   useGetMembersQuery,
   useGetPendingDepositRequestsQuery,
   useApprovePendingDepositRequestMutation,
