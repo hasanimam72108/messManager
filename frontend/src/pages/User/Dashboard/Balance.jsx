@@ -66,7 +66,7 @@ const PaymentModal = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-lg max-w-md w-full mx-4">
+      <div className="bg-white rounded-2xl shadow-lg max-w-3xl w-full mx-4">
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
           <h3 className="text-lg font-bold text-gray-900">
             Select Payment Method
@@ -93,21 +93,25 @@ const PaymentModal = ({
             {/* Hand Cash */}
             <button
               onClick={() => setPaymentMethod("hand_cash")}
-              className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+              className={`w-full min-h-36 p-4 rounded-lg border-2 transition-all ${
                 paymentMethod === "hand_cash"
                   ? "border-green-500 bg-green-50"
                   : "border-gray-200 bg-white hover:border-gray-300"
               }`}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
                 <img
                   src="/hand-cash.png"
                   alt="Hand Cash"
-                  className="h-7 w-7 object-contain"
+                  className="h-10 w-10 object-contain"
                 />
-                <div>
-                  <p className="font-medium text-gray-900">Hand Cash</p>
-                  <p className="text-sm text-gray-500">Pay with cash</p>
+                <div className="min-w-0">
+                  <p className="text-base font-semibold leading-tight text-gray-900">
+                    Hand Cash
+                  </p>
+                  <p className="mt-1 text-sm leading-snug text-gray-500">
+                    Pay with cash
+                  </p>
                 </div>
               </div>
             </button>
@@ -115,21 +119,25 @@ const PaymentModal = ({
             {/* Mobile Banking */}
             <button
               onClick={() => setPaymentMethod("mobile_banking")}
-              className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+              className={`w-full min-h-36 p-4 rounded-lg border-2 transition-all ${
                 paymentMethod === "mobile_banking"
                   ? "border-green-500 bg-green-50"
                   : "border-gray-200 bg-white hover:border-gray-300"
               }`}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
                 <img
                   src="/mobile-banking.png"
                   alt="Mobile Banking"
-                  className="h-7 w-7 object-contain"
+                  className="h-10 w-10 object-contain"
                 />
-                <div>
-                  <p className="font-medium text-gray-900">Mobile Banking</p>
-                  <p className="text-sm text-gray-500">Bkash, Nagad, Rocket</p>
+                <div className="min-w-0">
+                  <p className="text-base font-semibold leading-tight text-gray-900">
+                    Mobile Banking
+                  </p>
+                  <p className="mt-1 text-sm leading-snug text-gray-500">
+                    Bkash, Nagad, Rocket
+                  </p>
                 </div>
               </div>
             </button>
@@ -137,21 +145,25 @@ const PaymentModal = ({
             {/* Card Payment */}
             <button
               onClick={() => setPaymentMethod("card")}
-              className={`w-full p-4 rounded-lg border-2 transition-all text-left ${
+              className={`w-full min-h-36 p-4 rounded-lg border-2 transition-all ${
                 paymentMethod === "card"
                   ? "border-green-500 bg-green-50"
                   : "border-gray-200 bg-white hover:border-gray-300"
               }`}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
                 <img
                   src="/card-payment.png"
                   alt="Card Payment"
-                  className="h-7 w-7 object-contain"
+                  className="h-10 w-10 object-contain"
                 />
-                <div>
-                  <p className="font-medium text-gray-900">Card Payment</p>
-                  <p className="text-sm text-gray-500">Credit/Debit card</p>
+                <div className="min-w-0">
+                  <p className="text-base font-semibold leading-tight text-gray-900">
+                    Card Payment
+                  </p>
+                  <p className="mt-1 text-sm leading-snug text-gray-500">
+                    Credit/Debit card
+                  </p>
                 </div>
               </div>
             </button>
