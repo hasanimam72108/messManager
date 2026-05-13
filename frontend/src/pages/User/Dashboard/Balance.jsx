@@ -1,4 +1,4 @@
-import { CreditCard, DollarSign, Smartphone, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -100,8 +100,10 @@ const PaymentModal = ({
               }`}
             >
               <div className="flex items-center gap-3">
-                <DollarSign
-                  className={`w-5 h-5 ${paymentMethod === "hand_cash" ? "text-green-600" : "text-gray-400"}`}
+                <img
+                  src="/hand-cash.png"
+                  alt="Hand Cash"
+                  className="h-7 w-7 object-contain"
                 />
                 <div>
                   <p className="font-medium text-gray-900">Hand Cash</p>
@@ -120,8 +122,10 @@ const PaymentModal = ({
               }`}
             >
               <div className="flex items-center gap-3">
-                <Smartphone
-                  className={`w-5 h-5 ${paymentMethod === "mobile_banking" ? "text-green-600" : "text-gray-400"}`}
+                <img
+                  src="/mobile-banking.png"
+                  alt="Mobile Banking"
+                  className="h-7 w-7 object-contain"
                 />
                 <div>
                   <p className="font-medium text-gray-900">Mobile Banking</p>
@@ -140,8 +144,10 @@ const PaymentModal = ({
               }`}
             >
               <div className="flex items-center gap-3">
-                <CreditCard
-                  className={`w-5 h-5 ${paymentMethod === "card" ? "text-green-600" : "text-gray-400"}`}
+                <img
+                  src="/card-payment.png"
+                  alt="Card Payment"
+                  className="h-7 w-7 object-contain"
                 />
                 <div>
                   <p className="font-medium text-gray-900">Card Payment</p>
