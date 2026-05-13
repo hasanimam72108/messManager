@@ -51,9 +51,7 @@ class ManagementController extends Controller
             ]);
         }
 
-        $tempPassword = sprintf('Manager%04d', random_int(1000, 9999));
-
-        [$mess, $manager] = DB::transaction(function () use ($messRequest, $tempPassword, $request) {
+        [$mess, $manager] = DB::transaction(function () use ($messRequest, $request) {
             $mess = Mess::create([
                 'name' => $messRequest->mess_name,
                 'manager_user_id' => null,
@@ -63,10 +61,10 @@ class ManagementController extends Controller
             $manager = User::create([
                 'name' => $messRequest->manager_name ?: 'Manager',
                 'email' => $messRequest->manager_email,
-                'password' => $tempPassword,
+                'password' => $messRequest->password,
                 'role' => User::ROLE_MANAGER,
                 'mess_id' => $mess->id,
-                'must_change_password' => true,
+                'must_change_password' => false,
             ]);
 
             $mess->forceFill([
@@ -88,7 +86,6 @@ class ManagementController extends Controller
 
         return response()->json([
             'message' => 'Mess request approved successfully.',
-            'tempPassword' => $tempPassword,
             'mess' => $this->formatMess($mess->fresh(['manager', 'request'])),
             'manager' => $this->formatUser($manager->fresh(['mess'])),
             'request' => $this->formatMessRequest($messRequest->fresh()),

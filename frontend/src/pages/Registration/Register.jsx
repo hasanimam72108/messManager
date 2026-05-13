@@ -1,4 +1,4 @@
-import { ChefHat } from "lucide-react";
+import { ChefHat, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -20,7 +20,11 @@ const Register = () => {
     messName: "",
     managerName: "",
     managerEmail: "",
+    password: "",
+    confirmPassword: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [registerMess, { isLoading }] = useRegisterMutation();
 
   const handleChange = (event) => {
@@ -34,7 +38,13 @@ const Register = () => {
     try {
       await registerMess(formData).unwrap();
       toast.success("Mess request sent to super admin.");
-      setFormData({ messName: "", managerName: "", managerEmail: "" });
+      setFormData({
+        messName: "",
+        managerName: "",
+        managerEmail: "",
+        password: "",
+        confirmPassword: "",
+      });
     } catch (error) {
       toast.error(getErrorMessage(error));
     }
@@ -97,6 +107,58 @@ const Register = () => {
               className="w-full bg-gray-100 border border-gray-200 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
               required
             />
+          </div>
+
+          <div>
+            <label className="block mb-1">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter password (min 6 characters)"
+                className="w-full bg-gray-100 border border-gray-200 px-3 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="block mb-1">Confirm Password</label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm your password"
+                className="w-full bg-gray-100 border border-gray-200 px-3 py-2 pr-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
           </div>
 
           <button

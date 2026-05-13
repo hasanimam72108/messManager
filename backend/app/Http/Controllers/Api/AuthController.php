@@ -19,6 +19,8 @@ class AuthController extends Controller
             'messName' => ['required', 'string', 'max:255'],
             'managerName' => ['nullable', 'string', 'max:255'],
             'managerEmail' => ['required', 'email', 'max:255'],
+            'password' => ['required', 'string', 'min:6'],
+            'confirmPassword' => ['required', 'string', 'same:password'],
         ]);
 
         $normalizedEmail = Str::lower(trim($data['managerEmail']));
@@ -42,6 +44,7 @@ class AuthController extends Controller
             'mess_name' => trim($data['messName']),
             'manager_name' => trim($data['managerName'] ?? ''),
             'manager_email' => $normalizedEmail,
+            'password' => Hash::make($data['password']),
             'status' => 'pending',
         ]);
 

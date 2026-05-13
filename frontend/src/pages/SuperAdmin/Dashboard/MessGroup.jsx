@@ -14,10 +14,8 @@ const MessGroup = () => {
 
   const handleApprove = async (requestId) => {
     try {
-      const result = await approveMessRequest(requestId).unwrap();
-      setLastApproved(
-        `Approved. Manager temporary password: ${result.tempPassword}`,
-      );
+      await approveMessRequest(requestId).unwrap();
+      setLastApproved("Approved successfully. Manager can now login.");
     } catch (error) {
       setLastApproved(error?.data?.message || "Unable to approve request.");
     }

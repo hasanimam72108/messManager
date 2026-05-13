@@ -14,6 +14,7 @@ class MessRequest extends Model
         'mess_name',
         'manager_name',
         'manager_email',
+        'password',
         'status',
         'approved_mess_id',
         'manager_user_id',
