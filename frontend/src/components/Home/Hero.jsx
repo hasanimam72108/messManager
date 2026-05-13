@@ -1,7 +1,11 @@
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
+import { getRoleHomePath } from "../../utils/roleBasedNavigation";
 
 const Hero = () => {
+  const { isAuthenticated, user } = useAuth();
+  const dashboardPath = user ? getRoleHomePath(user.role) : "/login";
   return (
     <section className="relative bg-gradient-to-b from-green-50/50 to-white overflow-hidden flex flex-col md:flex-row items-center justify-between px-8 py-20 min-h-[calc(100vh-80px)] font-sans">
       {/* Decorative Background Blob */}
@@ -27,18 +31,29 @@ const Hero = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 pt-4">
-          <Link
-            to="/register"
-            className="bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-8 rounded-xl flex items-center justify-center transition-all hover:shadow-lg hover:-translate-y-1"
-          >
-            Get Started <ArrowRight className="ml-2 w-5 h-5" />
-          </Link>
-          <Link
-            to="/login"
-            className="bg-white hover:bg-gray-50 text-gray-800 font-semibold py-4 px-8 border border-gray-200 rounded-xl flex items-center justify-center transition-all hover:border-green-600 hover:text-green-600"
-          >
-            Sign In
-          </Link>
+          {isAuthenticated ? (
+            <Link
+              to={dashboardPath}
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-8 rounded-xl flex items-center justify-center transition-all hover:shadow-lg hover:-translate-y-1"
+            >
+              Go to Dashboard <ArrowRight className="ml-2 w-5 h-5" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/register"
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-4 px-8 rounded-xl flex items-center justify-center transition-all hover:shadow-lg hover:-translate-y-1"
+              >
+                Get Started <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
+              <Link
+                to="/login"
+                className="bg-white hover:bg-gray-50 text-gray-800 font-semibold py-4 px-8 border border-gray-200 rounded-xl flex items-center justify-center transition-all hover:border-green-600 hover:text-green-600"
+              >
+                Sign In
+              </Link>
+            </>
+          )}
         </div>
 
         <div className="flex flex-wrap items-center gap-4 pt-6 text-sm text-gray-500 font-medium">
