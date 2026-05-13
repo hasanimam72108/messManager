@@ -71,7 +71,7 @@ const Hero = () => {
       <div className="relative z-10 md:w-1/2 mt-16 md:mt-0">
         <div className="relative rounded-2xl p-2 bg-gradient-to-tr from-green-100 to-white shadow-2xl transform transition hover:scale-[1.02] duration-500">
           <img
-            src="MessPic.webp"
+            src="MessPic.png"
             alt="Students eating"
             className="rounded-xl w-full h-auto object-cover max-h-[500px]"
           />
