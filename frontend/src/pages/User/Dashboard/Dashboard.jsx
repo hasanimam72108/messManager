@@ -31,7 +31,7 @@ const Dashboard = () => {
   });
   const messName = profileResponse?.user?.messName || user?.messName || "N/A";
   const getCurrentMonthKey = () => new Date().toISOString().slice(0, 7);
-  const monthKey = getCurrentMonthKey();
+  const [monthKey, setMonthKey] = useState(getCurrentMonthKey());
   const { data: userStatsResponse } = useGetUserDashboardStatsQuery(
     { monthKey },
     { skip: !user?.id },
@@ -88,12 +88,23 @@ const Dashboard = () => {
   return (
     <div className="space-y-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          User Dashboard
-        </h1>
-        <p className="text-gray-500">
-          Welcome back! Here's your overview for this month.
-        </p>
+        <div className="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-end">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">
+              User Dashboard
+            </h1>
+            <p className="text-gray-500">
+              Welcome back! Here's your overview for {monthKey}.
+            </p>
+          </div>
+          <input
+            type="month"
+            value={monthKey}
+            onChange={(e) => setMonthKey(e.target.value)}
+            max={getCurrentMonthKey()}
+            className="bg-white border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
         <div className="mt-4 bg-white border border-gray-100 rounded-xl p-4 text-sm text-gray-700 space-y-1">
           <p>
             <span className="font-semibold">Name:</span> {user?.name || "N/A"}
@@ -186,7 +197,7 @@ const Dashboard = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
           <div className="flex justify-between items-start mb-4">
             <p className="text-gray-500 text-sm">Total Meals</p>
@@ -225,18 +236,44 @@ const Dashboard = () => {
           </h3>
           <p className="text-gray-400 text-xs">this month meals</p>
         </div>
+      </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-          <div className="flex justify-between items-start mb-4">
-            <p className="text-gray-500 text-sm">Remaining Due</p>
-            <div className="p-2 bg-rose-50 text-rose-500 rounded-lg">
-              <Wallet className="w-5 h-5" />
-            </div>
-          </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">
-            ৳{Number(stats.mealDueAmount || 0).toFixed(2)}
+      <div className="mb-8">
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Meal Payment Summary
           </h3>
-          <p className="text-gray-400 text-xs">meal dues after deposits</p>
+          <p className="text-sm text-gray-500">
+            Your meal payment details for this month
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start mb-4">
+              <p className="text-gray-500 text-sm">Paid Amount</p>
+              <div className="p-2 bg-green-50 text-green-500 rounded-lg">
+                <FileText className="w-5 h-5" />
+              </div>
+            </div>
+            <h3 className="text-4xl font-bold text-gray-900 mb-1">
+              ৳{(stats.mealPaidAmount || 0).toFixed(2)}
+            </h3>
+            <p className="text-gray-400 text-xs">meal deposits paid</p>
+          </div>
+
+          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div className="flex justify-between items-start mb-4">
+              <p className="text-gray-500 text-sm">Remaining Due</p>
+              <div className="p-2 bg-rose-50 text-rose-500 rounded-lg">
+                <Wallet className="w-5 h-5" />
+              </div>
+            </div>
+            <h3 className="text-4xl font-bold text-gray-900 mb-1">
+              ৳{Number(stats.mealDueAmount || 0).toFixed(2)}
+            </h3>
+            <p className="text-gray-400 text-xs">after your deposits</p>
+          </div>
         </div>
       </div>
 

@@ -122,7 +122,7 @@ const MealsChart = () => {
           </h3>
 
           {stats.dailyRows?.length ? (
-            <div className="space-y-4 max-h-[560px] overflow-y-auto pr-1">
+            <div className="space-y-4 max-h-140 overflow-y-auto pr-1">
               {stats.dailyRows.map((row) => {
                 const totalMeals = Number(row.totalMeals) || 0;
                 const barWidth =
@@ -152,7 +152,7 @@ const MealsChart = () => {
                     </div>
                     <div className="w-full h-3 bg-gray-100 rounded-full overflow-hidden">
                       <div
-                        className="h-3 rounded-full bg-gradient-to-r from-green-500 to-emerald-600"
+                        className="h-3 rounded-full bg-linear-to-r from-green-500 to-emerald-600"
                         style={{ width: `${barWidth}%` }}
                       />
                     </div>
