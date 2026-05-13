@@ -45,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/deposit-requests/{depositRequest}/approve', [ExpenseController::class, 'approvePendingDeposit']);
 
         Route::get('/dashboard/stats', [ExpenseController::class, 'dashboardStats']);
+        Route::get('/meals/daily', [ExpenseController::class, 'managerDailyMeals']);
         Route::get('/fixed-costs', [ExpenseController::class, 'fixedCosts']);
         Route::get('/expenses/summary', [ExpenseController::class, 'monthlyExpenseSummary']);
         Route::put('/fixed-costs', [ExpenseController::class, 'upsertFixedCosts']);

@@ -56,7 +56,7 @@ const Balance = () => {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
         <h2 className="text-xl font-semibold text-gray-900 mb-1">
-          Current Balance
+          Total Deposit
         </h2>
         <p className="text-gray-500 text-sm mb-4">Your available balance</p>
         <div className="text-4xl font-bold text-[#16a34a]">
@@ -170,7 +170,7 @@ const Balance = () => {
                   Amount
                 </th>
                 <th className="py-4 px-4 font-semibold text-gray-900">
-                  Balance
+                  Deposit
                 </th>
               </tr>
             </thead>

@@ -1,4 +1,5 @@
 import {
+  BarChart3,
   ChefHat,
   Home,
   LayoutDashboard,
@@ -54,6 +55,13 @@ const Sidebar = ({ onClose }) => {
       icon: Receipt,
       color: "text-rose-600",
       bg: "bg-rose-100",
+    },
+    {
+      name: "Meals Chart",
+      path: "/manager/meals-chart",
+      icon: BarChart3,
+      color: "text-emerald-600",
+      bg: "bg-emerald-100",
     },
     {
       name: "Monthly Report",

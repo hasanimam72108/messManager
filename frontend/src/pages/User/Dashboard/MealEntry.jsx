@@ -12,6 +12,7 @@ const MealEntry = () => {
   const [mealType, setMealType] = useState("Lunch");
   const [quantity, setQuantity] = useState(1);
   const monthKey = new Date().toISOString().slice(0, 7);
+  const today = new Date().toISOString().split("T")[0];
   const { data: mealsResponse } = useGetUserMealsQuery(
     { monthKey },
     { skip: !user?.id },
@@ -75,6 +76,7 @@ const MealEntry = () => {
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
+                min={today}
                 className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors"
                 required
               />

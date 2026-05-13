@@ -274,6 +274,123 @@ class ExpenseController extends Controller
         ]);
     }
 
+    public function managerDailyMeals(Request $request): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_MANAGER);
+
+        $user = $request->user();
+
+        if (! $user->mess_id) {
+            throw ValidationException::withMessages([
+                'mess' => 'Manager mess not found.',
+            ]);
+        }
+
+        $data = $request->validate([
+            'monthKey' => ['nullable', 'string'],
+            'month_key' => ['nullable', 'string'],
+        ]);
+
+        $monthKey = $this->normalizeMonthKey(
+            $data['monthKey'] ?? $data['month_key'] ?? now()->format('Y-m')
+        );
+
+        $monthStart = Carbon::createFromFormat('Y-m', $monthKey)->startOfMonth();
+        $monthEnd = Carbon::createFromFormat('Y-m', $monthKey)->endOfMonth();
+
+        $meals = Meal::query()
+            ->with('user:id,name')
+            ->where('mess_id', $user->mess_id)
+            ->whereBetween('meal_date', [$monthStart, $monthEnd])
+            ->orderBy('meal_date')
+            ->orderBy('id')
+            ->get();
+
+        $dateBuckets = [];
+        $totalMealsAllDates = 0;
+
+        foreach ($meals as $meal) {
+            $date = $meal->meal_date?->format('Y-m-d');
+
+            if (! $date) {
+                continue;
+            }
+
+            if (! isset($dateBuckets[$date])) {
+                $dateBuckets[$date] = [
+                    'date' => $date,
+                    'totalMeals' => 0,
+                    'members' => [],
+                ];
+            }
+
+            $quantity = (float) $meal->quantity;
+            $memberKey = (int) $meal->user_id;
+            $mealType = strtolower(trim((string) $meal->meal_type));
+
+            $dateBuckets[$date]['totalMeals'] += $quantity;
+            $totalMealsAllDates += $quantity;
+
+            if (! isset($dateBuckets[$date]['members'][$memberKey])) {
+                $dateBuckets[$date]['members'][$memberKey] = [
+                    'userId' => $memberKey,
+                    'name' => $meal->user?->name ?? 'Unknown user',
+                    'totalMeals' => 0,
+                    'lunchMeals' => 0,
+                    'dinnerMeals' => 0,
+                    'offEntries' => 0,
+                ];
+            }
+
+            $dateBuckets[$date]['members'][$memberKey]['totalMeals'] += $quantity;
+
+            if ($mealType === 'lunch') {
+                $dateBuckets[$date]['members'][$memberKey]['lunchMeals'] += $quantity;
+            } elseif ($mealType === 'dinner') {
+                $dateBuckets[$date]['members'][$memberKey]['dinnerMeals'] += $quantity;
+            } elseif ($mealType === 'off') {
+                $dateBuckets[$date]['members'][$memberKey]['offEntries'] += 1;
+            }
+        }
+
+        $dailyRows = collect($dateBuckets)
+            ->map(function (array $bucket) {
+                $members = collect($bucket['members'])
+                    ->map(function (array $member) {
+                        return [
+                            'userId' => $member['userId'],
+                            'name' => $member['name'],
+                            'totalMeals' => round((float) $member['totalMeals'], 2),
+                            'lunchMeals' => round((float) $member['lunchMeals'], 2),
+                            'dinnerMeals' => round((float) $member['dinnerMeals'], 2),
+                            'offEntries' => (int) $member['offEntries'],
+                        ];
+                    })
+                    ->sortByDesc('totalMeals')
+                    ->values()
+                    ->all();
+
+                return [
+                    'date' => $bucket['date'],
+                    'totalMeals' => round((float) $bucket['totalMeals'], 2),
+                    'members' => $members,
+                ];
+            })
+            ->sortBy('date')
+            ->values()
+            ->all();
+
+        return response()->json([
+            'data' => [
+                'monthKey' => $monthKey,
+                'totalMealsAllDates' => round($totalMealsAllDates, 2),
+                'activeDates' => count($dailyRows),
+                'dateOptions' => array_values(array_map(fn (array $row) => $row['date'], $dailyRows)),
+                'dailyRows' => $dailyRows,
+            ],
+        ]);
+    }
+
     private function buildRecentActivityFeed(int $messId, Carbon $monthStart, Carbon $monthEnd): array
     {
         return collect()
