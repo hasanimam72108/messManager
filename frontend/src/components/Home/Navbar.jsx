@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 flex justify-between items-center py-4 px-8 bg-white/80 backdrop-blur-lg shadow-sm font-sans border-b border-gray-100 transition-all">
-      <Link to="/" className="flex items-center gap-2 group">
+      <Link to="/home" className="flex items-center gap-2 group">
         <div className="bg-gradient-to-br from-green-500 to-green-600 p-2 rounded-xl flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
           <ChefHat className="w-6 h-6 text-white" />
         </div>
