@@ -1,6 +1,6 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import Sidebar from "../pages/User/Sidebar/Sidebar";
 
 const UserLayout = () => {
@@ -30,7 +30,12 @@ const UserLayout = () => {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile Header */}
         <header className="lg:hidden bg-white border-b border-gray-100 p-4 flex items-center justify-between sticky top-0 z-30">
-          <h2 className="text-[20px] font-bold text-[#16a34a]">MessManager</h2>
+          <Link
+            to="/home"
+            className="text-[20px] font-bold text-[#16a34a] hover:opacity-80 transition-opacity"
+          >
+            MessManager
+          </Link>
           <button
             onClick={toggleSidebar}
             className="p-2 bg-gray-50 rounded-lg text-gray-600 hover:bg-gray-100"

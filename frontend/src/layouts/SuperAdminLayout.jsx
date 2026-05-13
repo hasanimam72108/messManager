@@ -1,6 +1,6 @@
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import Sidebar from "../pages/SuperAdmin/Sidebar/Sidebar";
 
 const SuperAdminLayout = () => {
@@ -27,7 +27,12 @@ const SuperAdminLayout = () => {
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="lg:hidden bg-white border-b border-gray-100 p-4 flex items-center justify-between sticky top-0 z-30">
-          <h2 className="text-[20px] font-bold text-green-700">Super Admin</h2>
+          <Link
+            to="/home"
+            className="text-[20px] font-bold text-green-700 hover:opacity-80 transition-opacity"
+          >
+            Super Admin
+          </Link>
           <button
             onClick={toggleSidebar}
             className="p-2 bg-gray-50 rounded-lg text-gray-600 hover:bg-gray-100"

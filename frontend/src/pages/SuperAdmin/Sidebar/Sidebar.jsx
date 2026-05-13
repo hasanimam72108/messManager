@@ -7,7 +7,7 @@ import {
   Users,
 } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {
   logoutSuccess,
   useLogoutMutation,
@@ -59,14 +59,16 @@ const Sidebar = ({ onClose }) => {
   return (
     <aside className="w-64 bg-white border-r border-gray-100 h-full max-h-screen overflow-y-auto flex flex-col justify-between shadow-xl lg:shadow-none">
       <div>
-        <div className="p-8 pb-6 flex items-center gap-3 border-b border-gray-50">
-          <div className="bg-green-600 p-2 rounded-xl flex items-center justify-center">
-            <ChefHat className="w-6 h-6 text-white" />
+        <Link to="/home" onClick={onClose && onClose}>
+          <div className="p-8 pb-6 flex items-center gap-3 border-b border-gray-50 cursor-pointer hover:bg-gray-50 transition-colors rounded-t-lg">
+            <div className="bg-green-600 p-2 rounded-xl flex items-center justify-center">
+              <ChefHat className="w-6 h-6 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Mess<span className="text-green-600">Manager</span>
+            </h1>
           </div>
-          <h1 className="text-2xl font-bold text-gray-800">
-            Mess<span className="text-green-600">Manager</span>
-          </h1>
-        </div>
+        </Link>
         <nav className="p-4 space-y-2 mt-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
