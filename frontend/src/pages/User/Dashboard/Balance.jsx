@@ -89,7 +89,7 @@ const PaymentModal = ({
           </div>
 
           {/* Payment Method Selection */}
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {/* Hand Cash */}
             <button
               onClick={() => setPaymentMethod("hand_cash")}
@@ -158,16 +158,45 @@ const PaymentModal = ({
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Provider
                 </label>
-                <select
-                  value={mobileBankingProvider}
-                  onChange={(e) => setMobileBankingProvider(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="">Select provider</option>
-                  <option value="bkash">Bkash</option>
-                  <option value="nagad">Nagad</option>
-                  <option value="rocket">Rocket</option>
-                </select>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    {
+                      value: "bkash",
+                      name: "Bkash",
+                      logo: "/Bkash-Logo.png",
+                    },
+                    {
+                      value: "nagad",
+                      name: "Nagad",
+                      logo: "/Nagad-Logo.png",
+                    },
+                    {
+                      value: "rocket",
+                      name: "Rocket",
+                      logo: "/Rocket-Logo.png",
+                    },
+                  ].map((provider) => (
+                    <button
+                      key={provider.value}
+                      type="button"
+                      onClick={() => setMobileBankingProvider(provider.value)}
+                      className={`flex flex-col items-center justify-center gap-2 rounded-lg border-2 px-3 py-3 transition-all ${
+                        mobileBankingProvider === provider.value
+                          ? "border-green-500 bg-green-50"
+                          : "border-gray-200 bg-white hover:border-gray-300"
+                      }`}
+                    >
+                      <img
+                        src={provider.logo}
+                        alt={provider.name}
+                        className="h-8 w-auto object-contain"
+                      />
+                      <span className="text-sm font-medium text-gray-700">
+                        {provider.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
