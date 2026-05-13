@@ -1,8 +1,33 @@
-import { useGetManagersQuery } from "../../../features/management/managementSlice";
+import { toast } from "react-hot-toast";
+import {
+  useDeleteManagerAsAdminMutation,
+  useGetManagersQuery,
+} from "../../../features/management/managementSlice";
 
 const Manager = () => {
   const { data, isLoading } = useGetManagersQuery();
   const managers = data?.data || [];
+  const [deleteManagerAsAdmin, { isLoading: isDeletingManager }] =
+    useDeleteManagerAsAdminMutation();
+
+  const handleDeleteManager = async (managerId, managerName) => {
+    const confirmed = window.confirm(
+      `Delete manager "${managerName}"? Make sure their mess is deleted first.`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const response = await deleteManagerAsAdmin(managerId).unwrap();
+      toast.success(response?.message || "Manager deleted successfully.");
+    } catch (error) {
+      toast.error(
+        error?.data?.message ||
+          error?.data?.errors?.manager?.[0] ||
+          "Failed to delete manager.",
+      );
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -21,6 +46,7 @@ const Manager = () => {
                 <th className="py-3">Name</th>
                 <th className="py-3">Email</th>
                 <th className="py-3">Mess Name</th>
+                <th className="py-3">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -43,7 +69,45 @@ const Manager = () => {
                       {manager.name}
                     </td>
                     <td className="py-3">{manager.email}</td>
-                    <td className="py-3">{manager.messName}</td>
+                    <td className="py-3">{manager.messName || "N/A"}</td>
+                    <td className="py-3">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleDeleteManager(manager.id, manager.name)
+                        }
+                        disabled={isDeletingManager || Boolean(manager.messId)}
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-60"
+                        title={
+                          manager.messId
+                            ? "Delete the manager's mess first"
+                            : "Delete manager"
+                        }
+                      >
+                        Delete
+                      </button>
+                    </td>
+                    <td className="py-3">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          manager.messId
+                            ? window.alert(
+                                "Cannot delete this manager because they still have an associated mess. Delete the mess first.",
+                              )
+                            : handleDeleteManager(manager.id, manager.name)
+                        }
+                        disabled={isDeletingManager}
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-60"
+                        title={
+                          manager.messId
+                            ? "Delete the manager's mess first"
+                            : "Delete manager"
+                        }
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))
               )}

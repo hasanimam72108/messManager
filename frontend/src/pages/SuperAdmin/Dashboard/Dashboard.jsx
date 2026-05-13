@@ -127,61 +127,7 @@ const Dashboard = () => {
         </div>
       </section>
 
-      <section className="bg-white border border-gray-100 rounded-2xl p-6">
-        <h2 className="text-xl font-semibold text-gray-900">Manager Details</h2>
-        <p className="text-sm text-gray-500 mb-4">
-          All approved managers and their messes.
-        </p>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-gray-100 text-gray-600">
-                <th className="py-3">Name</th>
-                <th className="py-3">Email</th>
-                <th className="py-3">Mess Name</th>
-                <th className="py-3">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {managers.length === 0 ? (
-                <tr>
-                  <td className="py-4 text-gray-500" colSpan={4}>
-                    No manager approved yet.
-                  </td>
-                </tr>
-              ) : (
-                managers.map((manager) => (
-                  <tr key={manager.id} className="border-b border-gray-50">
-                    <td className="py-3 font-medium text-gray-800">
-                      {manager.name}
-                    </td>
-                    <td className="py-3">{manager.email}</td>
-                    <td className="py-3">{manager.messName || "N/A"}</td>
-                    <td className="py-3">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleDeleteManager(manager.id, manager.name)
-                        }
-                        disabled={isDeletingManager || Boolean(manager.messId)}
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-60"
-                        title={
-                          manager.messId
-                            ? "Delete the manager's mess first"
-                            : "Delete manager"
-                        }
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      {/* Manager details moved to the Super Admin 'Manager' page */}
     </div>
   );
 };
