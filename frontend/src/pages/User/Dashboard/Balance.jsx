@@ -7,6 +7,7 @@ import {
 } from "../../../features/expenses/expensesSlice";
 import useAuth from "../../../hooks/useAuth";
 
+// update
 const Balance = () => {
   const { user } = useAuth();
   const [mealExpenseAmount, setMealExpenseAmount] = useState("");
