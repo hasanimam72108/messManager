@@ -87,27 +87,6 @@ const Manager = () => {
                         Delete
                       </button>
                     </td>
-                    <td className="py-3">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          manager.messId
-                            ? window.alert(
-                                "Cannot delete this manager because they still have an associated mess. Delete the mess first.",
-                              )
-                            : handleDeleteManager(manager.id, manager.name)
-                        }
-                        disabled={isDeletingManager}
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg border border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-60"
-                        title={
-                          manager.messId
-                            ? "Delete the manager's mess first"
-                            : "Delete manager"
-                        }
-                      >
-                        Delete
-                      </button>
-                    </td>
                   </tr>
                 ))
               )}
