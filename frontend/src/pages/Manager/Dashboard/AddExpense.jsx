@@ -1,3 +1,11 @@
+import {
+  CalendarDays,
+  CircleDollarSign,
+  FileText,
+  PlusCircle,
+  Save,
+  WalletCards,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -118,10 +126,8 @@ const AddExpense = () => {
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth() + 1;
 
-    // Max: current month (YYYY-MM)
     const maxMonth = `${currentYear}-${String(currentMonth).padStart(2, "0")}`;
 
-    // Min: previous month
     let prevYear = currentYear;
     let prevMonth = currentMonth - 1;
     if (prevMonth === 0) {
@@ -161,62 +167,76 @@ const AddExpense = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Add Expense</h1>
-        <p className="text-gray-500 mt-1">
-          Manage general expense and monthly fixed expense separately
-        </p>
+    <div className="min-h-screen rounded-3xl bg-linear-to-br from-emerald-50 via-white to-sky-50 p-6 md:p-8">
+      <div className="mb-6 flex items-start gap-4">
+        <div className="rounded-2xl bg-emerald-100 p-3 text-emerald-600 shadow-sm">
+          <CircleDollarSign className="h-7 w-7" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900">Add Expense</h1>
+          <p className="mt-1 text-slate-500">
+            Manage general expense and monthly fixed expense separately
+          </p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <p className="text-gray-600 font-medium mb-2">
-            Total Fixed Expenses This Month
-          </p>
-          <h2 className="text-4xl font-bold text-red-600">
+      <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="rounded-2xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur">
+          <div className="mb-3 flex items-center gap-2 text-slate-600">
+            <WalletCards className="h-4 w-4 text-sky-500" />
+            <p className="font-medium">Total Fixed Expenses This Month</p>
+          </div>
+          <h2 className="text-4xl font-bold text-rose-600">
             ৳{fixedTotal.toFixed(2)}
           </h2>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <p className="text-gray-600 font-medium mb-2">
-            Total Bazaar Expenses This Month
-          </p>
-          <h2 className="text-4xl font-bold text-green-600">
+        <div className="rounded-2xl border border-emerald-100 bg-white/90 p-6 shadow-sm backdrop-blur">
+          <div className="mb-3 flex items-center gap-2 text-slate-600">
+            <CircleDollarSign className="h-4 w-4 text-emerald-500" />
+            <p className="font-medium">Total Bazaar Expenses This Month</p>
+          </div>
+          <h2 className="text-4xl font-bold text-emerald-600">
             ৳{bazaarTotal.toFixed(2)}
           </h2>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
-        <h3 className="text-lg font-bold text-gray-800 text-left">
-          Add New Expense
-        </h3>
-        <p className="text-gray-500 text-sm mb-6 text-left">
-          Enter expense details below
-        </p>
+      <div className="mb-8 rounded-2xl border border-slate-100 bg-white/90 p-6 shadow-sm backdrop-blur">
+        <div className="mb-6 flex items-center gap-3 text-left">
+          <div className="rounded-xl bg-sky-100 p-2 text-sky-600">
+            <PlusCircle className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-slate-900 text-left">
+              Add New Expense
+            </h3>
+            <p className="text-sm text-slate-500 text-left">
+              Enter expense details below
+            </p>
+          </div>
+        </div>
 
         <form
           className="space-y-6 text-left"
           onSubmit={handleGeneralExpenseSubmit}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 Expense Title
               </label>
               <select
                 name="title"
                 value={generalExpenseForm.title}
                 onChange={handleGeneralExpenseChange}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
               >
                 <option>Bazaar</option>
                 <option>Others</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 Amount (৳)
               </label>
               <input
@@ -226,30 +246,33 @@ const AddExpense = () => {
                 value={generalExpenseForm.amount}
                 onChange={handleGeneralExpenseChange}
                 placeholder="Enter amount"
-                className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 required
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-medium text-slate-700">
               Date
             </label>
-            <input
-              type="date"
-              name="date"
-              value={generalExpenseForm.date}
-              onChange={handleGeneralExpenseChange}
-              min={getDateLimits().minDate}
-              max={getDateLimits().maxDate}
-              className="w-full md:w-1/2 bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
-              required
-            />
+            <div className="relative w-full md:w-1/2">
+              <CalendarDays className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input
+                type="date"
+                name="date"
+                value={generalExpenseForm.date}
+                onChange={handleGeneralExpenseChange}
+                min={getDateLimits().minDate}
+                max={getDateLimits().maxDate}
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                required
+              />
+            </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-medium text-slate-700">
               Description
             </label>
             <textarea
@@ -258,47 +281,57 @@ const AddExpense = () => {
               value={generalExpenseForm.description}
               onChange={handleGeneralExpenseChange}
               placeholder="Enter description"
-              className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
             ></textarea>
           </div>
 
           <button
             type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg text-sm px-6 py-2.5 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
           >
+            <Save className="h-4 w-4" />
             Add Expense
           </button>
         </form>
       </div>
 
-      {/* Add Fixed Expense Form */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <h3 className="text-lg font-bold text-gray-800 text-left">
-          Add Fixed Expense
-        </h3>
-        <p className="text-gray-500 text-sm mb-6 text-left">
-          Select month and update fixed categories
-        </p>
+      <div className="rounded-2xl border border-slate-100 bg-white/90 p-6 shadow-sm backdrop-blur">
+        <div className="mb-6 flex items-center gap-3 text-left">
+          <div className="rounded-xl bg-amber-100 p-2 text-amber-600">
+            <FileText className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-slate-900 text-left">
+              Add Fixed Expense
+            </h3>
+            <p className="text-sm text-slate-500 text-left">
+              Select month and update fixed categories
+            </p>
+          </div>
+        </div>
 
         <form className="space-y-6 text-left" onSubmit={handleSave}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="mb-2 block text-sm font-medium text-slate-700">
               Month
             </label>
-            <input
-              type="month"
-              value={monthKey}
-              onChange={handleMonthChange}
-              min={getMonthLimits().minMonth}
-              max={getMonthLimits().maxMonth}
-              className="w-full md:w-1/2 bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
-              required
-            />
+            <div className="relative w-full md:w-1/2">
+              <CalendarDays className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+              <input
+                type="month"
+                value={monthKey}
+                onChange={handleMonthChange}
+                min={getMonthLimits().minMonth}
+                max={getMonthLimits().maxMonth}
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-3 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                required
+              />
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 House Rent (৳)
               </label>
               <input
@@ -307,12 +340,12 @@ const AddExpense = () => {
                 name="rent"
                 value={fixedForm.rent}
                 onChange={handleChange}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 Khala Bill (৳)
               </label>
               <input
@@ -321,12 +354,12 @@ const AddExpense = () => {
                 name="khala"
                 value={fixedForm.khala}
                 onChange={handleChange}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 Utilities (Gas + Electricity + Water) (৳)
               </label>
               <input
@@ -335,12 +368,12 @@ const AddExpense = () => {
                 name="utilities"
                 value={fixedForm.utilities}
                 onChange={handleChange}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 WiFi Bill (৳)
               </label>
               <input
@@ -349,7 +382,7 @@ const AddExpense = () => {
                 name="wifi"
                 value={fixedForm.wifi}
                 onChange={handleChange}
-                className="w-full bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 required
               />
             </div>
@@ -357,8 +390,9 @@ const AddExpense = () => {
 
           <button
             type="submit"
-            className="bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg text-sm px-6 py-2.5 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
           >
+            <Save className="h-4 w-4" />
             Save Fixed Expenses
           </button>
         </form>

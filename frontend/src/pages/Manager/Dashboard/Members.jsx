@@ -107,14 +107,23 @@ const Members = () => {
   };
 
   return (
-    <div className="space-y-8 font-sans">
+    <div className="space-y-8 rounded-3xl bg-gradient-to-br from-violet-50 via-white to-emerald-50 p-6 font-sans md:p-8">
       {/* Add New Member Section */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-        <h3 className="text-3xl font-bold text-gray-800">Add New Member</h3>
-        <p className="text-sm text-gray-500 mb-6">Enter new member details</p>
+      <div className="rounded-2xl border border-slate-100 bg-white/90 p-8 shadow-sm backdrop-blur">
+        <div className="mb-4 flex items-center gap-3">
+          <div className="rounded-xl bg-emerald-100 p-2 text-emerald-600">
+            <CheckCircle2 className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="text-3xl font-bold text-slate-900">
+              Add New Member
+            </h3>
+            <p className="text-sm text-slate-500">Enter new member details</p>
+          </div>
+        </div>
 
         {lastTempPassword && (
-          <p className="text-sm bg-green-50 text-green-700 border border-green-100 rounded-lg px-3 py-2 mb-4">
+          <p className="mb-4 rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
             {lastTempPassword}
           </p>
         )}
@@ -131,7 +140,7 @@ const Members = () => {
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Enter name"
-                className="w-full bg-gray-50 border border-transparent rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-gray-200 transition text-sm"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-slate-300 focus:bg-white"
                 required
               />
             </div>
@@ -145,7 +154,7 @@ const Members = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter email"
-                className="w-full bg-gray-50 border border-transparent rounded-lg px-4 py-3 outline-none focus:bg-white focus:border-gray-200 transition text-sm"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-slate-300 focus:bg-white"
                 required
               />
             </div>
@@ -153,7 +162,7 @@ const Members = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-[#00a859] hover:bg-green-600 disabled:opacity-70 text-white font-medium py-2.5 px-6 rounded-lg transition text-sm"
+            className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition hover:bg-emerald-700 disabled:opacity-70"
           >
             {isSubmitting ? "Adding..." : "Add Member"}
           </button>
@@ -161,48 +170,48 @@ const Members = () => {
       </div>
 
       {/* Member List Section */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-        <h3 className="text-xl font-semibold text-gray-900">
+      <div className="rounded-2xl border border-slate-100 bg-white/90 p-8 shadow-sm backdrop-blur">
+        <h3 className="text-xl font-semibold text-slate-900">
           Pending Deposit Approvals
         </h3>
-        <p className="text-sm text-gray-500 mb-6">
+        <p className="mb-6 text-sm text-slate-500">
           Approve member balance requests from this section
         </p>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gray-100">
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+              <tr className="border-b border-slate-100 bg-violet-50/70">
+                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
                   Member
                 </th>
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
                   Email
                 </th>
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
                   Date
                 </th>
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
                   Type
                 </th>
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
                   Amount
                 </th>
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
                   Action
                 </th>
               </tr>
             </thead>
-            <tbody className="text-sm text-gray-800">
+            <tbody className="text-sm text-slate-800">
               {isPendingRequestsLoading ? (
                 <tr>
-                  <td className="py-4 px-2 text-gray-500" colSpan={6}>
+                  <td className="py-4 px-2 text-slate-500" colSpan={6}>
                     Loading pending requests...
                   </td>
                 </tr>
               ) : pendingDepositRequests.length === 0 ? (
                 <tr>
-                  <td className="py-4 px-2 text-gray-500" colSpan={6}>
+                  <td className="py-4 px-2 text-slate-500" colSpan={6}>
                     No pending requests.
                   </td>
                 </tr>
@@ -212,7 +221,7 @@ const Members = () => {
                     key={request.id}
                     className={
                       index !== pendingDepositRequests.length - 1
-                        ? "border-b border-gray-100"
+                        ? "border-b border-slate-100"
                         : ""
                     }
                   >
@@ -230,7 +239,7 @@ const Members = () => {
                         type="button"
                         onClick={() => handleApproveDepositRequest(request)}
                         disabled={isApproving}
-                        className="inline-flex items-center gap-1 rounded-lg border border-green-200 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-50 transition disabled:opacity-60"
+                        className="inline-flex items-center gap-1 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 transition hover:bg-emerald-100 disabled:opacity-60"
                       >
                         <CheckCircle2 className="h-4 w-4" />
                         Approve
@@ -244,41 +253,41 @@ const Members = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-        <h3 className="text-xl font-semibold text-gray-900">Member List</h3>
-        <p className="text-sm text-gray-500 mb-6">All members in your mess</p>
+      <div className="rounded-2xl border border-slate-100 bg-white/90 p-8 shadow-sm backdrop-blur">
+        <h3 className="text-xl font-semibold text-slate-900">Member List</h3>
+        <p className="mb-6 text-sm text-slate-500">All members in your mess</p>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gray-100">
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm w-1/5 whitespace-nowrap">
+              <tr className="border-b border-slate-100 bg-sky-50/70">
+                <th className="w-1/5 py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
                   Name
                 </th>
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm w-1/4 whitespace-nowrap">
+                <th className="w-1/4 py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
                   Email
                 </th>
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
                   Total Meals
                 </th>
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
                   Deposit
                 </th>
-                <th className="py-4 px-2 font-semibold text-gray-900 text-sm whitespace-nowrap">
+                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="text-sm text-gray-800">
+            <tbody className="text-sm text-slate-800">
               {isLoading ? (
                 <tr>
-                  <td className="py-4 px-2 text-gray-500" colSpan={5}>
+                  <td className="py-4 px-2 text-slate-500" colSpan={5}>
                     Loading members...
                   </td>
                 </tr>
               ) : members.length === 0 ? (
                 <tr>
-                  <td className="py-4 px-2 text-gray-500" colSpan={5}>
+                  <td className="py-4 px-2 text-slate-500" colSpan={5}>
                     No members added yet.
                   </td>
                 </tr>
@@ -288,18 +297,20 @@ const Members = () => {
                     key={member.id}
                     className={
                       index !== members.length - 1
-                        ? "border-b border-gray-100"
+                        ? "border-b border-slate-100"
                         : ""
                     }
                   >
-                    <td className="py-4 px-2 font-medium wrap-break-word">
+                    <td className="py-4 px-2 font-medium wrap-break-word text-slate-900">
                       {member.name}
                     </td>
-                    <td className="py-4 px-2 wrap-break-word">
+                    <td className="py-4 px-2 wrap-break-word text-slate-600">
                       {member.email}
                     </td>
-                    <td className="py-4 px-2">{member.totalMeals ?? 0}</td>
-                    <td className="py-4 px-2">
+                    <td className="py-4 px-2 text-slate-700">
+                      {member.totalMeals ?? 0}
+                    </td>
+                    <td className="py-4 px-2 text-slate-700">
                       ৳{Number(member.balance || 0).toFixed(2)}
                     </td>
                     <td className="py-4 px-2">

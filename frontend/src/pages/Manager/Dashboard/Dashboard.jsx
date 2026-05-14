@@ -89,14 +89,14 @@ const Dashboard = () => {
 
   if (hasDeletedMess) {
     return (
-      <div className="max-w-3xl mx-auto bg-white border border-red-100 rounded-2xl p-8 shadow-sm">
-        <h2 className="text-3xl font-bold text-red-700 mb-3">
+      <div className="mx-auto max-w-3xl rounded-2xl border border-rose-100 bg-white/90 p-8 shadow-sm backdrop-blur">
+        <h2 className="mb-3 text-3xl font-bold text-rose-700">
           Manager Dashboard
         </h2>
-        <p className="text-gray-700 text-base">
+        <p className="text-base text-slate-700">
           Your mess is deleted by admin.
         </p>
-        <p className="text-gray-500 text-sm mt-2">
+        <p className="mt-2 text-sm text-slate-500">
           Please contact the super admin if you think this was a mistake.
         </p>
       </div>
@@ -105,15 +105,34 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-800">Manager Dashboard</h2>
-        <p className="text-gray-500 mt-2 text-sm">
-          Manage your mess and track all activities
-        </p>
+      <div className="mb-8 flex items-start gap-4 rounded-3xl bg-gradient-to-r from-sky-50 via-white to-emerald-50 p-6">
+        <div className="rounded-2xl bg-sky-100 p-3 text-sky-600 shadow-sm">
+          <svg
+            className="h-7 w-7"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h7"
+            />
+          </svg>
+        </div>
+        <div>
+          <h2 className="text-3xl font-bold text-slate-900">
+            Manager Dashboard
+          </h2>
+          <p className="mt-2 text-sm text-slate-500">
+            Manage your mess and track all activities
+          </p>
+        </div>
       </div>
 
       {user?.mustChangePassword && (
-        <div className="mb-8 bg-amber-50 border border-amber-200 rounded-2xl p-6">
+        <div className="mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-6">
           <h3 className="text-xl font-semibold text-amber-900">
             Set Your New Password
           </h3>
@@ -193,14 +212,14 @@ const Dashboard = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="rounded-2xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur">
           <div className="flex justify-between items-start mb-4">
-            <p className="text-gray-500 text-sm">
+            <p className="text-sm text-slate-500">
               Total
               <br />
               Members
             </p>
-            <div className="p-2 bg-blue-50 text-blue-500 rounded-lg">
+            <div className="rounded-lg bg-sky-100 p-2 text-sky-500">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -216,29 +235,29 @@ const Dashboard = () => {
               </svg>
             </div>
           </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">
+          <h3 className="mb-1 text-4xl font-bold text-slate-900">
             {dashboardStats.memberCount}
           </h3>
-          <p className="text-gray-400 text-xs">active members</p>
+          <p className="text-xs text-slate-400">active members</p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="rounded-2xl border border-rose-100 bg-white/90 p-6 shadow-sm backdrop-blur">
           <div className="flex justify-between items-start mb-4">
-            <p className="text-gray-500 text-sm">Total Meals Expenses</p>
-            <div className="px-3 py-1 bg-red-50 text-red-500 rounded-lg text-lg font-bold">
+            <p className="text-sm text-slate-500">Total Meals Expenses</p>
+            <div className="rounded-lg bg-rose-100 px-3 py-1 text-lg font-bold text-rose-500">
               ৳
             </div>
           </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">
+          <h3 className="mb-1 text-4xl font-bold text-slate-900">
             ৳{dashboardStats.mealCostTotal.toFixed(2)}
           </h3>
-          <p className="text-gray-400 text-xs">this month</p>
+          <p className="text-xs text-slate-400">this month</p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="rounded-2xl border border-emerald-100 bg-white/90 p-6 shadow-sm backdrop-blur">
           <div className="flex justify-between items-start mb-4">
-            <p className="text-gray-500 text-sm">Total Meals</p>
-            <div className="p-2 bg-green-50 text-green-500 rounded-lg">
+            <p className="text-sm text-slate-500">Total Meals</p>
+            <div className="rounded-lg bg-emerald-100 p-2 text-emerald-500">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -254,16 +273,16 @@ const Dashboard = () => {
               </svg>
             </div>
           </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">
+          <h3 className="mb-1 text-4xl font-bold text-slate-900">
             {dashboardStats.totalMealsAllMembers}
           </h3>
-          <p className="text-gray-400 text-xs">meals consumed</p>
+          <p className="text-xs text-slate-400">meals consumed</p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="rounded-2xl border border-violet-100 bg-white/90 p-6 shadow-sm backdrop-blur">
           <div className="flex justify-between items-start mb-4">
-            <p className="text-gray-500 text-sm">Per Meal Rate</p>
-            <div className="p-2 bg-purple-50 text-purple-500 rounded-lg">
+            <p className="text-sm text-slate-500">Per Meal Rate</p>
+            <div className="rounded-lg bg-violet-100 p-2 text-violet-500">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -279,36 +298,36 @@ const Dashboard = () => {
               </svg>
             </div>
           </div>
-          <h3 className="text-4xl font-bold text-gray-900 mb-1">
+          <h3 className="mb-1 text-4xl font-bold text-slate-900">
             ৳{dashboardStats.costPerMeal.toFixed(2)}
           </h3>
-          <p className="text-gray-400 text-xs">per meal</p>
+          <p className="text-xs text-slate-400">per meal</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8">
+      <div className="mb-8 rounded-2xl border border-slate-100 bg-white/90 p-8 shadow-sm backdrop-blur">
         <div className="mb-6">
-          <h4 className="text-lg font-medium text-gray-900">
+          <h4 className="text-lg font-medium text-slate-900">
             Fixed Expense Summary
           </h4>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-slate-500">
             Current month: {dashboardStats.monthKey}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-            <p className="text-sm text-gray-500 mb-2">Total Fixed Expense</p>
-            <p className="text-2xl font-bold text-red-600">
+          <div className="rounded-xl border border-rose-100 bg-rose-50/70 p-4">
+            <p className="mb-2 text-sm text-slate-500">Total Fixed Expense</p>
+            <p className="text-2xl font-bold text-rose-600">
               ৳{dashboardStats.fixedTotal.toFixed(2)}
             </p>
           </div>
-          <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-            <p className="text-sm text-gray-500 mb-2">Per Person Expense</p>
-            <p className="text-2xl font-bold text-gray-900">
+          <div className="rounded-xl border border-sky-100 bg-sky-50/70 p-4">
+            <p className="mb-2 text-sm text-slate-500">Per Person Expense</p>
+            <p className="text-2xl font-bold text-slate-900">
               ৳{dashboardStats.fixedCostPerPerson.toFixed(2)}
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="mt-1 text-xs text-slate-400">
               based on {dashboardStats.memberCount} members
             </p>
           </div>
@@ -316,8 +335,8 @@ const Dashboard = () => {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-        <h4 className="text-lg font-medium text-gray-900 mb-6">
+      <div className="rounded-2xl border border-slate-100 bg-white/90 p-8 shadow-sm backdrop-blur">
+        <h4 className="mb-6 text-lg font-medium text-slate-900">
           Recent Activity
         </h4>
         {recentActivity.length > 0 ? (
@@ -325,32 +344,32 @@ const Dashboard = () => {
             {recentActivity.map((item, index) => (
               <div key={item.id}>
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-600 text-sm font-semibold shrink-0">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-slate-100 bg-slate-50 text-sm font-semibold text-slate-600">
                     {item.avatarInitials || "NA"}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium text-slate-900">
                       {item.name}
                     </p>
-                    <p className="text-sm text-gray-500 mt-1">{item.title}</p>
-                    <p className="text-xs text-gray-400 mt-1">
+                    <p className="mt-1 text-sm text-slate-500">{item.title}</p>
+                    <p className="mt-1 text-xs text-slate-400">
                       {item.timeLabel}
                     </p>
                   </div>
                   {item.amount !== null && item.amount !== undefined ? (
-                    <div className="text-sm font-semibold text-gray-900 whitespace-nowrap">
+                    <div className="whitespace-nowrap text-sm font-semibold text-slate-900">
                       {formatCurrency(item.amount)}
                     </div>
                   ) : null}
                 </div>
                 {index < recentActivity.length - 1 ? (
-                  <hr className="border-gray-50 mt-6" />
+                  <hr className="mt-6 border-slate-50" />
                 ) : null}
               </div>
             ))}
           </div>
         ) : (
-          <div className="rounded-xl border border-dashed border-gray-200 bg-gray-50 px-4 py-6 text-sm text-gray-500">
+          <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-500">
             No recent activity yet.
           </div>
         )}

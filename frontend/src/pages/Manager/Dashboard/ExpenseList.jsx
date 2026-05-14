@@ -1,3 +1,4 @@
+import { CircleDollarSign, ListFilter, NotebookText } from "lucide-react";
 import { useState } from "react";
 import { useGetExpensesListQuery } from "../../../features/expenses/expensesSlice";
 import useAuth from "../../../hooks/useAuth";
@@ -22,61 +23,73 @@ const ExpenseList = () => {
   };
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="min-h-screen rounded-3xl bg-gradient-to-br from-amber-50 via-white to-cyan-50 p-6 md:p-8">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">Expense List</h1>
-          <p className="text-gray-500 mt-1">View all expenses for {monthKey}</p>
+      <div className="mb-8 flex items-start justify-between gap-4">
+        <div className="flex items-start gap-4">
+          <div className="rounded-2xl bg-amber-100 p-3 text-amber-600 shadow-sm">
+            <NotebookText className="h-7 w-7" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-slate-900">Expense List</h1>
+            <p className="mt-1 text-slate-500">
+              View all expenses for {monthKey}
+            </p>
+          </div>
         </div>
-        <input
-          type="month"
-          value={monthKey}
-          onChange={handleMonthChange}
-          className="bg-white border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
+        <div className="relative">
+          <ListFilter className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <input
+            type="month"
+            value={monthKey}
+            onChange={handleMonthChange}
+            className="rounded-lg border border-slate-200 bg-white py-2.5 pl-10 pr-3 text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+          />
+        </div>
       </div>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <p className="text-gray-500 text-sm font-medium mb-1">
-            Total Expenses
-          </p>
-          <h2 className="text-3xl font-bold text-red-600">
+        <div className="rounded-2xl border border-rose-100 bg-white/90 p-6 shadow-sm backdrop-blur">
+          <div className="mb-2 flex items-center gap-2 text-slate-500">
+            <CircleDollarSign className="h-4 w-4 text-rose-500" />
+            <p className="text-sm font-medium">Total Expenses</p>
+          </div>
+          <h2 className="text-3xl font-bold text-rose-600">
             ৳{total.toFixed(2)}
           </h2>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-          <p className="text-gray-500 text-sm font-medium mb-1">
-            Number of Expenses
-          </p>
-          <h2 className="text-3xl font-bold text-gray-800">{count}</h2>
+        <div className="rounded-2xl border border-sky-100 bg-white/90 p-6 shadow-sm backdrop-blur">
+          <div className="mb-2 flex items-center gap-2 text-slate-500">
+            <NotebookText className="h-4 w-4 text-sky-500" />
+            <p className="text-sm font-medium">Number of Expenses</p>
+          </div>
+          <h2 className="text-3xl font-bold text-slate-900">{count}</h2>
         </div>
       </div>
 
       {/* Expenses Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="rounded-2xl border border-slate-100 bg-white/90 p-6 shadow-sm backdrop-blur">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-gray-100 text-gray-600">
-                <th className="py-3 font-semibold">Date</th>
-                <th className="py-3 font-semibold">Title</th>
-                <th className="py-3 font-semibold">Amount</th>
-                <th className="py-3 font-semibold">Description</th>
+              <tr className="border-b border-amber-100 bg-amber-50/70 text-slate-600">
+                <th className="py-3 px-2 font-semibold">Date</th>
+                <th className="py-3 px-2 font-semibold">Title</th>
+                <th className="py-3 px-2 font-semibold">Amount</th>
+                <th className="py-3 px-2 font-semibold">Description</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td className="py-4 text-gray-500" colSpan={4}>
+                  <td className="py-4 text-slate-500" colSpan={4}>
                     Loading expenses...
                   </td>
                 </tr>
               ) : expenses.length === 0 ? (
                 <tr>
-                  <td className="py-4 text-gray-500" colSpan={4}>
+                  <td className="py-4 text-slate-500" colSpan={4}>
                     No expenses found for this month.
                   </td>
                 </tr>
@@ -84,24 +97,24 @@ const ExpenseList = () => {
                 expenses.map((expense, index) => (
                   <tr
                     key={expense.id}
-                    className={`border-b border-gray-50 ${
-                      index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    className={`border-b border-slate-50 ${
+                      index % 2 === 0 ? "bg-slate-50/60" : "bg-white"
                     }`}
                   >
-                    <td className="py-3 font-medium text-gray-800">
+                    <td className="py-3 px-2 font-medium text-slate-800">
                       {new Date(expense.date).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
                       })}
                     </td>
-                    <td className="py-3 font-medium text-gray-700">
+                    <td className="py-3 px-2 font-medium text-slate-700">
                       {expense.title}
                     </td>
-                    <td className="py-3 font-semibold text-red-600">
+                    <td className="py-3 px-2 font-semibold text-rose-600">
                       ৳{expense.amount.toFixed(2)}
                     </td>
-                    <td className="py-3 text-gray-600">
+                    <td className="py-3 px-2 text-slate-600">
                       {expense.description || "-"}
                     </td>
                   </tr>

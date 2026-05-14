@@ -70,20 +70,25 @@ const MessSettings = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Mess Settings</h1>
-        <p className="text-gray-500 mt-1">
-          Update your mess name or delete your mess.
-        </p>
+    <div className="mx-auto max-w-4xl space-y-6 rounded-3xl bg-gradient-to-br from-sky-50 via-white to-rose-50 p-6 md:p-8">
+      <div className="flex items-start gap-4">
+        <div className="rounded-2xl bg-sky-100 p-3 text-sky-600 shadow-sm">
+          <Settings className="h-7 w-7" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900">Mess Settings</h1>
+          <p className="mt-1 text-slate-500">
+            Update your mess name or delete your mess.
+          </p>
+        </div>
       </div>
 
-      <section className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
+      <section className="rounded-2xl border border-slate-100 bg-white/90 p-6 shadow-sm backdrop-blur">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 rounded-lg bg-blue-100 text-blue-700">
+          <div className="rounded-lg bg-sky-100 p-2 text-sky-700">
             <Settings className="w-5 h-5" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold text-slate-900">
             Change Mess Name
           </h2>
         </div>
@@ -100,7 +105,7 @@ const MessSettings = () => {
               placeholder={
                 isLoading ? "Loading..." : currentMessName || "Enter mess name"
               }
-              className="w-full md:w-2/3 bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 md:w-2/3"
               disabled={isLoading || isUpdating}
               required
             />
@@ -109,22 +114,22 @@ const MessSettings = () => {
           <button
             type="submit"
             disabled={isLoading || isUpdating}
-            className="bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg text-sm px-6 py-2.5 transition-colors disabled:opacity-60"
+            className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-60"
           >
             {isUpdating ? "Saving..." : "Save Changes"}
           </button>
         </form>
       </section>
 
-      <section className="bg-white border border-red-100 rounded-2xl p-6 shadow-sm">
+      <section className="rounded-2xl border border-rose-100 bg-white/90 p-6 shadow-sm backdrop-blur">
         <div className="flex items-center gap-3 mb-3">
-          <div className="p-2 rounded-lg bg-red-100 text-red-600">
+          <div className="rounded-lg bg-rose-100 p-2 text-rose-600">
             <Trash2 className="w-5 h-5" />
           </div>
-          <h2 className="text-xl font-semibold text-red-700">Danger Zone</h2>
+          <h2 className="text-xl font-semibold text-rose-700">Danger Zone</h2>
         </div>
 
-        <p className="text-sm text-gray-600 mb-4">
+        <p className="mb-4 text-sm text-slate-600">
           Deleting your mess removes all related data. This action cannot be
           undone.
         </p>
@@ -133,7 +138,7 @@ const MessSettings = () => {
           type="button"
           onClick={handleDelete}
           disabled={isDeleting}
-          className="bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg text-sm px-6 py-2.5 transition-colors disabled:opacity-60"
+          className="rounded-lg bg-rose-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-rose-700 disabled:opacity-60"
         >
           {isDeleting ? "Deleting..." : "Delete Mess"}
         </button>
