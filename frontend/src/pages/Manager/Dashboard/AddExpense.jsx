@@ -102,6 +102,37 @@ const AddExpense = () => {
     setGeneralExpenseForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const getDateLimits = () => {
+    const today = new Date();
+    const maxDate = today.toISOString().split("T")[0];
+
+    const minDate = new Date();
+    minDate.setDate(minDate.getDate() - 20);
+    const minDateString = minDate.toISOString().split("T")[0];
+
+    return { minDate: minDateString, maxDate };
+  };
+
+  const getMonthLimits = () => {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1;
+
+    // Max: current month (YYYY-MM)
+    const maxMonth = `${currentYear}-${String(currentMonth).padStart(2, "0")}`;
+
+    // Min: previous month
+    let prevYear = currentYear;
+    let prevMonth = currentMonth - 1;
+    if (prevMonth === 0) {
+      prevMonth = 12;
+      prevYear -= 1;
+    }
+    const minMonth = `${prevYear}-${String(prevMonth).padStart(2, "0")}`;
+
+    return { minMonth, maxMonth };
+  };
+
   const handleGeneralExpenseSubmit = async (event) => {
     event.preventDefault();
 
@@ -210,6 +241,8 @@ const AddExpense = () => {
               name="date"
               value={generalExpenseForm.date}
               onChange={handleGeneralExpenseChange}
+              min={getDateLimits().minDate}
+              max={getDateLimits().maxDate}
               className="w-full md:w-1/2 bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
               required
             />
@@ -256,6 +289,8 @@ const AddExpense = () => {
               type="month"
               value={monthKey}
               onChange={handleMonthChange}
+              min={getMonthLimits().minMonth}
+              max={getMonthLimits().maxMonth}
               className="w-full md:w-1/2 bg-gray-50 border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
               required
             />
