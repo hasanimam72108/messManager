@@ -1,3 +1,4 @@
+import { Inbox, RotateCcw, UserCheck, UserX } from "lucide-react";
 import { useState } from "react";
 import {
   useApproveMessRequestMutation,
@@ -30,66 +31,78 @@ const MessGroup = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">
-          Mess Group Requests
-        </h1>
-        <p className="text-gray-500 mt-1">
-          Approve or reject manager mess creation requests.
-        </p>
+    <div className="space-y-6 rounded-3xl bg-gradient-to-br from-rose-50 via-white to-amber-50 p-6 md:p-8">
+      <div className="flex items-start gap-4">
+        <div className="rounded-2xl bg-rose-100 p-3 text-rose-600 shadow-sm">
+          <Inbox className="h-7 w-7" />
+        </div>
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900">
+            Mess Group Requests
+          </h1>
+          <p className="mt-1 text-slate-500">
+            Approve or reject manager mess creation requests.
+          </p>
+        </div>
       </div>
 
       {lastApproved && (
-        <div className="bg-green-50 border border-green-100 text-green-700 rounded-xl p-4 text-sm">
+        <div className="flex items-center gap-2 rounded-xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-700">
+          <RotateCcw className="h-4 w-4" />
           {lastApproved}
         </div>
       )}
 
-      <div className="bg-white border border-gray-100 rounded-2xl p-6">
+      <div className="rounded-2xl border border-slate-100 bg-white/90 p-6 shadow-sm backdrop-blur">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-gray-100 text-gray-600">
-                <th className="py-3">Mess Name</th>
-                <th className="py-3">Manager Name</th>
-                <th className="py-3">Manager Email</th>
-                <th className="py-3">Actions</th>
+              <tr className="border-b border-rose-100 bg-rose-50/70 text-slate-600">
+                <th className="py-3 px-2">Mess Name</th>
+                <th className="py-3 px-2">Manager Name</th>
+                <th className="py-3 px-2">Manager Email</th>
+                <th className="py-3 px-2">Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td className="py-4 text-gray-500" colSpan={4}>
+                  <td className="py-4 text-slate-500" colSpan={4}>
                     Loading requests...
                   </td>
                 </tr>
               ) : pendingRequests.length === 0 ? (
                 <tr>
-                  <td className="py-4 text-gray-500" colSpan={4}>
+                  <td className="py-4 text-slate-500" colSpan={4}>
                     No pending requests.
                   </td>
                 </tr>
               ) : (
                 pendingRequests.map((request) => (
-                  <tr key={request.id} className="border-b border-gray-50">
-                    <td className="py-3 font-medium text-gray-800">
+                  <tr key={request.id} className="border-b border-slate-50">
+                    <td className="py-3 px-2 font-medium text-slate-800">
                       {request.messName}
                     </td>
-                    <td className="py-3">{request.managerName || "N/A"}</td>
-                    <td className="py-3">{request.managerEmail}</td>
-                    <td className="py-3">
+                    <td className="py-3 px-2 text-slate-600">
+                      {request.managerName || "N/A"}
+                    </td>
+                    <td className="py-3 px-2 text-slate-600">
+                      {request.managerEmail}
+                    </td>
+                    <td className="py-3 px-2">
                       <div className="flex gap-2">
                         <button
-                          className="px-3 py-1.5 rounded-lg bg-green-600 text-white text-xs"
+                          className="inline-flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-700 transition-colors hover:bg-emerald-100"
                           onClick={() => handleApprove(request.id)}
                         >
+                          <UserCheck className="h-3.5 w-3.5" />
                           Approve
                         </button>
                         <button
-                          className="px-3 py-1.5 rounded-lg bg-red-500 text-white text-xs"
+                          className="inline-flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-100"
                           onClick={() => handleReject(request.id)}
                         >
+                          <UserX className="h-3.5 w-3.5" />
                           Reject
                         </button>
                       </div>
