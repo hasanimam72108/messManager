@@ -53,6 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/meals/daily', [ExpenseController::class, 'managerDailyMeals']);
         Route::get('/fixed-costs', [ExpenseController::class, 'fixedCosts']);
         Route::get('/expenses/summary', [ExpenseController::class, 'monthlyExpenseSummary']);
+        Route::get('/expenses/list', [ExpenseController::class, 'expensesList']);
         Route::put('/fixed-costs', [ExpenseController::class, 'upsertFixedCosts']);
         Route::post('/expenses', [ExpenseController::class, 'storeExpense']);
     });

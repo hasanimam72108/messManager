@@ -3,6 +3,7 @@ import {
   ChefHat,
   Home,
   LayoutDashboard,
+  ListChecks,
   LogOut,
   PieChart,
   Receipt,
@@ -56,6 +57,13 @@ const Sidebar = ({ onClose }) => {
       icon: Receipt,
       color: "text-rose-600",
       bg: "bg-rose-100",
+    },
+    {
+      name: "Expense List",
+      path: "/manager/expense-list",
+      icon: ListChecks,
+      color: "text-orange-600",
+      bg: "bg-orange-100",
     },
     {
       name: "Meals Chart",

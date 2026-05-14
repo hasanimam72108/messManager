@@ -20,6 +20,15 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
         { type: "Expense", id: `SUMMARY-${arg?.monthKey || "CURRENT"}` },
       ],
     }),
+    getExpensesList: builder.query({
+      query: ({ monthKey } = {}) =>
+        monthKey
+          ? `/manager/expenses/list?monthKey=${encodeURIComponent(monthKey)}`
+          : "/manager/expenses/list",
+      providesTags: (result, error, arg) => [
+        { type: "Expense", id: `LIST-${arg?.monthKey || "CURRENT"}` },
+      ],
+    }),
     getManagerDashboardStats: builder.query({
       query: ({ monthKey } = {}) =>
         monthKey
@@ -147,6 +156,7 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
 export const {
   useGetFixedCostsQuery,
   useGetMonthlyExpenseSummaryQuery,
+  useGetExpensesListQuery,
   useGetManagerDashboardStatsQuery,
   useGetManagerDailyMealsQuery,
   useGetUserDashboardStatsQuery,

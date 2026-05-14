@@ -7,6 +7,7 @@ import Home from "../pages/Home/Home";
 import Login from "../pages/Login/Login";
 import AddExpense from "../pages/Manager/Dashboard/AddExpense";
 import Dashboard from "../pages/Manager/Dashboard/Dashboard";
+import ExpenseList from "../pages/Manager/Dashboard/ExpenseList";
 import MealsChart from "../pages/Manager/Dashboard/MealsChart";
 import Members from "../pages/Manager/Dashboard/Members";
 import MessSettings from "../pages/Manager/Dashboard/MessSettings";
@@ -70,6 +71,7 @@ const Routers = () => {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="members" element={<Members />} />
         <Route path="add-expense" element={<AddExpense />} />
+        <Route path="expense-list" element={<ExpenseList />} />
         <Route path="meals-chart" element={<MealsChart />} />
         <Route path="monthly-report" element={<MonthlyReport />} />
         <Route path="mess-settings" element={<MessSettings />} />

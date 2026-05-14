@@ -167,6 +167,54 @@ class ExpenseController extends Controller
         ]);
     }
 
+    public function expensesList(Request $request): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_MANAGER);
+
+        $user = $request->user();
+
+        if (! $user->mess_id) {
+            throw ValidationException::withMessages([
+                'mess' => 'Manager mess not found.',
+            ]);
+        }
+
+        $data = $request->validate([
+            'monthKey' => ['nullable', 'string'],
+            'month_key' => ['nullable', 'string'],
+        ]);
+
+        $monthKey = $this->normalizeMonthKey(
+            $data['monthKey'] ?? $data['month_key'] ?? now()->format('Y-m')
+        );
+        $monthStart = Carbon::createFromFormat('Y-m', $monthKey)->startOfMonth();
+        $monthEnd = Carbon::createFromFormat('Y-m', $monthKey)->endOfMonth();
+
+        $expenses = Expense::query()
+            ->where('mess_id', $user->mess_id)
+            ->whereBetween('expense_date', [$monthStart, $monthEnd])
+            ->orderBy('expense_date', 'desc')
+            ->get()
+            ->map(function ($expense) {
+                return [
+                    'id' => $expense->id,
+                    'title' => $expense->title,
+                    'amount' => (float) $expense->amount,
+                    'date' => $expense->expense_date->format('Y-m-d'),
+                    'description' => $expense->description ?? '',
+                ];
+            });
+
+        return response()->json([
+            'data' => [
+                'monthKey' => $monthKey,
+                'expenses' => $expenses,
+                'total' => (float) $expenses->sum('amount'),
+                'count' => $expenses->count(),
+            ],
+        ]);
+    }
+
     public function dashboardStats(Request $request): JsonResponse
     {
         $this->ensureRole($request->user(), User::ROLE_MANAGER);
