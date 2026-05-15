@@ -351,6 +351,9 @@ const Balance = () => {
   const { user } = useAuth();
   const [mealExpenseAmount, setMealExpenseAmount] = useState("");
   const [fixedExpenseAmount, setFixedExpenseAmount] = useState("");
+  const [selectedExpenseMonth, setSelectedExpenseMonth] = useState(
+    new Date().toISOString().slice(0, 7),
+  );
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [pendingPayment, setPendingPayment] = useState(null);
 
@@ -391,6 +394,7 @@ const Balance = () => {
       const response = await addDeposit({
         amount: Number(amount),
         type,
+        date: `${selectedExpenseMonth}-01`,
         ...paymentData,
       }).unwrap();
       toast.success(response?.message || "Request sent for manager approval.");
@@ -452,6 +456,18 @@ const Balance = () => {
             Add meal-related deposit amount
           </p>
 
+          <div className="mb-5">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Month
+            </label>
+            <input
+              type="month"
+              value={selectedExpenseMonth}
+              onChange={(e) => setSelectedExpenseMonth(e.target.value)}
+              className="w-full sm:max-w-xs px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors"
+            />
+          </div>
+
           <form
             onSubmit={(event) =>
               handleAddExpenseClick(
@@ -496,6 +512,18 @@ const Balance = () => {
           <p className="text-gray-500 text-sm mb-6">
             Add fixed-cost deposit amount
           </p>
+
+          <div className="mb-5">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select Month
+            </label>
+            <input
+              type="month"
+              value={selectedExpenseMonth}
+              onChange={(e) => setSelectedExpenseMonth(e.target.value)}
+              className="w-full sm:max-w-xs px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition-colors"
+            />
+          </div>
 
           <form
             onSubmit={(event) =>
