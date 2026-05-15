@@ -53,13 +53,6 @@ const Sidebar = ({ onClose }) => {
       bg: "bg-indigo-100",
     },
     {
-      name: "Members Financials",
-      path: "/manager/members-financials",
-      icon: DollarSign,
-      color: "text-emerald-600",
-      bg: "bg-emerald-100",
-    },
-    {
       name: "Add Expense",
       path: "/manager/add-expense",
       icon: Receipt,
@@ -86,6 +79,13 @@ const Sidebar = ({ onClose }) => {
       icon: PieChart,
       color: "text-fuchsia-600",
       bg: "bg-fuchsia-100",
+    },
+    {
+      name: "Members Financials",
+      path: "/manager/members-financials",
+      icon: DollarSign,
+      color: "text-emerald-600",
+      bg: "bg-emerald-100",
     },
     {
       name: "Mess Settings",
