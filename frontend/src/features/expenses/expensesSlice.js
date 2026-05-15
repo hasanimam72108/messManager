@@ -141,6 +141,23 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
         ];
       },
     }),
+    deleteUserMealEntries: builder.mutation({
+      query: ({ date, mealType }) => ({
+        url: `/user/meals?date=${encodeURIComponent(date)}&mealType=${encodeURIComponent(mealType)}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result, error, arg) => {
+        const monthKey = String(
+          arg?.date || new Date().toISOString().split("T")[0],
+        ).slice(0, 7);
+
+        return [
+          { type: "Dashboard", id: monthKey },
+          { type: "Meal", id: `USER-MEALS-${monthKey}` },
+          { type: "Expense", id: `USER-BILL-${monthKey}` },
+        ];
+      },
+    }),
     addDeposit: builder.mutation({
       query: (body) => ({
         url: "/user/transactions",
@@ -176,5 +193,6 @@ export const {
   useUpsertFixedCostsMutation,
   useAddExpenseMutation,
   useAddMealMutation,
+  useDeleteUserMealEntriesMutation,
   useAddDepositMutation,
 } = expensesApiSlice;

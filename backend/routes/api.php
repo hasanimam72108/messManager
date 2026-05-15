@@ -68,5 +68,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/meals', [MealController::class, 'index']);
         Route::post('/meals', [MealController::class, 'store']);
+        Route::delete('/meals', [MealController::class, 'destroy']);
     });
 });

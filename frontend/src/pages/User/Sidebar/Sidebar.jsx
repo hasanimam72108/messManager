@@ -1,4 +1,5 @@
 import {
+  CalendarDays,
   ChefHat,
   FileText,
   Home,
@@ -47,6 +48,13 @@ const Sidebar = ({ onClose }) => {
       icon: Utensils,
       color: "text-emerald-600",
       bg: "bg-emerald-100",
+    },
+    {
+      name: "Meal Chart",
+      path: "/user/meal-chart",
+      icon: CalendarDays,
+      color: "text-sky-600",
+      bg: "bg-sky-100",
     },
     {
       name: "My Bill",

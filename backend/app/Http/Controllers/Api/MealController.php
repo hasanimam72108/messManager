@@ -94,6 +94,51 @@ class MealController extends Controller
         ], 201);
     }
 
+    public function destroy(Request $request): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_USER);
+
+        $user = $request->user();
+
+        if (! $user->mess_id) {
+            throw ValidationException::withMessages([
+                'mess' => 'User mess not found.',
+            ]);
+        }
+
+        $data = $request->validate([
+            'date' => ['required', 'date'],
+            'mealType' => ['required', 'in:Lunch,Dinner'],
+            'meal_type' => ['nullable', 'in:Lunch,Dinner'],
+        ]);
+
+        $mealDate = Carbon::parse($data['date'])->startOfDay();
+        $mealType = $data['mealType'] ?? $data['meal_type'];
+
+        if ($mealDate->lte(now()->startOfDay())) {
+            throw ValidationException::withMessages([
+                'date' => 'Only future meal dates can be deleted.',
+            ]);
+        }
+
+        $deletedCount = Meal::query()
+            ->where('mess_id', $user->mess_id)
+            ->where('user_id', $user->id)
+            ->whereDate('meal_date', $mealDate->toDateString())
+            ->where('meal_type', $mealType)
+            ->delete();
+
+        if ($deletedCount === 0) {
+            throw ValidationException::withMessages([
+                'date' => 'No meal entries found for the selected meal type and date.',
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Meal entry deleted successfully.',
+        ]);
+    }
+
     private function ensureRole(?User $user, string $role): void
     {
         if (! $user || $user->role !== $role) {

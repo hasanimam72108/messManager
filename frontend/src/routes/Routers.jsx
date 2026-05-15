@@ -21,6 +21,7 @@ import MessGroup from "../pages/SuperAdmin/Dashboard/MessGroup";
 import Unauthorized from "../pages/Unauthorized";
 import Balance from "../pages/User/Dashboard/Balance";
 import UserDashboard from "../pages/User/Dashboard/Dashboard";
+import MealChart from "../pages/User/Dashboard/MealChart";
 import MealEntry from "../pages/User/Dashboard/MealEntry";
 import MyBill from "../pages/User/Dashboard/MyBill";
 import { getRoleHomePath } from "../utils/roleBasedNavigation";
@@ -91,6 +92,7 @@ const Routers = () => {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<UserDashboard />} />
         <Route path="meal-entry" element={<MealEntry />} />
+        <Route path="meal-chart" element={<MealChart />} />
         <Route path="my-bill" element={<MyBill />} />
         <Route path="balance" element={<Balance />} />
       </Route>
