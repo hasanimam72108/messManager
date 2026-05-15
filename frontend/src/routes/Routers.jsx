@@ -10,6 +10,7 @@ import Dashboard from "../pages/Manager/Dashboard/Dashboard";
 import ExpenseList from "../pages/Manager/Dashboard/ExpenseList";
 import MealsChart from "../pages/Manager/Dashboard/MealsChart";
 import Members from "../pages/Manager/Dashboard/Members";
+import MembersFinancials from "../pages/Manager/Dashboard/MembersFinancials";
 import MessSettings from "../pages/Manager/Dashboard/MessSettings";
 import MonthlyReport from "../pages/Manager/Dashboard/MonthlyReport";
 import NotFound from "../pages/NotFound";
@@ -70,6 +71,7 @@ const Routers = () => {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="members" element={<Members />} />
+        <Route path="members-financials" element={<MembersFinancials />} />
         <Route path="add-expense" element={<AddExpense />} />
         <Route path="expense-list" element={<ExpenseList />} />
         <Route path="meals-chart" element={<MealsChart />} />

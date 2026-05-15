@@ -18,10 +18,13 @@ const Members = () => {
     name: "",
     email: "",
   });
-  const { data, isLoading } = useGetMembersQuery();
+  const { data, isLoading, error } = useGetMembersQuery();
   const members = data?.data || [];
-  const { data: pendingDepositResponse, isLoading: isPendingRequestsLoading } =
-    useGetPendingDepositRequestsQuery();
+  const {
+    data: pendingDepositResponse,
+    isLoading: isPendingRequestsLoading,
+    error: pendingDepositError,
+  } = useGetPendingDepositRequestsQuery();
   const pendingDepositRequests = pendingDepositResponse?.data || [];
   const [addMember, { isLoading: isSubmitting }] = useAddMemberMutation();
   const [updateMember, { isLoading: isUpdating }] = useUpdateMemberMutation();
@@ -107,7 +110,30 @@ const Members = () => {
   };
 
   return (
-    <div className="space-y-8 rounded-3xl bg-gradient-to-br from-violet-50 via-white to-emerald-50 p-6 font-sans md:p-8">
+    <div className="space-y-8 rounded-3xl bg-linear-to-br from-violet-50 via-white to-emerald-50 p-6 font-sans md:p-8">
+      {/* Error Alert */}
+      {error && (
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6">
+          <p className="text-rose-700 font-semibold">Error Loading Members</p>
+          <p className="text-rose-600 mt-2">
+            {error?.data?.message ||
+              "Failed to load members. Please refresh the page."}
+          </p>
+        </div>
+      )}
+
+      {pendingDepositError && (
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6">
+          <p className="text-rose-700 font-semibold">
+            Error Loading Pending Requests
+          </p>
+          <p className="text-rose-600 mt-2">
+            {pendingDepositError?.data?.message ||
+              "Failed to load pending requests."}
+          </p>
+        </div>
+      )}
+
       {/* Add New Member Section */}
       <div className="rounded-2xl border border-slate-100 bg-white/90 p-8 shadow-sm backdrop-blur">
         <div className="mb-4 flex items-center gap-3">
@@ -257,89 +283,97 @@ const Members = () => {
         <h3 className="text-xl font-semibold text-slate-900">Member List</h3>
         <p className="mb-6 text-sm text-slate-500">All members in your mess</p>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-slate-100 bg-sky-50/70">
-                <th className="w-1/5 py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
-                  Name
-                </th>
-                <th className="w-1/4 py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
-                  Email
-                </th>
-                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
-                  Total Meals
-                </th>
-                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
-                  Deposit
-                </th>
-                <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody className="text-sm text-slate-800">
-              {isLoading ? (
-                <tr>
-                  <td className="py-4 px-2 text-slate-500" colSpan={5}>
-                    Loading members...
-                  </td>
+        {error ? (
+          <div className="rounded-lg border border-rose-200 bg-rose-50 p-4">
+            <p className="text-rose-600">
+              {error?.data?.message || "Failed to load member list."}
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="border-b border-slate-100 bg-sky-50/70">
+                  <th className="w-1/5 py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
+                    Name
+                  </th>
+                  <th className="w-1/4 py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
+                    Email
+                  </th>
+                  <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
+                    Total Meals
+                  </th>
+                  <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
+                    Deposit
+                  </th>
+                  <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900">
+                    Actions
+                  </th>
                 </tr>
-              ) : members.length === 0 ? (
-                <tr>
-                  <td className="py-4 px-2 text-slate-500" colSpan={5}>
-                    No members added yet.
-                  </td>
-                </tr>
-              ) : (
-                members.map((member, index) => (
-                  <tr
-                    key={member.id}
-                    className={
-                      index !== members.length - 1
-                        ? "border-b border-slate-100"
-                        : ""
-                    }
-                  >
-                    <td className="py-4 px-2 font-medium wrap-break-word text-slate-900">
-                      {member.name}
-                    </td>
-                    <td className="py-4 px-2 wrap-break-word text-slate-600">
-                      {member.email}
-                    </td>
-                    <td className="py-4 px-2 text-slate-700">
-                      {member.totalMeals ?? 0}
-                    </td>
-                    <td className="py-4 px-2 text-slate-700">
-                      ৳{Number(member.balance || 0).toFixed(2)}
-                    </td>
-                    <td className="py-4 px-2">
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEditModal(member)}
-                          className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition"
-                        >
-                          <PencilLine className="h-4 w-4" />
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteMember(member)}
-                          disabled={isDeleting}
-                          className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition disabled:opacity-60"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Delete
-                        </button>
-                      </div>
+              </thead>
+              <tbody className="text-sm text-slate-800">
+                {isLoading ? (
+                  <tr>
+                    <td className="py-4 px-2 text-slate-500" colSpan={5}>
+                      Loading members...
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ) : members.length === 0 ? (
+                  <tr>
+                    <td className="py-4 px-2 text-slate-500" colSpan={5}>
+                      No members added yet.
+                    </td>
+                  </tr>
+                ) : (
+                  members.map((member, index) => (
+                    <tr
+                      key={member.id}
+                      className={
+                        index !== members.length - 1
+                          ? "border-b border-slate-100"
+                          : ""
+                      }
+                    >
+                      <td className="py-4 px-2 font-medium wrap-break-word text-slate-900">
+                        {member.name}
+                      </td>
+                      <td className="py-4 px-2 wrap-break-word text-slate-600">
+                        {member.email}
+                      </td>
+                      <td className="py-4 px-2 text-slate-700">
+                        {member.totalMeals ?? 0}
+                      </td>
+                      <td className="py-4 px-2 text-slate-700">
+                        ৳{Number(member.balance || 0).toFixed(2)}
+                      </td>
+                      <td className="py-4 px-2">
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => openEditModal(member)}
+                            className="inline-flex items-center gap-1 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition"
+                          >
+                            <PencilLine className="h-4 w-4" />
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteMember(member)}
+                            disabled={isDeleting}
+                            className="inline-flex items-center gap-1 rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition disabled:opacity-60"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       {editingMember ? (

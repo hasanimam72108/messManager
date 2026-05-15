@@ -86,6 +86,15 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
           : []),
       ],
     }),
+    getMembersFinancials: builder.query({
+      query: ({ monthKey } = {}) =>
+        monthKey
+          ? `/manager/financials/members?monthKey=${encodeURIComponent(monthKey)}`
+          : "/manager/financials/members",
+      providesTags: (result, error, arg) => [
+        { type: "Financials", id: `MEMBERS-${arg?.monthKey || "CURRENT"}` },
+      ],
+    }),
     upsertFixedCosts: builder.mutation({
       query: (body) => ({
         url: "/manager/fixed-costs",
@@ -163,6 +172,7 @@ export const {
   useGetUserMealsQuery,
   useGetUserBillSummaryQuery,
   useGetUserTransactionsQuery,
+  useGetMembersFinancialsQuery,
   useUpsertFixedCostsMutation,
   useAddExpenseMutation,
   useAddMealMutation,

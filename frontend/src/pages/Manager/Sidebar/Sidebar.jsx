@@ -1,6 +1,7 @@
 import {
   BarChart3,
   ChefHat,
+  DollarSign,
   Home,
   LayoutDashboard,
   ListChecks,
@@ -50,6 +51,13 @@ const Sidebar = ({ onClose }) => {
       icon: Users,
       color: "text-indigo-600",
       bg: "bg-indigo-100",
+    },
+    {
+      name: "Members Financials",
+      path: "/manager/members-financials",
+      icon: DollarSign,
+      color: "text-emerald-600",
+      bg: "bg-emerald-100",
     },
     {
       name: "Add Expense",

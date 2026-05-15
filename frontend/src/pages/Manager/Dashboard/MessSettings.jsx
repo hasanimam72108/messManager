@@ -16,7 +16,7 @@ import {
 const MessSettings = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { data: messResponse, isLoading } = useGetManagerMessQuery();
+  const { data: messResponse, isLoading, error } = useGetManagerMessQuery();
   const [updateManagerMess, { isLoading: isUpdating }] =
     useUpdateManagerMessMutation();
   const [deleteManagerMess, { isLoading: isDeleting }] =
@@ -70,7 +70,7 @@ const MessSettings = () => {
   };
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 rounded-3xl bg-gradient-to-br from-sky-50 via-white to-rose-50 p-6 md:p-8">
+    <div className="mx-auto max-w-4xl space-y-6 rounded-3xl bg-linear-to-br from-sky-50 via-white to-rose-50 p-6 md:p-8">
       <div className="flex items-start gap-4">
         <div className="rounded-2xl bg-sky-100 p-3 text-sky-600 shadow-sm">
           <Settings className="h-7 w-7" />
@@ -83,66 +83,90 @@ const MessSettings = () => {
         </div>
       </div>
 
-      <section className="rounded-2xl border border-slate-100 bg-white/90 p-6 shadow-sm backdrop-blur">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="rounded-lg bg-sky-100 p-2 text-sky-700">
-            <Settings className="w-5 h-5" />
-          </div>
-          <h2 className="text-xl font-semibold text-slate-900">
-            Change Mess Name
-          </h2>
+      {error && (
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6">
+          <p className="text-rose-700 font-semibold">Error Loading Mess</p>
+          <p className="text-rose-600 mt-2">
+            {error?.data?.message ||
+              "Failed to load mess settings. Please refresh the page."}
+          </p>
         </div>
+      )}
 
-        <form onSubmit={handleSave} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Mess Name
-            </label>
-            <input
-              type="text"
-              value={messName}
-              onChange={(event) => setMessName(event.target.value)}
-              placeholder={
-                isLoading ? "Loading..." : currentMessName || "Enter mess name"
-              }
-              className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 md:w-2/3"
-              disabled={isLoading || isUpdating}
-              required
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading || isUpdating}
-            className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-60"
-          >
-            {isUpdating ? "Saving..." : "Save Changes"}
-          </button>
-        </form>
-      </section>
-
-      <section className="rounded-2xl border border-rose-100 bg-white/90 p-6 shadow-sm backdrop-blur">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="rounded-lg bg-rose-100 p-2 text-rose-600">
-            <Trash2 className="w-5 h-5" />
-          </div>
-          <h2 className="text-xl font-semibold text-rose-700">Danger Zone</h2>
+      {isLoading && (
+        <div className="rounded-2xl border border-slate-100 bg-white/90 p-6 shadow-sm backdrop-blur">
+          <p className="text-slate-500">Loading mess settings...</p>
         </div>
+      )}
 
-        <p className="mb-4 text-sm text-slate-600">
-          Deleting your mess removes all related data. This action cannot be
-          undone.
-        </p>
+      {!error && !isLoading && (
+        <>
+          <section className="rounded-2xl border border-slate-100 bg-white/90 p-6 shadow-sm backdrop-blur">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="rounded-lg bg-sky-100 p-2 text-sky-700">
+                <Settings className="w-5 h-5" />
+              </div>
+              <h2 className="text-xl font-semibold text-slate-900">
+                Change Mess Name
+              </h2>
+            </div>
 
-        <button
-          type="button"
-          onClick={handleDelete}
-          disabled={isDeleting}
-          className="rounded-lg bg-rose-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-rose-700 disabled:opacity-60"
-        >
-          {isDeleting ? "Deleting..." : "Delete Mess"}
-        </button>
-      </section>
+            <form onSubmit={handleSave} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Mess Name
+                </label>
+                <input
+                  type="text"
+                  value={messName}
+                  onChange={(event) => setMessName(event.target.value)}
+                  placeholder={
+                    isLoading
+                      ? "Loading..."
+                      : currentMessName || "Enter mess name"
+                  }
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 md:w-2/3"
+                  disabled={isLoading || isUpdating}
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading || isUpdating}
+                className="rounded-lg bg-emerald-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-emerald-700 disabled:opacity-60"
+              >
+                {isUpdating ? "Saving..." : "Save Changes"}
+              </button>
+            </form>
+          </section>
+
+          <section className="rounded-2xl border border-rose-100 bg-white/90 p-6 shadow-sm backdrop-blur">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="rounded-lg bg-rose-100 p-2 text-rose-600">
+                <Trash2 className="w-5 h-5" />
+              </div>
+              <h2 className="text-xl font-semibold text-rose-700">
+                Danger Zone
+              </h2>
+            </div>
+
+            <p className="mb-4 text-sm text-slate-600">
+              Deleting your mess removes all related data. This action cannot be
+              undone.
+            </p>
+
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="rounded-lg bg-rose-600 px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-rose-700 disabled:opacity-60"
+            >
+              {isDeleting ? "Deleting..." : "Delete Mess"}
+            </button>
+          </section>
+        </>
+      )}
     </div>
   );
 };

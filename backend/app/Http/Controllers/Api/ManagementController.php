@@ -326,10 +326,18 @@ class ManagementController extends Controller
 
     private function resolveManagedMess(User $manager): Mess
     {
+        if (! $manager->mess_id) {
+            abort(400, 'Your manager account is not assigned to any mess. Please contact support.');
+        }
+
         $mess = Mess::query()->with(['manager', 'request'])->find($manager->mess_id);
 
-        if (! $mess || (int) $mess->manager_user_id !== (int) $manager->id) {
-            abort(404, 'Mess not found.');
+        if (! $mess) {
+            abort(404, 'Your mess no longer exists.');
+        }
+
+        if ((int) $mess->manager_user_id !== (int) $manager->id) {
+            abort(403, 'You are not the manager of this mess.');
         }
 
         return $mess;

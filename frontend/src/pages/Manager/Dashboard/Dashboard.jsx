@@ -40,10 +40,11 @@ const Dashboard = () => {
 
   const hasDeletedMess = !user?.messId;
 
-  const { data: dashboardStatsResponse } = useGetManagerDashboardStatsQuery(
-    { monthKey: currentMonthKey },
-    { skip: !managerUserId || hasDeletedMess },
-  );
+  const { data: dashboardStatsResponse, error: dashboardError } =
+    useGetManagerDashboardStatsQuery(
+      { monthKey: currentMonthKey },
+      { skip: !managerUserId || hasDeletedMess },
+    );
 
   const dashboardStats =
     dashboardStatsResponse?.data ?? DEFAULT_DASHBOARD_STATS;
@@ -105,7 +106,17 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="mb-8 flex items-start gap-4 rounded-3xl bg-gradient-to-r from-sky-50 via-white to-emerald-50 p-6">
+      {dashboardError && (
+        <div className="mb-8 rounded-2xl border border-rose-200 bg-rose-50 p-6">
+          <p className="text-rose-700 font-semibold">Error Loading Dashboard</p>
+          <p className="text-rose-600 mt-2">
+            {dashboardError?.data?.message ||
+              "Failed to load dashboard data. Please refresh the page."}
+          </p>
+        </div>
+      )}
+
+      <div className="mb-8 flex items-start gap-4 rounded-3xl bg-linear-to-r from-sky-50 via-white to-emerald-50 p-6">
         <div className="rounded-2xl bg-sky-100 p-3 text-sky-600 shadow-sm">
           <svg
             className="h-7 w-7"

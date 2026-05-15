@@ -746,6 +746,136 @@ class ExpenseController extends Controller
         ], 201);
     }
 
+    public function membersFinancials(Request $request): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_MANAGER);
+
+        $manager = $request->user();
+
+        if (! $manager->mess_id) {
+            abort(400, 'Your manager account is not assigned to any mess.');
+        }
+
+        $data = $request->validate([
+            'monthKey' => ['nullable', 'string'],
+            'month_key' => ['nullable', 'string'],
+        ]);
+
+        $monthKey = $this->normalizeMonthKey(
+            $data['monthKey'] ?? $data['month_key'] ?? now()->format('Y-m')
+        );
+
+        $monthStart = Carbon::createFromFormat('Y-m', $monthKey)->startOfMonth();
+        $monthEnd = Carbon::createFromFormat('Y-m', $monthKey)->endOfMonth();
+
+        // Get all members in this mess
+        $members = User::query()
+            ->role(User::ROLE_USER)
+            ->where('mess_id', $manager->mess_id)
+            ->get();
+
+        $memberCount = $members->count();
+
+        // Get fixed costs for the month
+        $fixedCost = FixedCost::query()
+            ->where('mess_id', $manager->mess_id)
+            ->where('month_key', $monthKey)
+            ->first();
+
+        $fixedBreakdown = [
+            'rent' => (float) ($fixedCost?->rent ?? 0),
+            'khala' => (float) ($fixedCost?->khala ?? 0),
+            'utilities' => (float) ($fixedCost?->utilities ?? 0),
+            'wifi' => (float) ($fixedCost?->wifi ?? 0),
+        ];
+        $fixedTotal = round(array_sum($fixedBreakdown), 2);
+        $fixedCostPerPerson = $memberCount > 0 ? round($fixedTotal / $memberCount, 2) : 0;
+
+        // Get all meals for this mess in this month
+        $totalMealsAllMembers = (float) Meal::query()
+            ->where('mess_id', $manager->mess_id)
+            ->whereBetween('meal_date', [$monthStart, $monthEnd])
+            ->sum('quantity');
+
+        $costPerMeal = $totalMealsAllMembers > 0 ? round(
+            Expense::query()
+                ->where('mess_id', $manager->mess_id)
+                ->whereBetween('expense_date', [$monthStart, $monthEnd])
+                ->sum('amount') / $totalMealsAllMembers,
+            2
+        ) : 0;
+
+        // Calculate per-member financials
+        $membersData = [];
+        $totalCostAllMembers = 0;
+        $totalPaidAllMembers = 0;
+        $totalDueAllMembers = 0;
+
+        foreach ($members as $member) {
+            // Member's meals count
+            $memberMeals = (float) Meal::query()
+                ->where('user_id', $member->id)
+                ->whereBetween('meal_date', [$monthStart, $monthEnd])
+                ->sum('quantity');
+
+            // Member's meal cost
+            $memberMealCost = round($memberMeals * $costPerMeal, 2);
+
+            // Total cost for member
+            $memberTotalCost = round($memberMealCost + $fixedCostPerPerson, 2);
+
+            // Member's paid amount (deposits only)
+            $memberPaid = (float) UserTransaction::query()
+                ->where('user_id', $member->id)
+                ->where('mess_id', $manager->mess_id)
+                ->whereBetween('transaction_date', [$monthStart, $monthEnd])
+                ->whereRaw("LOWER(TRIM(`type`)) = ?", ['deposit'])
+                ->sum('amount');
+
+            // Member's due amount
+            $memberDue = max(0, round($memberTotalCost - $memberPaid, 2));
+
+            // Last payment date
+            $lastPayment = UserTransaction::query()
+                ->where('user_id', $member->id)
+                ->where('mess_id', $manager->mess_id)
+                ->whereRaw("LOWER(TRIM(`type`)) = ?", ['deposit'])
+                ->latest('transaction_date')
+                ->latest('id')
+                ->value('transaction_date');
+
+            $membersData[] = [
+                'id' => $member->id,
+                'name' => $member->name,
+                'email' => $member->email,
+                'totalMeals' => $memberMeals,
+                'totalCost' => $memberTotalCost,
+                'paid' => round($memberPaid, 2),
+                'due' => $memberDue,
+                'lastPayment' => $lastPayment?->format('Y-m-d'),
+            ];
+
+            $totalCostAllMembers += $memberTotalCost;
+            $totalPaidAllMembers += $memberPaid;
+            $totalDueAllMembers += $memberDue;
+        }
+
+        return response()->json([
+            'data' => [
+                'monthKey' => $monthKey,
+                'costPerMeal' => $costPerMeal,
+                'fixedTotal' => $fixedTotal,
+                'fixedCostPerPerson' => $fixedCostPerPerson,
+                'totals' => [
+                    'cost' => round($totalCostAllMembers, 2),
+                    'paid' => round($totalPaidAllMembers, 2),
+                    'due' => round($totalDueAllMembers, 2),
+                ],
+                'members' => $membersData,
+            ],
+        ]);
+    }
+
     private function buildUserBillSummary(Request $request): array
     {
         $user = $request->user();
