@@ -1,4 +1,11 @@
-import { X } from "lucide-react";
+import {
+  Banknote,
+  CreditCard,
+  HandCoins,
+  Landmark,
+  Smartphone,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -65,10 +72,11 @@ const PaymentModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-lg max-w-3xl w-full mx-4">
+    <div className="fixed inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl shadow-xl max-w-3xl w-full mx-4 border border-slate-100">
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h3 className="text-lg font-bold text-gray-900">
+          <h3 className="flex items-center gap-2 text-lg font-bold text-gray-900">
+            <CreditCard className="h-5 w-5 text-emerald-500" />
             Select Payment Method
           </h3>
           <button
@@ -81,10 +89,10 @@ const PaymentModal = ({
 
         <div className="p-6 space-y-4">
           {/* Amount Display */}
-          <div className="bg-green-50 p-4 rounded-lg">
+          <div className="rounded-lg border border-emerald-100 bg-emerald-50 p-4">
             <p className="text-sm text-gray-600">Amount: {type}</p>
-            <p className="text-2xl font-bold text-green-600">
-              ৳{Number(amount).toFixed(2)}
+            <p className="flex items-center gap-2 text-2xl font-bold text-emerald-600">
+              <Banknote className="h-5 w-5" />৳{Number(amount).toFixed(2)}
             </p>
           </div>
 
@@ -106,7 +114,8 @@ const PaymentModal = ({
                   className="h-10 w-10 object-contain"
                 />
                 <div className="min-w-0">
-                  <p className="text-base font-semibold leading-tight text-gray-900">
+                  <p className="flex items-center justify-center gap-2 text-base font-semibold leading-tight text-gray-900">
+                    <HandCoins className="h-4 w-4 text-emerald-500" />
                     Hand Cash
                   </p>
                   <p className="mt-1 text-sm leading-snug text-gray-500">
@@ -132,7 +141,8 @@ const PaymentModal = ({
                   className="h-10 w-10 object-contain"
                 />
                 <div className="min-w-0">
-                  <p className="text-base font-semibold leading-tight text-gray-900">
+                  <p className="flex items-center justify-center gap-2 text-base font-semibold leading-tight text-gray-900">
+                    <Smartphone className="h-4 w-4 text-sky-500" />
                     Mobile Banking
                   </p>
                   <p className="mt-1 text-sm leading-snug text-gray-500">
@@ -158,7 +168,8 @@ const PaymentModal = ({
                   className="h-10 w-10 object-contain"
                 />
                 <div className="min-w-0">
-                  <p className="text-base font-semibold leading-tight text-gray-900">
+                  <p className="flex items-center justify-center gap-2 text-base font-semibold leading-tight text-gray-900">
+                    <CreditCard className="h-4 w-4 text-rose-500" />
                     Card Payment
                   </p>
                   <p className="mt-1 text-sm leading-snug text-gray-500">
@@ -405,26 +416,36 @@ const Balance = () => {
         isLoading={isLoading}
       />
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Balance</h1>
-        <p className="text-gray-500">
-          Manage your account balance and transactions
-        </p>
+      <div className="mb-8 rounded-3xl border border-sky-100 bg-linear-to-r from-sky-50 via-white to-emerald-50 p-6 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="rounded-xl bg-sky-100 p-2 text-sky-600">
+            <Landmark className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Balance</h1>
+            <p className="text-gray-500">
+              Manage your account balance and transactions
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-1">
+      <div className="bg-white/90 rounded-2xl shadow-sm border border-sky-100 p-6 mb-8">
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-gray-900 mb-1">
+          <Banknote className="h-5 w-5 text-sky-500" />
           Total Deposit
         </h2>
         <p className="text-gray-500 text-sm mb-4">Your available balance</p>
-        <div className="text-4xl font-bold text-[#16a34a]">
-          ৳{Number(stats.currentBalance || 0).toFixed(2)}
+        <div className="flex items-center gap-2 text-4xl font-bold text-emerald-600">
+          <Banknote className="h-6 w-6" />৳
+          {Number(stats.currentBalance || 0).toFixed(2)}
         </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-1">
+        <div className="bg-white/90 rounded-2xl shadow-sm border border-emerald-100 p-6">
+          <h2 className="flex items-center gap-2 text-xl font-semibold text-gray-900 mb-1">
+            <HandCoins className="h-5 w-5 text-emerald-500" />
             Meals Expense
           </h2>
           <p className="text-gray-500 text-sm mb-6">
@@ -458,16 +479,18 @@ const Balance = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-6 py-3 bg-[#16a34a] text-white font-medium rounded-xl hover:bg-green-700 transition-colors whitespace-nowrap disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white font-medium rounded-xl hover:bg-emerald-600 transition-colors whitespace-nowrap disabled:opacity-50"
               >
+                <HandCoins className="h-4 w-4" />
                 {isLoading ? "Saving..." : "Add Meals Expense"}
               </button>
             </div>
           </form>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-1">
+        <div className="bg-white/90 rounded-2xl shadow-sm border border-sky-100 p-6">
+          <h2 className="flex items-center gap-2 text-xl font-semibold text-gray-900 mb-1">
+            <Smartphone className="h-5 w-5 text-sky-500" />
             Fixed Expense
           </h2>
           <p className="text-gray-500 text-sm mb-6">
@@ -501,8 +524,9 @@ const Balance = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-6 py-3 bg-[#16a34a] text-white font-medium rounded-xl hover:bg-green-700 transition-colors whitespace-nowrap disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-sky-500 text-white font-medium rounded-xl hover:bg-sky-600 transition-colors whitespace-nowrap disabled:opacity-50"
               >
+                <Smartphone className="h-4 w-4" />
                 {isLoading ? "Saving..." : "Add Fixed Expense"}
               </button>
             </div>
@@ -510,9 +534,10 @@ const Balance = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white/90 rounded-2xl shadow-sm border border-amber-100 p-6">
         <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-1">
+          <h2 className="flex items-center gap-2 text-xl font-semibold text-gray-900 mb-1">
+            <CreditCard className="h-5 w-5 text-amber-500" />
             Transaction History
           </h2>
           <p className="text-gray-500 text-sm">All your account transactions</p>

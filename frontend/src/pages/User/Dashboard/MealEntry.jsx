@@ -1,3 +1,4 @@
+import { CalendarDays, PlusCircle, Utensils } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import {
@@ -54,24 +55,35 @@ const MealEntry = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Meal Entry</h1>
-        <p className="text-gray-500">Record your daily meals here</p>
+    <div className="max-w-6xl mx-auto space-y-8">
+      <div className="rounded-3xl border border-emerald-100 bg-linear-to-r from-emerald-50 via-white to-sky-50 p-6 shadow-sm">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="rounded-xl bg-emerald-100 p-2 text-emerald-600">
+            <Utensils className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Meal Entry</h1>
+            <p className="text-gray-500">Record your daily meals here</p>
+          </div>
+        </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-        <div className="mb-6">
+      <div className="bg-white/90 rounded-2xl shadow-sm border border-emerald-100 p-6">
+        <div className="mb-6 flex items-center gap-2">
+          <PlusCircle className="h-5 w-5 text-emerald-500" />
           <h2 className="text-xl font-semibold text-gray-900 mb-1">
             Add New Meal
           </h2>
-          <p className="text-gray-500 text-sm">Enter your meal details below</p>
         </div>
+        <p className="text-gray-500 text-sm mb-6">
+          Enter your meal details below
+        </p>
 
         <form onSubmit={handleAddMeal} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                <CalendarDays className="h-4 w-4 text-sky-500" />
                 Date
               </label>
               <input
@@ -84,7 +96,8 @@ const MealEntry = () => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                <Utensils className="h-4 w-4 text-emerald-500" />
                 Meal Type
               </label>
               <select
@@ -98,7 +111,8 @@ const MealEntry = () => {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                <PlusCircle className="h-4 w-4 text-amber-500" />
                 Quantity
               </label>
               <input
@@ -115,22 +129,24 @@ const MealEntry = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="px-6 py-2.5 bg-[#16a34a] text-white font-medium rounded-xl hover:bg-green-700 transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-emerald-500 text-white font-medium rounded-xl hover:bg-emerald-600 transition-colors"
           >
+            <PlusCircle className="h-4 w-4" />
             {isLoading ? "Saving..." : "Add Meal"}
           </button>
         </form>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <div className="mb-6">
+      <div className="bg-white/90 rounded-2xl shadow-sm border border-sky-100 p-6">
+        <div className="mb-6 flex items-center gap-2">
+          <CalendarDays className="h-5 w-5 text-sky-500" />
           <h2 className="text-xl font-semibold text-gray-900 mb-1">
             Monthly Meal Summary
           </h2>
-          <p className="text-gray-500 text-sm">
-            Your meal records for this month
-          </p>
         </div>
+        <p className="text-gray-500 text-sm mb-6">
+          Your meal records for this month
+        </p>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">

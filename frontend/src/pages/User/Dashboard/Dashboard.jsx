@@ -1,4 +1,13 @@
-import { Eye, EyeOff, FileText, Utensils, Wallet } from "lucide-react";
+import {
+  CalendarDays,
+  Eye,
+  EyeOff,
+  FileText,
+  Home,
+  Mail,
+  Utensils,
+  Wallet,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -87,9 +96,13 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-8">
-      <div className="mb-8">
+      <div className="mb-8 rounded-3xl border border-sky-100 bg-linear-to-r from-sky-50 via-white to-emerald-50 p-6 shadow-sm">
         <div className="flex flex-col gap-4 lg:flex-row lg:justify-between lg:items-end">
           <div>
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-sky-100/80 px-3 py-1 text-sm font-medium text-sky-700">
+              <Home className="h-4 w-4" />
+              User Dashboard
+            </div>
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
               User Dashboard
             </h1>
@@ -102,17 +115,20 @@ const Dashboard = () => {
             value={monthKey}
             onChange={(e) => setMonthKey(e.target.value)}
             max={getCurrentMonthKey()}
-            className="bg-white border border-gray-200 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="bg-white border border-sky-100 text-gray-700 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-sky-300"
           />
         </div>
-        <div className="mt-4 bg-white border border-gray-100 rounded-xl p-4 text-sm text-gray-700 space-y-1">
-          <p>
+        <div className="mt-4 grid gap-3 rounded-2xl border border-sky-100 bg-white/90 p-4 text-sm text-gray-700 sm:grid-cols-3">
+          <p className="flex items-center gap-2">
+            <Mail className="h-4 w-4 text-sky-500" />
             <span className="font-semibold">Name:</span> {user?.name || "N/A"}
           </p>
-          <p>
+          <p className="flex items-center gap-2">
+            <Mail className="h-4 w-4 text-emerald-500" />
             <span className="font-semibold">Email:</span> {user?.email || "N/A"}
           </p>
-          <p>
+          <p className="flex items-center gap-2">
+            <Home className="h-4 w-4 text-amber-500" />
             <span className="font-semibold">Mess:</span> {messName}
           </p>
         </div>
@@ -198,10 +214,10 @@ const Dashboard = () => {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="bg-white/90 p-6 rounded-2xl shadow-sm border border-emerald-100">
           <div className="flex justify-between items-start mb-4">
             <p className="text-gray-500 text-sm">Total Meals</p>
-            <div className="p-2 bg-green-50 text-green-500 rounded-lg">
+            <div className="p-2 bg-emerald-50 text-emerald-500 rounded-lg">
               <Utensils className="w-5 h-5" />
             </div>
           </div>
@@ -211,10 +227,10 @@ const Dashboard = () => {
           <p className="text-gray-400 text-xs">this month</p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="bg-white/90 p-6 rounded-2xl shadow-sm border border-sky-100">
           <div className="flex justify-between items-start mb-4">
             <p className="text-gray-500 text-sm">Per Meal Cost</p>
-            <div className="p-2 bg-blue-50 text-blue-500 rounded-lg">
+            <div className="p-2 bg-sky-50 text-sky-500 rounded-lg">
               <Wallet className="w-5 h-5" />
             </div>
           </div>
@@ -224,10 +240,10 @@ const Dashboard = () => {
           <p className="text-gray-400 text-xs">current rate</p>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div className="bg-white/90 p-6 rounded-2xl shadow-sm border border-amber-100">
           <div className="flex justify-between items-start mb-4">
             <p className="text-gray-500 text-sm">Total Meal Cost</p>
-            <div className="p-2 bg-orange-50 text-orange-500 rounded-lg">
+            <div className="p-2 bg-amber-50 text-amber-500 rounded-lg">
               <FileText className="w-5 h-5" />
             </div>
           </div>
@@ -238,21 +254,22 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="mb-8">
-        <div className="mb-4">
+      <div className="mb-8 rounded-2xl border border-amber-100 bg-white/90 p-6 shadow-sm">
+        <div className="mb-4 flex items-center gap-2">
+          <CalendarDays className="h-5 w-5 text-amber-500" />
           <h3 className="text-lg font-semibold text-gray-900">
             Meal Payment Summary
           </h3>
-          <p className="text-sm text-gray-500">
-            Your meal payment details for this month
-          </p>
         </div>
+        <p className="text-sm text-gray-500 mb-4">
+          Your meal payment details for this month
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="bg-emerald-50/40 p-6 rounded-2xl shadow-sm border border-emerald-100">
             <div className="flex justify-between items-start mb-4">
               <p className="text-gray-500 text-sm">Paid Amount</p>
-              <div className="p-2 bg-green-50 text-green-500 rounded-lg">
+              <div className="p-2 bg-emerald-100 text-emerald-500 rounded-lg">
                 <FileText className="w-5 h-5" />
               </div>
             </div>
@@ -262,10 +279,10 @@ const Dashboard = () => {
             <p className="text-gray-400 text-xs">meal deposits paid</p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="bg-rose-50/50 p-6 rounded-2xl shadow-sm border border-rose-100">
             <div className="flex justify-between items-start mb-4">
               <p className="text-gray-500 text-sm">Remaining Due</p>
-              <div className="p-2 bg-rose-50 text-rose-500 rounded-lg">
+              <div className="p-2 bg-rose-100 text-rose-500 rounded-lg">
                 <Wallet className="w-5 h-5" />
               </div>
             </div>
@@ -277,21 +294,22 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="mb-8">
-        <div className="mb-4">
+      <div className="mb-8 rounded-2xl border border-sky-100 bg-white/90 p-6 shadow-sm">
+        <div className="mb-4 flex items-center gap-2">
+          <CalendarDays className="h-5 w-5 text-sky-500" />
           <h3 className="text-lg font-semibold text-gray-900">
             Fixed Expense Summary
           </h3>
-          <p className="text-sm text-gray-500">
-            Your fixed expense details for this month
-          </p>
         </div>
+        <p className="text-sm text-gray-500 mb-4">
+          Your fixed expense details for this month
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="bg-sky-50/40 p-6 rounded-2xl shadow-sm border border-sky-100">
             <div className="flex justify-between items-start mb-4">
               <p className="text-gray-500 text-sm">Total Cost</p>
-              <div className="p-2 bg-red-50 text-red-500 rounded-lg">
+              <div className="p-2 bg-sky-100 text-sky-500 rounded-lg">
                 <Wallet className="w-5 h-5" />
               </div>
             </div>
@@ -301,10 +319,10 @@ const Dashboard = () => {
             <p className="text-gray-400 text-xs">fixed share amount</p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="bg-amber-50/40 p-6 rounded-2xl shadow-sm border border-amber-100">
             <div className="flex justify-between items-start mb-4">
               <p className="text-gray-500 text-sm">Paid Amount</p>
-              <div className="p-2 bg-orange-50 text-orange-500 rounded-lg">
+              <div className="p-2 bg-amber-100 text-amber-500 rounded-lg">
                 <FileText className="w-5 h-5" />
               </div>
             </div>
@@ -314,10 +332,10 @@ const Dashboard = () => {
             <p className="text-gray-400 text-xs">fixed expense deposits</p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="bg-rose-50/40 p-6 rounded-2xl shadow-sm border border-rose-100">
             <div className="flex justify-between items-start mb-4">
               <p className="text-gray-500 text-sm">Remaining Due</p>
-              <div className="p-2 bg-rose-50 text-rose-500 rounded-lg">
+              <div className="p-2 bg-rose-100 text-rose-500 rounded-lg">
                 <Wallet className="w-5 h-5" />
               </div>
             </div>
@@ -329,9 +347,10 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white/90 rounded-2xl border border-sky-100 shadow-sm overflow-hidden">
         <div className="p-7">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <Utensils className="h-5 w-5 text-emerald-500" />
             Recent Meal Activity
           </h3>
           <div className="overflow-x-auto">
