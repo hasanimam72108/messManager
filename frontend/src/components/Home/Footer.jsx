@@ -140,8 +140,24 @@ const Footer = () => {
               Contact Us
             </h4>
             <ul className="space-y-4 text-gray-400 font-medium">
-              <li>support@messmanager.com</li>
-              <li>+880 1234 567 890</li>
+              <li>
+                <a
+                  href="mailto:hasanimam72108@gmail.com"
+                  className="hover:text-green-400 transition-colors"
+                >
+                  hasanimam72108@gmail.com
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://wa.me/+8801783174890"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-green-400 transition-colors"
+                >
+                  +880 1783 174 890
+                </a>
+              </li>
               <li>Dhaka, Bangladesh</li>
             </ul>
           </div>
