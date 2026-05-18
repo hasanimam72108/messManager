@@ -47,31 +47,53 @@ const MealEntry = () => {
     if (!user?.id) return;
 
     try {
+      const selectedMealTypes =
+        mealType === "Both" ? ["Lunch", "Dinner"] : [mealType];
+
       if (entryMode === "single") {
         if (!date) return;
 
-        await addMeal({
-          date,
-          mealType,
-          quantity: mealType === "Off" ? 0 : Number(quantity),
-        }).unwrap();
+        await Promise.all(
+          selectedMealTypes.map((type) =>
+            addMeal({
+              date,
+              mealType: type,
+              quantity: type === "Off" ? 0 : Number(quantity),
+            }).unwrap(),
+          ),
+        );
 
         toast.success("Meal added successfully.");
         setDate("");
       } else {
         if (!fromDate || !toDate) return;
 
-        const result = await addMealsBulk({
-          fromDate,
-          toDate,
-          mealType,
-          quantity: mealType === "Off" ? 0 : Number(quantity),
-          overwriteExisting,
-        }).unwrap();
+        const results = await Promise.all(
+          selectedMealTypes.map((type) =>
+            addMealsBulk({
+              fromDate,
+              toDate,
+              mealType: type,
+              quantity: type === "Off" ? 0 : Number(quantity),
+              overwriteExisting,
+            }).unwrap(),
+          ),
+        );
 
-        const summary = result?.data;
+        const summary = results.reduce(
+          (accumulator, result) => {
+            const data = result?.data ?? {};
+            accumulator.createdCount += Number(data.createdCount) || 0;
+            accumulator.overwrittenCount += Number(data.overwrittenCount) || 0;
+            accumulator.skippedCount += Number(data.skippedCount) || 0;
+
+            return accumulator;
+          },
+          { createdCount: 0, overwrittenCount: 0, skippedCount: 0 },
+        );
+
         toast.success(
-          `Meals processed: ${summary?.createdCount ?? 0} added, ${summary?.overwrittenCount ?? 0} overwritten, ${summary?.skippedCount ?? 0} skipped.`,
+          `Meals processed: ${summary.createdCount} added, ${summary.overwrittenCount} overwritten, ${summary.skippedCount} skipped.`,
         );
 
         setFromDate("");
@@ -197,6 +219,7 @@ const MealEntry = () => {
               >
                 <option value="Lunch">Lunch</option>
                 <option value="Dinner">Dinner</option>
+                <option value="Both">Both (Lunch + Dinner)</option>
                 <option value="Off">Off</option>
               </select>
             </div>
@@ -217,30 +240,31 @@ const MealEntry = () => {
             </div>
           </div>
 
-          {entryMode === "range" && (
-            <label className="inline-flex items-center gap-3 text-sm text-gray-700">
-              <input
-                type="checkbox"
-                checked={overwriteExisting}
-                onChange={(e) => setOverwriteExisting(e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300 text-emerald-500 focus:ring-green-500"
-              />
-              Overwrite existing entries for same date and meal type
-            </label>
-          )}
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="inline-flex items-center gap-2 px-6 py-2.5 bg-emerald-500 text-white font-medium rounded-xl hover:bg-emerald-600 transition-colors"
-          >
-            <PlusCircle className="h-4 w-4" />
-            {isSubmitting
-              ? "Saving..."
-              : entryMode === "single"
-                ? "Add Meal"
-                : "Add Meals"}
-          </button>
+          <div className="pt-2 flex items-center justify-between gap-4 flex-wrap">
+            {entryMode === "range" && (
+              <label className="inline-flex items-center gap-3 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={overwriteExisting}
+                  onChange={(e) => setOverwriteExisting(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-emerald-500 focus:ring-green-500"
+                />
+                Overwrite existing entries for same date and meal type
+              </label>
+            )}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-emerald-500 text-white font-medium rounded-xl hover:bg-emerald-600 transition-colors"
+            >
+              <PlusCircle className="h-4 w-4" />
+              {isSubmitting
+                ? "Saving..."
+                : entryMode === "single"
+                  ? "Add Meal"
+                  : "Add Meals"}
+            </button>
+          </div>
         </form>
       </div>
 
