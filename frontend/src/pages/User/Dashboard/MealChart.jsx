@@ -173,7 +173,7 @@ const MealChart = () => {
                     </div>
                   </td>
                   <td className="py-4 px-4 text-gray-700">
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="inline-flex items-center gap-2">
                       <span>{row.lunch}</span>
                       {row.canDelete && row.lunch > 0 && (
                         <button
@@ -189,7 +189,7 @@ const MealChart = () => {
                     </div>
                   </td>
                   <td className="py-4 px-4 text-gray-700">
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="inline-flex items-center gap-2">
                       <span>{row.dinner}</span>
                       {row.canDelete && row.dinner > 0 && (
                         <button
