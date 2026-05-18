@@ -1,21 +1,19 @@
 import { Building2, ShieldCheck, Trash2, UserCog, Users } from "lucide-react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
+import ConfirmActionModal from "../../../components/ConfirmActionModal";
 import {
-  useDeleteManagerAsAdminMutation,
-  useDeleteMessAsAdminMutation,
-  useGetManagersQuery,
   useGetMessesWithDetailsQuery,
   useGetSystemReportQuery,
+  useToggleMessStatusAsAdminMutation,
 } from "../../../features/management/managementSlice";
 
 const Dashboard = () => {
   const { data: reportResponse } = useGetSystemReportQuery();
   const { data: messesResponse } = useGetMessesWithDetailsQuery();
-  const { data: managersResponse } = useGetManagersQuery();
-  const [deleteMessAsAdmin, { isLoading: isDeletingMess }] =
-    useDeleteMessAsAdminMutation();
-  const [deleteManagerAsAdmin, { isLoading: isDeletingManager }] =
-    useDeleteManagerAsAdminMutation();
+  const [toggleMessStatusAsAdmin, { isLoading: isTogglingMess }] =
+    useToggleMessStatusAsAdminMutation();
+  const [pendingMessAction, setPendingMessAction] = useState(null);
 
   const report = reportResponse?.data ?? {
     totalMesses: 0,
@@ -25,44 +23,27 @@ const Dashboard = () => {
   };
 
   const messes = messesResponse?.data ?? [];
-  const managers = managersResponse?.data ?? [];
 
-  const handleDeleteMess = async (messId, messName) => {
-    const confirmed = window.confirm(
-      `Delete mess "${messName}"? This action cannot be undone.`,
-    );
-
-    if (!confirmed) return;
-
-    try {
-      const response = await deleteMessAsAdmin(messId).unwrap();
-      toast.success(response?.message || "Mess deleted successfully.");
-    } catch (error) {
-      toast.error(error?.data?.message || "Failed to delete mess.");
-    }
+  const handleToggleMess = async (messId, messName, isActive) => {
+    setPendingMessAction({ messId, messName, isActive });
   };
 
-  const handleDeleteManager = async (managerId, managerName) => {
-    const confirmed = window.confirm(
-      `Delete manager "${managerName}"? Make sure their mess is deleted first.`,
-    );
-
-    if (!confirmed) return;
+  const confirmToggleMess = async () => {
+    if (!pendingMessAction) return;
 
     try {
-      const response = await deleteManagerAsAdmin(managerId).unwrap();
-      toast.success(response?.message || "Manager deleted successfully.");
+      const response = await toggleMessStatusAsAdmin(
+        pendingMessAction.messId,
+      ).unwrap();
+      toast.success(response?.message || "Mess status updated successfully.");
+      setPendingMessAction(null);
     } catch (error) {
-      toast.error(
-        error?.data?.message ||
-          error?.data?.errors?.manager?.[0] ||
-          "Failed to delete manager.",
-      );
+      toast.error(error?.data?.message || "Failed to update mess status.");
     }
   };
 
   return (
-    <div className="space-y-8 rounded-3xl bg-gradient-to-br from-amber-50 via-white to-sky-50 p-6 md:p-8">
+    <div className="space-y-8 rounded-3xl bg-linear-to-br from-amber-50 via-white to-sky-50 p-6 md:p-8">
       <div className="flex items-start gap-4">
         <div className="rounded-2xl bg-amber-100 p-3 text-amber-600 shadow-sm">
           <ShieldCheck className="h-7 w-7" />
@@ -151,12 +132,17 @@ const Dashboard = () => {
                     <td className="py-3 px-2">
                       <button
                         type="button"
-                        onClick={() => handleDeleteMess(mess.id, mess.name)}
-                        disabled={isDeletingMess}
+                        onClick={() =>
+                          handleToggleMess(mess.id, mess.name, mess.isActive)
+                        }
+                        disabled={isTogglingMess}
                         className="inline-flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-100 disabled:opacity-60"
+                        title={
+                          mess.isActive ? "Deactivate mess" : "Activate mess"
+                        }
                       >
                         <Trash2 className="h-3.5 w-3.5" />
-                        Delete
+                        {mess.isActive ? "Deactivate" : "Activate"}
                       </button>
                     </td>
                   </tr>
@@ -167,7 +153,17 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Manager details moved to the Super Admin 'Manager' page */}
+      <ConfirmActionModal
+        open={Boolean(pendingMessAction)}
+        title={
+          pendingMessAction?.isActive ? "Deactivate mess" : "Activate mess"
+        }
+        message={`Do you want to ${pendingMessAction?.isActive ? "deactivate" : "activate"} mess "${pendingMessAction?.messName || ""}"?`}
+        confirmText={pendingMessAction?.isActive ? "Deactivate" : "Activate"}
+        onConfirm={confirmToggleMess}
+        onCancel={() => setPendingMessAction(null)}
+        isLoading={isTogglingMess}
+      />
     </div>
   );
 };
@@ -177,7 +173,7 @@ const Card = ({ title, value, icon: Icon, badgeClassName }) => (
     <div className="mb-4 flex items-center justify-between">
       <p className="text-sm text-slate-500">{title}</p>
       <div className={`rounded-xl p-2 ${badgeClassName}`}>
-        <Icon className="h-5 w-5" />
+        {Icon ? <Icon className="h-5 w-5" /> : null}
       </div>
     </div>
     <h3 className="mt-2 text-3xl font-bold text-slate-900">{value}</h3>

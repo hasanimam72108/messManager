@@ -48,10 +48,10 @@ export const managementApiSlice = apiSlice.injectEndpoints({
       query: () => "/admin/messes-with-details",
       providesTags: (result) => toCollectionTags("Mess", result),
     }),
-    deleteMessAsAdmin: builder.mutation({
+    toggleMessStatusAsAdmin: builder.mutation({
       query: (messId) => ({
-        url: `/admin/messes/${messId}`,
-        method: "DELETE",
+        url: `/admin/messes/${messId}/toggle-status`,
+        method: "PATCH",
       }),
       invalidatesTags: [
         { type: "Mess", id: "LIST" },
@@ -59,14 +59,15 @@ export const managementApiSlice = apiSlice.injectEndpoints({
         { type: "SystemReport", id: "MAIN" },
       ],
     }),
-    deleteManagerAsAdmin: builder.mutation({
+    toggleManagerStatusAsAdmin: builder.mutation({
       query: (managerId) => ({
-        url: `/admin/managers/${managerId}`,
-        method: "DELETE",
+        url: `/admin/managers/${managerId}/toggle-status`,
+        method: "PATCH",
       }),
       invalidatesTags: [
         { type: "Manager", id: "LIST" },
         { type: "SystemReport", id: "MAIN" },
+        { type: "Mess", id: "LIST" },
       ],
     }),
     getManagerMess: builder.query({
@@ -148,8 +149,8 @@ export const {
   useGetManagersQuery,
   useGetSystemReportQuery,
   useGetMessesWithDetailsQuery,
-  useDeleteMessAsAdminMutation,
-  useDeleteManagerAsAdminMutation,
+  useToggleMessStatusAsAdminMutation,
+  useToggleManagerStatusAsAdminMutation,
   useGetManagerMessQuery,
   useUpdateManagerMessMutation,
   useDeleteManagerMessMutation,

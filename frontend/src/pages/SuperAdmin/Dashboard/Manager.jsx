@@ -1,37 +1,45 @@
 import { Building2, Mail, ShieldUser, Trash2, Users } from "lucide-react";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
+import ConfirmActionModal from "../../../components/ConfirmActionModal";
 import {
-  useDeleteManagerAsAdminMutation,
   useGetManagersQuery,
+  useToggleManagerStatusAsAdminMutation,
 } from "../../../features/management/managementSlice";
 
 const Manager = () => {
   const { data, isLoading } = useGetManagersQuery();
   const managers = data?.data || [];
-  const [deleteManagerAsAdmin, { isLoading: isDeletingManager }] =
-    useDeleteManagerAsAdminMutation();
+  const [toggleManagerStatusAsAdmin, { isLoading: isTogglingManager }] =
+    useToggleManagerStatusAsAdminMutation();
+  const [pendingManagerAction, setPendingManagerAction] = useState(null);
 
-  const handleDeleteManager = async (managerId, managerName) => {
-    const confirmed = window.confirm(
-      `Delete manager "${managerName}"? Make sure their mess is deleted first.`,
-    );
+  const handleToggleManager = async (managerId, managerName, isActive) => {
+    setPendingManagerAction({ managerId, managerName, isActive });
+  };
 
-    if (!confirmed) return;
+  const confirmToggleManager = async () => {
+    if (!pendingManagerAction) return;
 
     try {
-      const response = await deleteManagerAsAdmin(managerId).unwrap();
-      toast.success(response?.message || "Manager deleted successfully.");
+      const response = await toggleManagerStatusAsAdmin(
+        pendingManagerAction.managerId,
+      ).unwrap();
+      toast.success(
+        response?.message || "Manager status updated successfully.",
+      );
+      setPendingManagerAction(null);
     } catch (error) {
       toast.error(
         error?.data?.message ||
           error?.data?.errors?.manager?.[0] ||
-          "Failed to delete manager.",
+          "Failed to update manager status.",
       );
     }
   };
 
   return (
-    <div className="space-y-6 rounded-3xl bg-gradient-to-br from-sky-50 via-white to-emerald-50 p-6 md:p-8">
+    <div className="space-y-6 rounded-3xl bg-linear-to-br from-sky-50 via-white to-emerald-50 p-6 md:p-8">
       <div className="flex items-start gap-4">
         <div className="rounded-2xl bg-sky-100 p-3 text-sky-600 shadow-sm">
           <ShieldUser className="h-7 w-7" />
@@ -101,18 +109,22 @@ const Manager = () => {
                       <button
                         type="button"
                         onClick={() =>
-                          handleDeleteManager(manager.id, manager.name)
+                          handleToggleManager(
+                            manager.id,
+                            manager.name,
+                            manager.isActive,
+                          )
                         }
-                        disabled={isDeletingManager || Boolean(manager.messId)}
+                        disabled={isTogglingManager}
                         className="inline-flex items-center gap-2 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-100 disabled:opacity-60"
                         title={
-                          manager.messId
-                            ? "Delete the manager's mess first"
-                            : "Delete manager"
+                          manager.isActive
+                            ? "Deactivate manager"
+                            : "Activate manager"
                         }
                       >
                         <Trash2 className="h-3.5 w-3.5" />
-                        Delete
+                        {manager.isActive ? "Deactivate" : "Activate"}
                       </button>
                     </td>
                   </tr>
@@ -122,6 +134,20 @@ const Manager = () => {
           </table>
         </div>
       </div>
+
+      <ConfirmActionModal
+        open={Boolean(pendingManagerAction)}
+        title={
+          pendingManagerAction?.isActive
+            ? "Deactivate manager"
+            : "Activate manager"
+        }
+        message={`Do you want to ${pendingManagerAction?.isActive ? "deactivate" : "activate"} manager "${pendingManagerAction?.managerName || ""}"?`}
+        confirmText={pendingManagerAction?.isActive ? "Deactivate" : "Activate"}
+        onConfirm={confirmToggleManager}
+        onCancel={() => setPendingManagerAction(null)}
+        isLoading={isTogglingManager}
+      />
     </div>
   );
 };

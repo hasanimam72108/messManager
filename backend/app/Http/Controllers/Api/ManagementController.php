@@ -310,6 +310,58 @@ class ManagementController extends Controller
         ]);
     }
 
+    public function toggleMessStatusAsAdmin(Request $request, Mess $mess): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_SUPER_ADMIN);
+
+        $newStatus = ! (bool) $mess->is_active;
+
+        DB::transaction(function () use ($mess, $newStatus) {
+            $mess->forceFill([
+                'is_active' => $newStatus,
+            ])->save();
+
+            if ($mess->manager_user_id) {
+                User::query()
+                    ->whereKey($mess->manager_user_id)
+                    ->update(['is_active' => $newStatus]);
+            }
+        });
+
+        return response()->json([
+            'message' => $newStatus ? 'Mess activated successfully.' : 'Mess deactivated successfully.',
+            'data' => $this->formatMess($mess->fresh(['manager', 'request'])),
+        ]);
+    }
+
+    public function toggleManagerStatusAsAdmin(Request $request, User $manager): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_SUPER_ADMIN);
+
+        if ($manager->role !== User::ROLE_MANAGER) {
+            abort(404, 'Manager not found.');
+        }
+
+        $newStatus = ! (bool) $manager->is_active;
+
+        DB::transaction(function () use ($manager, $newStatus) {
+            $manager->forceFill([
+                'is_active' => $newStatus,
+            ])->save();
+
+            if ($manager->mess_id) {
+                Mess::query()
+                    ->whereKey($manager->mess_id)
+                    ->update(['is_active' => $newStatus]);
+            }
+        });
+
+        return response()->json([
+            'message' => $newStatus ? 'Manager activated successfully.' : 'Manager deactivated successfully.',
+            'data' => $this->formatUser($manager->fresh(['mess'])),
+        ]);
+    }
+
     private function ensureRole(?User $user, string $role): void
     {
         if (! $user || $user->role !== $role) {
@@ -358,6 +410,7 @@ class ManagementController extends Controller
             'messId' => $user->mess_id,
             'messName' => $user->mess?->name,
             'mustChangePassword' => (bool) $user->must_change_password,
+            'isActive' => (bool) $user->is_active,
             'totalMeals' => $totalMeals,
             'balance' => $currentBalance,
         ];
@@ -374,6 +427,7 @@ class ManagementController extends Controller
             'managerName' => $mess->manager?->name,
             'managerEmail' => $mess->manager?->email,
             'requestId' => $mess->mess_request_id,
+            'isActive' => (bool) $mess->is_active,
         ];
     }
 
@@ -423,6 +477,7 @@ class ManagementController extends Controller
                     'managerName' => $mess->manager?->name ?? 'N/A',
                     'managerEmail' => $mess->manager?->email ?? 'N/A',
                     'memberCount' => $mess->members()->where('role', User::ROLE_USER)->count(),
+                    'isActive' => (bool) $mess->is_active,
                 ];
             })
             ->values();

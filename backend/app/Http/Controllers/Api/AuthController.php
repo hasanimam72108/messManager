@@ -69,6 +69,8 @@ class AuthController extends Controller
             ]);
         }
 
+        $this->ensureActiveAccess($user);
+
         $token = $user->createToken('mess-manager')->plainTextToken;
 
         return response()->json([
@@ -79,6 +81,8 @@ class AuthController extends Controller
 
     public function profile(Request $request): JsonResponse
     {
+        $this->ensureActiveAccess($request->user());
+
         return response()->json([
             'user' => $this->formatUser($request->user()),
         ]);
@@ -115,6 +119,8 @@ class AuthController extends Controller
         }
 
         $user = $request->user();
+
+        $this->ensureActiveAccess($user);
 
         $currentPassword = $data['currentPassword']
             ?? $data['current_password']
@@ -164,5 +170,34 @@ class AuthController extends Controller
             'status' => $messRequest->status,
             'approvedMessId' => $messRequest->approved_mess_id,
         ];
+    }
+
+    private function ensureActiveAccess(?User $user): void
+    {
+        if (! $user) {
+            abort(401, 'Unauthenticated.');
+        }
+
+        if ($user->role === User::ROLE_SUPER_ADMIN) {
+            return;
+        }
+
+        $user->loadMissing('mess');
+
+        if ($user->role === User::ROLE_MANAGER) {
+            if (! $user->is_active || ! $user->mess?->is_active) {
+                abort(403, 'Your account and mess are deactivated. Please contact the super admin.');
+            }
+
+            return;
+        }
+
+        if (! $user->is_active) {
+            abort(403, 'Your account is deactivated. Please contact the super admin.');
+        }
+
+        if ($user->mess_id && ! $user->mess?->is_active) {
+            abort(403, 'Your mess is deactivated. Please contact the super admin.');
+        }
     }
 }
