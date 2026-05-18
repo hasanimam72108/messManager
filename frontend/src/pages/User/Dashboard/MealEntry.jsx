@@ -3,15 +3,20 @@ import { useState } from "react";
 import { toast } from "react-hot-toast";
 import {
   useAddMealMutation,
+  useAddMealsBulkMutation,
   useGetUserMealsQuery,
 } from "../../../features/expenses/expensesSlice";
 import useAuth from "../../../hooks/useAuth";
 
 const MealEntry = () => {
   const { user } = useAuth();
+  const [entryMode, setEntryMode] = useState("single");
   const [date, setDate] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const [mealType, setMealType] = useState("Lunch");
   const [quantity, setQuantity] = useState(1);
+  const [overwriteExisting, setOverwriteExisting] = useState(false);
   const monthKey = new Date().toISOString().slice(0, 7);
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
@@ -20,7 +25,10 @@ const MealEntry = () => {
     { monthKey },
     { skip: !user?.id },
   );
-  const [addMeal, { isLoading }] = useAddMealMutation();
+  const [addMeal, { isLoading: isSingleLoading }] = useAddMealMutation();
+  const [addMealsBulk, { isLoading: isBulkLoading }] =
+    useAddMealsBulkMutation();
+  const isSubmitting = isSingleLoading || isBulkLoading;
 
   const handleMealTypeChange = (e) => {
     const selectedMealType = e.target.value;
@@ -36,17 +44,41 @@ const MealEntry = () => {
 
   const handleAddMeal = async (e) => {
     e.preventDefault();
-    if (!date || !user?.id) return;
+    if (!user?.id) return;
 
     try {
-      await addMeal({
-        date,
-        mealType,
-        quantity: mealType === "Off" ? 0 : Number(quantity),
-      }).unwrap();
+      if (entryMode === "single") {
+        if (!date) return;
 
-      toast.success("Meal added successfully.");
-      setDate("");
+        await addMeal({
+          date,
+          mealType,
+          quantity: mealType === "Off" ? 0 : Number(quantity),
+        }).unwrap();
+
+        toast.success("Meal added successfully.");
+        setDate("");
+      } else {
+        if (!fromDate || !toDate) return;
+
+        const result = await addMealsBulk({
+          fromDate,
+          toDate,
+          mealType,
+          quantity: mealType === "Off" ? 0 : Number(quantity),
+          overwriteExisting,
+        }).unwrap();
+
+        const summary = result?.data;
+        toast.success(
+          `Meals processed: ${summary?.createdCount ?? 0} added, ${summary?.overwrittenCount ?? 0} overwritten, ${summary?.skippedCount ?? 0} skipped.`,
+        );
+
+        setFromDate("");
+        setToDate("");
+        setOverwriteExisting(false);
+      }
+
       setMealType("Lunch");
       setQuantity(1);
     } catch (error) {
@@ -80,21 +112,79 @@ const MealEntry = () => {
         </p>
 
         <form onSubmit={handleAddMeal} className="space-y-6">
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setEntryMode("single")}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                entryMode === "single"
+                  ? "bg-emerald-500 text-white"
+                  : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+              }`}
+            >
+              Single Day
+            </button>
+            <button
+              type="button"
+              onClick={() => setEntryMode("range")}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                entryMode === "range"
+                  ? "bg-emerald-500 text-white"
+                  : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+              }`}
+            >
+              Multiple Days
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
-                <CalendarDays className="h-4 w-4 text-sky-500" />
-                Date
-              </label>
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                min={minDate}
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors"
-                required
-              />
-            </div>
+            {entryMode === "single" ? (
+              <div>
+                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                  <CalendarDays className="h-4 w-4 text-sky-500" />
+                  Date
+                </label>
+                <input
+                  type="date"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+                  min={minDate}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors"
+                  required={entryMode === "single"}
+                />
+              </div>
+            ) : (
+              <>
+                <div>
+                  <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                    <CalendarDays className="h-4 w-4 text-sky-500" />
+                    From Date
+                  </label>
+                  <input
+                    type="date"
+                    value={fromDate}
+                    onChange={(e) => setFromDate(e.target.value)}
+                    min={minDate}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors"
+                    required={entryMode === "range"}
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
+                    <CalendarDays className="h-4 w-4 text-sky-500" />
+                    To Date
+                  </label>
+                  <input
+                    type="date"
+                    value={toDate}
+                    onChange={(e) => setToDate(e.target.value)}
+                    min={fromDate || minDate}
+                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors"
+                    required={entryMode === "range"}
+                  />
+                </div>
+              </>
+            )}
             <div>
               <label className="mb-2 flex items-center gap-2 text-sm font-medium text-gray-700">
                 <Utensils className="h-4 w-4 text-emerald-500" />
@@ -126,13 +216,30 @@ const MealEntry = () => {
               />
             </div>
           </div>
+
+          {entryMode === "range" && (
+            <label className="inline-flex items-center gap-3 text-sm text-gray-700">
+              <input
+                type="checkbox"
+                checked={overwriteExisting}
+                onChange={(e) => setOverwriteExisting(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 text-emerald-500 focus:ring-green-500"
+              />
+              Overwrite existing entries for same date and meal type
+            </label>
+          )}
+
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isSubmitting}
             className="inline-flex items-center gap-2 px-6 py-2.5 bg-emerald-500 text-white font-medium rounded-xl hover:bg-emerald-600 transition-colors"
           >
             <PlusCircle className="h-4 w-4" />
-            {isLoading ? "Saving..." : "Add Meal"}
+            {isSubmitting
+              ? "Saving..."
+              : entryMode === "single"
+                ? "Add Meal"
+                : "Add Meals"}
           </button>
         </form>
       </div>

@@ -15,7 +15,7 @@ const Hero = () => {
       <div className="relative z-10 md:w-1/2 md:pr-12 lg:pr-24 space-y-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-medium">
           <span className="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-          MessManager v2.0 is here
+          MessManager v1.0 is here
         </div>
         <h1 className="text-5xl lg:text-7xl font-extrabold text-gray-900 leading-tight tracking-tight">
           Manage Your <br className="hidden md:block" />

@@ -94,6 +94,114 @@ class MealController extends Controller
         ], 201);
     }
 
+    public function storeBulk(Request $request): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_USER);
+
+        $user = $request->user();
+
+        if (! $user->mess_id) {
+            throw ValidationException::withMessages([
+                'mess' => 'User mess not found.',
+            ]);
+        }
+
+        $data = $request->validate([
+            'fromDate' => ['required', 'date'],
+            'toDate' => ['required', 'date'],
+            'mealType' => ['required', 'in:Lunch,Dinner,Off'],
+            'meal_type' => ['nullable', 'in:Lunch,Dinner,Off'],
+            'quantity' => ['required', 'numeric', 'min:0'],
+            'overwriteExisting' => ['nullable', 'boolean'],
+            'overwrite_existing' => ['nullable', 'boolean'],
+        ]);
+
+        $mealType = $data['mealType'] ?? $data['meal_type'];
+        $quantity = (float) $data['quantity'];
+
+        if ($mealType !== 'Off' && $quantity < 1) {
+            throw ValidationException::withMessages([
+                'quantity' => 'Quantity must be at least 1 for meal entries.',
+            ]);
+        }
+
+        $fromDate = Carbon::parse($data['fromDate'])->startOfDay();
+        $toDate = Carbon::parse($data['toDate'])->startOfDay();
+
+        if ($fromDate->gt($toDate)) {
+            throw ValidationException::withMessages([
+                'toDate' => 'To date must be greater than or equal to from date.',
+            ]);
+        }
+
+        $tomorrow = now()->startOfDay()->addDay();
+
+        if ($fromDate->lt($tomorrow)) {
+            throw ValidationException::withMessages([
+                'fromDate' => 'Only future meal dates can be added.',
+            ]);
+        }
+
+        $dayCount = $fromDate->diffInDays($toDate) + 1;
+
+        if ($dayCount > 90) {
+            throw ValidationException::withMessages([
+                'toDate' => 'Date range cannot exceed 90 days.',
+            ]);
+        }
+
+        $overwriteExisting = (bool) ($data['overwriteExisting'] ?? $data['overwrite_existing'] ?? false);
+
+        $createdCount = 0;
+        $overwrittenCount = 0;
+        $skippedCount = 0;
+
+        for ($cursor = $fromDate->copy(); $cursor->lte($toDate); $cursor->addDay()) {
+            $date = $cursor->toDateString();
+
+            $existingQuery = Meal::query()
+                ->where('mess_id', $user->mess_id)
+                ->where('user_id', $user->id)
+                ->whereDate('meal_date', $date)
+                ->where('meal_type', $mealType);
+
+            $existingCount = (clone $existingQuery)->count();
+
+            if ($existingCount > 0) {
+                if (! $overwriteExisting) {
+                    $skippedCount++;
+
+                    continue;
+                }
+
+                $existingQuery->delete();
+                $overwrittenCount++;
+            }
+
+            Meal::create([
+                'mess_id' => $user->mess_id,
+                'user_id' => $user->id,
+                'meal_date' => $date,
+                'meal_type' => $mealType,
+                'quantity' => $mealType === 'Off' ? 0 : $quantity,
+                'created_by' => $user->id,
+            ]);
+
+            $createdCount++;
+        }
+
+        return response()->json([
+            'message' => 'Bulk meals processed successfully.',
+            'data' => [
+                'requestedDays' => $dayCount,
+                'createdCount' => $createdCount,
+                'overwrittenCount' => $overwrittenCount,
+                'skippedCount' => $skippedCount,
+                'overwriteExisting' => $overwriteExisting,
+            ],
+        ], 201);
+    }
+
     public function destroy(Request $request): JsonResponse
     {
         $this->ensureRole($request->user(), User::ROLE_USER);

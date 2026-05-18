@@ -1,5 +1,35 @@
 import { apiSlice } from "../api/apiSlice";
 
+const getMonthKeysInRange = (startDate, endDate) => {
+  if (!startDate || !endDate) {
+    return [new Date().toISOString().slice(0, 7)];
+  }
+
+  const start = new Date(`${startDate}T00:00:00`);
+  const end = new Date(`${endDate}T00:00:00`);
+
+  if (
+    Number.isNaN(start.getTime()) ||
+    Number.isNaN(end.getTime()) ||
+    start > end
+  ) {
+    return [String(startDate).slice(0, 7)];
+  }
+
+  const monthKeys = [];
+  const cursor = new Date(start.getFullYear(), start.getMonth(), 1);
+  const endMarker = new Date(end.getFullYear(), end.getMonth(), 1);
+
+  while (cursor <= endMarker) {
+    monthKeys.push(
+      `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, "0")}`,
+    );
+    cursor.setMonth(cursor.getMonth() + 1);
+  }
+
+  return monthKeys;
+};
+
 export const expensesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getFixedCosts: builder.query({
@@ -141,6 +171,22 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
         ];
       },
     }),
+    addMealsBulk: builder.mutation({
+      query: (body) => ({
+        url: "/user/meals/bulk",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: (result, error, arg) => {
+        const monthKeys = getMonthKeysInRange(arg?.fromDate, arg?.toDate);
+
+        return monthKeys.flatMap((monthKey) => [
+          { type: "Dashboard", id: monthKey },
+          { type: "Meal", id: `USER-MEALS-${monthKey}` },
+          { type: "Expense", id: `USER-BILL-${monthKey}` },
+        ]);
+      },
+    }),
     deleteUserMealEntries: builder.mutation({
       query: ({ date, mealType }) => ({
         url: `/user/meals?date=${encodeURIComponent(date)}&mealType=${encodeURIComponent(mealType)}`,
@@ -193,6 +239,7 @@ export const {
   useUpsertFixedCostsMutation,
   useAddExpenseMutation,
   useAddMealMutation,
+  useAddMealsBulkMutation,
   useDeleteUserMealEntriesMutation,
   useAddDepositMutation,
 } = expensesApiSlice;
