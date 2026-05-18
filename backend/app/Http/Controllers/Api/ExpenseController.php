@@ -824,12 +824,11 @@ class ExpenseController extends Controller
             // Total cost for member
             $memberTotalCost = round($memberMealCost + $fixedCostPerPerson, 2);
 
-            // Member's paid amount (deposits only)
+            // Member's paid amount (all payment types)
             $memberPaid = (float) UserTransaction::query()
                 ->where('user_id', $member->id)
                 ->where('mess_id', $manager->mess_id)
                 ->whereBetween('transaction_date', [$monthStart, $monthEnd])
-                ->whereRaw("LOWER(TRIM(`type`)) = ?", ['deposit'])
                 ->sum('amount');
 
             // Member's due amount
@@ -839,7 +838,6 @@ class ExpenseController extends Controller
             $lastPayment = UserTransaction::query()
                 ->where('user_id', $member->id)
                 ->where('mess_id', $manager->mess_id)
-                ->whereRaw("LOWER(TRIM(`type`)) = ?", ['deposit'])
                 ->latest('transaction_date')
                 ->latest('id')
                 ->value('transaction_date');
