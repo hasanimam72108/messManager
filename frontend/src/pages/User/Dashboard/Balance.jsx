@@ -391,10 +391,15 @@ const Balance = () => {
     const { amount, type, resetAmount } = pendingPayment;
 
     try {
+      // Use the selected month but set the day to today's day
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, "0");
+      const dateString = `${selectedExpenseMonth}-${day}`;
+
       const response = await addDeposit({
         amount: Number(amount),
         type,
-        date: `${selectedExpenseMonth}-01`,
+        date: dateString,
         ...paymentData,
       }).unwrap();
       toast.success(response?.message || "Request sent for manager approval.");
