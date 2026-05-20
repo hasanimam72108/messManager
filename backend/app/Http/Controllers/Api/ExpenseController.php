@@ -824,17 +824,25 @@ class ExpenseController extends Controller
             // Total cost for member
             $memberTotalCost = round($memberMealCost + $fixedCostPerPerson, 2);
 
-            // Member's paid amount (all payment types)
-            $memberPaid = (float) UserTransaction::query()
+            // Member's paid amount broken down by type
+            $memberTransactions = UserTransaction::query()
                 ->where('user_id', $member->id)
                 ->where('mess_id', $manager->mess_id)
                 ->whereBetween('transaction_date', [$monthStart, $monthEnd])
-                ->sum('amount');
+                ->get(['type', 'amount']);
+
+            $memberPaidMeal  = round((float) $memberTransactions->where('type', 'Meals Expense')->sum('amount'), 2);
+            $memberPaidFixed = round((float) $memberTransactions->where('type', 'Fixed Expense')->sum('amount'), 2);
+            $memberPaid      = round($memberTransactions->sum('amount'), 2);
 
             // Member's due amount
             $memberDue = max(0, round($memberTotalCost - $memberPaid, 2));
 
-            // Last payment date
+            // Month-specific balance: Paid - (Paid(Meal) + Paid(Fixed))
+            // All three values are already filtered to the selected month
+            $memberBalance = round($memberPaid - $memberPaidMeal - $memberPaidFixed, 2);
+
+            // Last payment date (all-time, not month-filtered)
             $lastPayment = UserTransaction::query()
                 ->where('user_id', $member->id)
                 ->where('mess_id', $manager->mess_id)
@@ -843,13 +851,16 @@ class ExpenseController extends Controller
                 ->value('transaction_date');
 
             $membersData[] = [
-                'id' => $member->id,
-                'name' => $member->name,
-                'email' => $member->email,
-                'totalMeals' => $memberMeals,
-                'totalCost' => $memberTotalCost,
-                'paid' => round($memberPaid, 2),
-                'due' => $memberDue,
+                'id'          => $member->id,
+                'name'        => $member->name,
+                'email'       => $member->email,
+                'totalMeals'  => $memberMeals,
+                'totalCost'   => $memberTotalCost,
+                'paid'        => $memberPaid,
+                'paidMeal'    => $memberPaidMeal,
+                'paidFixed'   => $memberPaidFixed,
+                'balance'     => $memberBalance,
+                'due'         => $memberDue,
                 'lastPayment' => $lastPayment?->format('Y-m-d'),
             ];
 

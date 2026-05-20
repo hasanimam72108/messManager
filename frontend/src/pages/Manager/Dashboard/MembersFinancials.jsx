@@ -121,7 +121,13 @@ const MembersFinancials = () => {
                         Total Cost
                       </th>
                       <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900 text-right">
-                        Paid
+                        Paid (Meal)
+                      </th>
+                      <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900 text-right">
+                        Paid (Fixed)
+                      </th>
+                      <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900 text-right">
+                        Balance
                       </th>
                       <th className="py-4 px-2 text-sm font-semibold whitespace-nowrap text-slate-900 text-right">
                         Due
@@ -148,7 +154,17 @@ const MembersFinancials = () => {
                           ৳{Number(member.totalCost || 0).toFixed(2)}
                         </td>
                         <td className="py-4 px-2 text-right font-medium text-emerald-600">
-                          ৳{Number(member.paid || 0).toFixed(2)}
+                          ৳{Number(member.paidMeal || 0).toFixed(2)}
+                        </td>
+                        <td className="py-4 px-2 text-right font-medium text-sky-600">
+                          ৳{Number(member.paidFixed || 0).toFixed(2)}
+                        </td>
+                        <td className={`py-4 px-2 text-right font-medium ${
+                          Number(member.balance || 0) >= 0
+                            ? 'text-emerald-600'
+                            : 'text-rose-600'
+                        }`}>
+                          ৳{Number(member.balance || 0).toFixed(2)}
                         </td>
                         <td className="py-4 px-2 text-right font-medium text-rose-600">
                           ৳{Number(member.due || 0).toFixed(2)}
