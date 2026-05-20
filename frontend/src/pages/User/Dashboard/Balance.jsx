@@ -368,12 +368,33 @@ const Balance = () => {
     { monthKey },
     { skip: !user?.id },
   );
+  const { data: selectedMonthBillResponse } = useGetUserBillSummaryQuery(
+    { monthKey: selectedExpenseMonth },
+    { skip: !user?.id },
+  );
   const [addDeposit, { isLoading }] = useAddDepositMutation();
 
   const transactions = transactionsResponse?.data ?? [];
   const stats = billSummaryResponse?.data ?? {
     currentBalance: 0,
   };
+  const selectedMonthStats = selectedMonthBillResponse?.data ?? {
+    fixedShareTotal: 0,
+    paidAmount: 0,
+  };
+
+  // Calculate remaining fixed expense due for selected month
+  const fixedExpensePaidForMonth = transactions
+    .filter(
+      (tx) =>
+        tx.type === "Fixed Expense" &&
+        tx.date.startsWith(selectedExpenseMonth) &&
+        Number(tx.amount) > 0,
+    )
+    .reduce((sum, tx) => sum + Number(tx.amount), 0);
+
+  const remainingFixedExpenseDue =
+    selectedMonthStats.fixedShareTotal - fixedExpensePaidForMonth;
 
   const handleAddExpenseClick = (event, amount, type, resetAmount) => {
     event.preventDefault();
@@ -381,6 +402,23 @@ const Balance = () => {
       toast.error("Please enter an amount");
       return;
     }
+
+    // Validate fixed expense amount
+    if (type === "Fixed Expense") {
+      if (remainingFixedExpenseDue <= 0) {
+        toast.error(
+          "You have already paid the full fixed expense for this month",
+        );
+        return;
+      }
+      if (Number(amount) > remainingFixedExpenseDue) {
+        toast.error(
+          `Cannot exceed remaining fixed expense due: ৳${remainingFixedExpenseDue.toFixed(2)}`,
+        );
+        return;
+      }
+    }
+
     setPendingPayment({ amount, type, resetAmount });
     setPaymentModalOpen(true);
   };
@@ -530,6 +568,29 @@ const Balance = () => {
             />
           </div>
 
+          {remainingFixedExpenseDue > 0 && (
+            <div className="mb-5 p-4 rounded-lg bg-sky-50 border border-sky-100">
+              <p className="text-sm text-gray-600">
+                Your fixed expense due:{" "}
+                <span className="font-semibold text-gray-900">
+                  ৳{remainingFixedExpenseDue.toFixed(2)}
+                </span>
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Already paid: ৳{fixedExpensePaidForMonth.toFixed(2)} / ৳
+                {selectedMonthStats.fixedShareTotal.toFixed(2)}
+              </p>
+            </div>
+          )}
+
+          {remainingFixedExpenseDue <= 0 && (
+            <div className="mb-5 p-4 rounded-lg bg-green-50 border border-green-100">
+              <p className="text-sm font-medium text-green-700">
+                ⚠ Manager has not set the fixed cost for the selected month.
+              </p>
+            </div>
+          )}
+
           <form
             onSubmit={(event) =>
               handleAddExpenseClick(
@@ -550,14 +611,16 @@ const Balance = () => {
                   value={fixedExpenseAmount}
                   onChange={(e) => setFixedExpenseAmount(e.target.value)}
                   placeholder="Enter amount"
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors"
+                  max={Math.max(0, remainingFixedExpenseDue)}
+                  disabled={remainingFixedExpenseDue <= 0}
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   required
                 />
               </div>
               <button
                 type="submit"
-                disabled={isLoading}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-sky-500 text-white font-medium rounded-xl hover:bg-sky-600 transition-colors whitespace-nowrap disabled:opacity-50"
+                disabled={isLoading || remainingFixedExpenseDue <= 0}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-sky-500 text-white font-medium rounded-xl hover:bg-sky-600 transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Smartphone className="h-4 w-4" />
                 {isLoading ? "Saving..." : "Add Fixed Expense"}
