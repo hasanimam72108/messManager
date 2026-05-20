@@ -351,11 +351,15 @@ const Balance = () => {
   const { user } = useAuth();
   const [mealExpenseAmount, setMealExpenseAmount] = useState("");
   const [fixedExpenseAmount, setFixedExpenseAmount] = useState("");
-  const [selectedExpenseMonth, setSelectedExpenseMonth] = useState(
+  const [mealExpenseMonth, setMealExpenseMonth] = useState(
+    new Date().toISOString().slice(0, 7),
+  );
+  const [fixedExpenseMonth, setFixedExpenseMonth] = useState(
     new Date().toISOString().slice(0, 7),
   );
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [pendingPayment, setPendingPayment] = useState(null);
+  const [submittingType, setSubmittingType] = useState(null);
 
   const monthKey = new Date().toISOString().slice(0, 7);
   const { data: transactionsResponse } = useGetUserTransactionsQuery(
@@ -369,15 +373,18 @@ const Balance = () => {
     { skip: !user?.id },
   );
   const { data: selectedMonthBillResponse } = useGetUserBillSummaryQuery(
-    { monthKey: selectedExpenseMonth },
+    { monthKey: fixedExpenseMonth },
     { skip: !user?.id },
   );
-  const [addDeposit, { isLoading }] = useAddDepositMutation();
+  const [addDeposit] = useAddDepositMutation();
 
   const transactions = transactionsResponse?.data ?? [];
   const stats = billSummaryResponse?.data ?? {
-    currentBalance: 0,
+    mealPaidAmount: 0,
+    fixedPaidAmount: 0,
   };
+  const currentMonthTotalDeposit =
+    Number(stats.mealPaidAmount || 0) + Number(stats.fixedPaidAmount || 0);
   const selectedMonthStats = selectedMonthBillResponse?.data ?? {
     fixedShareTotal: 0,
     paidAmount: 0,
@@ -394,7 +401,13 @@ const Balance = () => {
     fixedExpensePaidForMonth - fixedShareTotal,
   );
 
-  const handleAddExpenseClick = (event, amount, type, resetAmount) => {
+  const handleAddExpenseClick = (
+    event,
+    amount,
+    type,
+    resetAmount,
+    expenseMonth,
+  ) => {
     event.preventDefault();
     if (!amount || !user?.id) {
       toast.error("Please enter an amount");
@@ -423,20 +436,21 @@ const Balance = () => {
       }
     }
 
-    setPendingPayment({ amount, type, resetAmount });
+    setPendingPayment({ amount, type, resetAmount, expenseMonth });
     setPaymentModalOpen(true);
   };
 
   const handlePaymentConfirm = async (paymentData) => {
     if (!pendingPayment) return;
 
-    const { amount, type, resetAmount } = pendingPayment;
+    const { amount, type, resetAmount, expenseMonth } = pendingPayment;
 
     try {
+      setSubmittingType(type);
       // Use the selected month but set the day to today's day
       const today = new Date();
       const day = String(today.getDate()).padStart(2, "0");
-      const dateString = `${selectedExpenseMonth}-${day}`;
+      const dateString = `${expenseMonth}-${day}`;
 
       const response = await addDeposit({
         amount: Number(amount),
@@ -450,6 +464,8 @@ const Balance = () => {
       setPendingPayment(null);
     } catch (error) {
       toast.error(error?.data?.message || `${type} save failed.`);
+    } finally {
+      setSubmittingType(null);
     }
   };
 
@@ -464,7 +480,7 @@ const Balance = () => {
         amount={pendingPayment?.amount}
         type={pendingPayment?.type}
         onConfirm={handlePaymentConfirm}
-        isLoading={isLoading}
+        isLoading={Boolean(submittingType)}
       />
 
       <div className="mb-8 rounded-3xl border border-sky-100 bg-linear-to-r from-sky-50 via-white to-emerald-50 p-6 shadow-sm">
@@ -486,10 +502,12 @@ const Balance = () => {
           <Banknote className="h-5 w-5 text-sky-500" />
           Total Deposit
         </h2>
-        <p className="text-gray-500 text-sm mb-4">Your available balance</p>
+        <p className="text-gray-500 text-sm mb-4">
+          Your total deposit for this month
+        </p>
         <div className="flex items-center gap-2 text-4xl font-bold text-emerald-600">
           <Banknote className="h-6 w-6" />৳
-          {Number(stats.currentBalance || 0).toFixed(2)}
+          {Number(currentMonthTotalDeposit || 0).toFixed(2)}
         </div>
       </div>
 
@@ -509,8 +527,8 @@ const Balance = () => {
             </label>
             <input
               type="month"
-              value={selectedExpenseMonth}
-              onChange={(e) => setSelectedExpenseMonth(e.target.value)}
+              value={mealExpenseMonth}
+              onChange={(e) => setMealExpenseMonth(e.target.value)}
               className="w-full sm:max-w-xs px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-colors"
             />
           </div>
@@ -522,6 +540,7 @@ const Balance = () => {
                 mealExpenseAmount,
                 "Meals Expense",
                 setMealExpenseAmount,
+                mealExpenseMonth,
               )
             }
           >
@@ -541,11 +560,13 @@ const Balance = () => {
               </div>
               <button
                 type="submit"
-                disabled={isLoading}
+                disabled={submittingType === "Meals Expense"}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white font-medium rounded-xl hover:bg-emerald-600 transition-colors whitespace-nowrap disabled:opacity-50"
               >
                 <HandCoins className="h-4 w-4" />
-                {isLoading ? "Saving..." : "Add Meals Expense"}
+                {submittingType === "Meals Expense"
+                  ? "Saving..."
+                  : "Add Meals Expense"}
               </button>
             </div>
           </form>
@@ -566,8 +587,8 @@ const Balance = () => {
             </label>
             <input
               type="month"
-              value={selectedExpenseMonth}
-              onChange={(e) => setSelectedExpenseMonth(e.target.value)}
+              value={fixedExpenseMonth}
+              onChange={(e) => setFixedExpenseMonth(e.target.value)}
               className="w-full sm:max-w-xs px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition-colors"
             />
           </div>
@@ -616,6 +637,7 @@ const Balance = () => {
                 fixedExpenseAmount,
                 "Fixed Expense",
                 setFixedExpenseAmount,
+                fixedExpenseMonth,
               )
             }
           >
@@ -637,11 +659,16 @@ const Balance = () => {
               </div>
               <button
                 type="submit"
-                disabled={isLoading || remainingFixedExpenseDue <= 0}
+                disabled={
+                  submittingType === "Fixed Expense" ||
+                  remainingFixedExpenseDue <= 0
+                }
                 className="inline-flex items-center gap-2 px-6 py-3 bg-sky-500 text-white font-medium rounded-xl hover:bg-sky-600 transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Smartphone className="h-4 w-4" />
-                {isLoading ? "Saving..." : "Add Fixed Expense"}
+                {submittingType === "Fixed Expense"
+                  ? "Saving..."
+                  : "Add Fixed Expense"}
               </button>
             </div>
           </form>

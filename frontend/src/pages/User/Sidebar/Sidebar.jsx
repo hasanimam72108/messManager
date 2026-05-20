@@ -64,7 +64,7 @@ const Sidebar = ({ onClose }) => {
       bg: "bg-rose-100",
     },
     {
-      name: "Balance",
+      name: "Add Balance",
       path: "/user/balance",
       icon: Wallet,
       color: "text-fuchsia-600",
