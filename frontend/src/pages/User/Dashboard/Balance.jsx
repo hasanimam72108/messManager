@@ -382,19 +382,17 @@ const Balance = () => {
     fixedShareTotal: 0,
     paidAmount: 0,
   };
-
-  // Calculate remaining fixed expense due for selected month
-  const fixedExpensePaidForMonth = transactions
-    .filter(
-      (tx) =>
-        tx.type === "Fixed Expense" &&
-        tx.date.startsWith(selectedExpenseMonth) &&
-        Number(tx.amount) > 0,
-    )
-    .reduce((sum, tx) => sum + Number(tx.amount), 0);
-
-  const remainingFixedExpenseDue =
-    selectedMonthStats.fixedShareTotal - fixedExpensePaidForMonth;
+  const fixedShareTotal = Number(selectedMonthStats.fixedShareTotal || 0);
+  const fixedExpensePaidForMonth = Number(selectedMonthStats.paidAmount || 0);
+  const hasFixedCostSet = fixedShareTotal > 0;
+  const remainingFixedExpenseDue = Math.max(
+    0,
+    fixedShareTotal - fixedExpensePaidForMonth,
+  );
+  const overpaidFixedExpenseAmount = Math.max(
+    0,
+    fixedExpensePaidForMonth - fixedShareTotal,
+  );
 
   const handleAddExpenseClick = (event, amount, type, resetAmount) => {
     event.preventDefault();
@@ -405,6 +403,12 @@ const Balance = () => {
 
     // Validate fixed expense amount
     if (type === "Fixed Expense") {
+      if (!hasFixedCostSet) {
+        toast.error(
+          "Manager has not set the fixed cost for the selected month.",
+        );
+        return;
+      }
       if (remainingFixedExpenseDue <= 0) {
         toast.error(
           "You have already paid the full fixed expense for this month",
@@ -568,7 +572,7 @@ const Balance = () => {
             />
           </div>
 
-          {remainingFixedExpenseDue > 0 && (
+          {hasFixedCostSet && remainingFixedExpenseDue > 0 && (
             <div className="mb-5 p-4 rounded-lg bg-sky-50 border border-sky-100">
               <p className="text-sm text-gray-600">
                 Your fixed expense due:{" "}
@@ -578,16 +582,30 @@ const Balance = () => {
               </p>
               <p className="text-xs text-gray-500 mt-1">
                 Already paid: ৳{fixedExpensePaidForMonth.toFixed(2)} / ৳
-                {selectedMonthStats.fixedShareTotal.toFixed(2)}
+                {fixedShareTotal.toFixed(2)}
               </p>
             </div>
           )}
 
-          {remainingFixedExpenseDue <= 0 && (
+          {!hasFixedCostSet && (
             <div className="mb-5 p-4 rounded-lg bg-green-50 border border-green-100">
               <p className="text-sm font-medium text-green-700">
                 ⚠ Manager has not set the fixed cost for the selected month.
               </p>
+            </div>
+          )}
+
+          {hasFixedCostSet && remainingFixedExpenseDue <= 0 && (
+            <div className="mb-5 p-4 rounded-lg bg-green-50 border border-green-100">
+              <p className="text-sm font-medium text-green-700">
+                ✓ You have already paid the full fixed expense for this month.
+              </p>
+              {overpaidFixedExpenseAmount > 0 && (
+                <p className="mt-1 text-xs text-green-700/90">
+                  You have paid ৳{overpaidFixedExpenseAmount.toFixed(2)} more
+                  than the fixed expense due.
+                </p>
+              )}
             </div>
           )}
 
