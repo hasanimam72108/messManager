@@ -56,6 +56,8 @@ const Dashboard = () => {
   );
   const stats = userStatsResponse?.data ?? fallbackStats;
   const recentMeals = mealsResponse?.data?.slice(0, 6) ?? [];
+  const mealCurrentBalance =
+    Number(stats.mealPaidAmount || 0) - Number(stats.mealSubtotal || 0);
   const fixedExpenseRemainingDue =
     stats.fixedDueAmount ??
     Math.max((stats.fixedShareTotal || 0) - (stats.fixedPaidAmount || 0), 0);
@@ -265,7 +267,7 @@ const Dashboard = () => {
           Your meal payment details for this month
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-emerald-50/40 p-6 rounded-2xl shadow-sm border border-emerald-100">
             <div className="flex justify-between items-start mb-4">
               <p className="text-gray-500 text-sm">Paid Amount</p>
@@ -290,6 +292,33 @@ const Dashboard = () => {
               ৳{Number(stats.mealDueAmount || 0).toFixed(2)}
             </h3>
             <p className="text-gray-400 text-xs">after your deposits</p>
+          </div>
+
+          <div
+            className={`p-6 rounded-2xl shadow-sm border ${
+              mealCurrentBalance >= 0
+                ? "bg-emerald-50/40 border-emerald-100"
+                : "bg-rose-50/50 border-rose-100"
+            }`}
+          >
+            <div className="flex justify-between items-start mb-4">
+              <p className="text-gray-500 text-sm">Current Balance</p>
+              <div
+                className={`p-2 rounded-lg ${
+                  mealCurrentBalance >= 0
+                    ? "bg-emerald-100 text-emerald-500"
+                    : "bg-rose-100 text-rose-500"
+                }`}
+              >
+                <Wallet className="w-5 h-5" />
+              </div>
+            </div>
+            <h3 className="text-4xl font-bold text-gray-900 mb-1">
+              ৳{mealCurrentBalance.toFixed(2)}
+            </h3>
+            <p className="text-gray-400 text-xs">
+              paid amount - total meal cost
+            </p>
           </div>
         </div>
       </div>
