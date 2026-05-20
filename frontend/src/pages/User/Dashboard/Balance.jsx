@@ -489,7 +489,9 @@ const Balance = () => {
             <Landmark className="h-5 w-5" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Balance</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Add Balance
+            </h1>
             <p className="text-gray-500">
               Manage your account balance and transactions
             </p>
