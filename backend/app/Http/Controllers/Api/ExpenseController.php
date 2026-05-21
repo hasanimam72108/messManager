@@ -862,7 +862,7 @@ class ExpenseController extends Controller
                 'paidMeal'    => $memberPaidMeal,
                 'paidFixed'   => $memberPaidFixed,
                 'extra'       => $memberExtra,
-                'status'      => $memberExtra > 0 ? 'Pending Refund' : 'Due',
+                'status'      => $memberExtra > 0 ? 'Pending Refund' : ($memberExtra < 0 ? 'Due' : 'Settled'),
                 'balance'     => $memberBalance,
                 'due'         => $memberDue,
                 'lastPayment' => $lastPayment?->format('Y-m-d'),
@@ -1067,7 +1067,7 @@ class ExpenseController extends Controller
                 'paid' => $updatedPaid,
                 'bill' => $memberBill,
                 'extra' => $updatedExtra,
-                'status' => $updatedExtra > 0 ? 'Pending Refund' : 'Due',
+                'status' => $updatedExtra > 0 ? 'Pending Refund' : ($updatedExtra < 0 ? 'Due' : 'Settled'),
             ],
         ]);
     }

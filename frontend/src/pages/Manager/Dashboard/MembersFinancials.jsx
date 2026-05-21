@@ -77,7 +77,7 @@ const MembersFinancials = () => {
         paid,
         bill,
         extra,
-        status: extra > 0 ? "Pending Refund" : "Due",
+        status: extra > 0 ? "Pending Refund" : extra < 0 ? "Due" : "Settled",
       };
     })
     .sort((a, b) => b.extra - a.extra);
@@ -385,7 +385,9 @@ const MembersFinancials = () => {
                               className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${
                                 member.extra > 0
                                   ? "bg-amber-100 text-amber-700"
-                                  : "bg-rose-100 text-rose-700"
+                                  : member.extra < 0
+                                    ? "bg-rose-100 text-rose-700"
+                                    : "bg-slate-100 text-slate-700"
                               }`}
                             >
                               {member.status}
