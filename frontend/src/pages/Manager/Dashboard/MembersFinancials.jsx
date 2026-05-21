@@ -33,6 +33,16 @@ const MembersFinancials = () => {
   const totals = financialsData.totals || { cost: 0, paid: 0, due: 0 };
   const fixedCostPerPerson = Number(financialsData.fixedCostPerPerson || 0);
 
+  const formatMoney = (value) => {
+    const rounded = Number(Number(value || 0).toFixed(2));
+    return (Object.is(rounded, -0) ? 0 : rounded).toFixed(2);
+  };
+
+  const getRoundedMoney = (value) => {
+    const rounded = Number(Number(value || 0).toFixed(2));
+    return Object.is(rounded, -0) ? 0 : rounded;
+  };
+
   const mealMembers = members.map((member) => {
     const mealTotalCost = Math.max(
       0,
@@ -200,12 +210,12 @@ const MembersFinancials = () => {
                   </td>
                   <td
                     className={`py-4 px-2 text-right font-medium ${
-                      Number(member.balance || 0) >= 0
+                      getRoundedMoney(member.balance) >= 0
                         ? "text-emerald-600"
                         : "text-rose-600"
                     }`}
                   >
-                    ৳{Number(member.balance || 0).toFixed(2)}
+                    ৳{formatMoney(member.balance)}
                   </td>
                   <td className="py-4 px-2 text-right font-medium text-rose-600">
                     ৳{Number(member.due || 0).toFixed(2)}
