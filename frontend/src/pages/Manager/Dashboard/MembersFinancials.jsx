@@ -446,7 +446,8 @@ const MembersFinancials = () => {
                   required
                 />
                 <p className="mt-1 text-xs text-slate-500">
-                  Max refundable extra: ৳{Number(refundModal.extra || 0).toFixed(2)}
+                  Max refundable extra: ৳
+                  {Number(refundModal.extra || 0).toFixed(2)}
                 </p>
               </div>
 
