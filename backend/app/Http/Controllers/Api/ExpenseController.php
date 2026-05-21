@@ -834,6 +834,7 @@ class ExpenseController extends Controller
             $memberPaidMeal  = round((float) $memberTransactions->where('type', 'Meals Expense')->sum('amount'), 2);
             $memberPaidFixed = round((float) $memberTransactions->where('type', 'Fixed Expense')->sum('amount'), 2);
             $memberPaid      = round($memberTransactions->sum('amount'), 2);
+            $memberExtra     = round($memberPaid - $memberTotalCost, 2);
 
             // Member's due amount
             $memberDue = max(0, round($memberTotalCost - $memberPaid, 2));
@@ -855,10 +856,13 @@ class ExpenseController extends Controller
                 'name'        => $member->name,
                 'email'       => $member->email,
                 'totalMeals'  => $memberMeals,
+                'bill'        => $memberTotalCost,
                 'totalCost'   => $memberTotalCost,
                 'paid'        => $memberPaid,
                 'paidMeal'    => $memberPaidMeal,
                 'paidFixed'   => $memberPaidFixed,
+                'extra'       => $memberExtra,
+                'status'      => $memberExtra > 0 ? 'Pending Refund' : 'Due',
                 'balance'     => $memberBalance,
                 'due'         => $memberDue,
                 'lastPayment' => $lastPayment?->format('Y-m-d'),
@@ -881,6 +885,189 @@ class ExpenseController extends Controller
                     'due' => round($totalDueAllMembers, 2),
                 ],
                 'members' => $membersData,
+            ],
+        ]);
+    }
+
+    public function refundMemberExtra(Request $request, User $member): JsonResponse
+    {
+        $this->ensureRole($request->user(), User::ROLE_MANAGER);
+
+        $manager = $request->user();
+
+        if (! $manager->mess_id) {
+            abort(400, 'Your manager account is not assigned to any mess.');
+        }
+
+        if ($member->role !== User::ROLE_USER || (int) $member->mess_id !== (int) $manager->mess_id) {
+            abort(404, 'Member not found.');
+        }
+
+        $data = $request->validate([
+            'monthKey' => ['required', 'string'],
+            'month_key' => ['nullable', 'string'],
+            'amount' => ['required', 'numeric', 'gt:0'],
+            'method' => ['required', 'string', 'in:Cash,Bkash,Bank'],
+        ]);
+
+        $monthKey = $this->normalizeMonthKey($data['monthKey'] ?? $data['month_key']);
+        $monthStart = Carbon::createFromFormat('Y-m', $monthKey)->startOfMonth();
+        $monthEnd = Carbon::createFromFormat('Y-m', $monthKey)->endOfMonth();
+
+        $membersCount = User::query()
+            ->role(User::ROLE_USER)
+            ->where('mess_id', $manager->mess_id)
+            ->count();
+
+        $fixedCost = FixedCost::query()
+            ->where('mess_id', $manager->mess_id)
+            ->where('month_key', $monthKey)
+            ->first();
+
+        $fixedTotal = round(
+            (float) ($fixedCost?->rent ?? 0)
+            + (float) ($fixedCost?->khala ?? 0)
+            + (float) ($fixedCost?->utilities ?? 0)
+            + (float) ($fixedCost?->wifi ?? 0),
+            2
+        );
+        $fixedCostPerPerson = $membersCount > 0 ? round($fixedTotal / $membersCount, 2) : 0;
+
+        $totalMealsAllMembers = (float) Meal::query()
+            ->where('mess_id', $manager->mess_id)
+            ->whereBetween('meal_date', [$monthStart, $monthEnd])
+            ->sum('quantity');
+
+        $costPerMeal = $totalMealsAllMembers > 0 ? round(
+            Expense::query()
+                ->where('mess_id', $manager->mess_id)
+                ->whereBetween('expense_date', [$monthStart, $monthEnd])
+                ->sum('amount') / $totalMealsAllMembers,
+            2
+        ) : 0;
+
+        $memberMeals = (float) Meal::query()
+            ->where('user_id', $member->id)
+            ->whereBetween('meal_date', [$monthStart, $monthEnd])
+            ->sum('quantity');
+
+        $memberBill = round(($memberMeals * $costPerMeal) + $fixedCostPerPerson, 2);
+
+        $memberPaid = round((float) UserTransaction::query()
+            ->where('user_id', $member->id)
+            ->where('mess_id', $manager->mess_id)
+            ->whereBetween('transaction_date', [$monthStart, $monthEnd])
+            ->sum('amount'), 2);
+
+        // Also compute category-specific paid amounts for this month
+        $memberTransactions = UserTransaction::query()
+            ->where('user_id', $member->id)
+            ->where('mess_id', $manager->mess_id)
+            ->whereBetween('transaction_date', [$monthStart, $monthEnd])
+            ->get(['type', 'amount']);
+
+        $memberPaidMeal  = round((float) $memberTransactions->where('type', 'Meals Expense')->sum('amount'), 2);
+        $memberPaidFixed = round((float) $memberTransactions->where('type', 'Fixed Expense')->sum('amount'), 2);
+
+        $memberExtra = round($memberPaid - $memberBill, 2);
+
+        if ($memberExtra <= 0) {
+            throw ValidationException::withMessages([
+                'amount' => 'This member has no extra paid amount to refund for the selected month.',
+            ]);
+        }
+
+        $refundAmount = round((float) $data['amount'], 2);
+
+        if ($refundAmount > $memberExtra) {
+            throw ValidationException::withMessages([
+                'amount' => 'Refund amount cannot be greater than the current extra paid amount.',
+            ]);
+        }
+
+        // Calculate category-specific extras
+        $mealExtra = max(0, round($memberPaidMeal - round($memberMeals * $costPerMeal, 2), 2));
+        $fixedExtra = max(0, round($memberPaidFixed - $fixedCostPerPerson, 2));
+
+        // Allocate refund across meal then fixed until amount consumed
+        $remaining = $refundAmount;
+        $mealRefund = 0;
+        $fixedRefund = 0;
+
+        if ($mealExtra > 0) {
+            $mealRefund = (float) min($remaining, $mealExtra);
+            $remaining = round($remaining - $mealRefund, 2);
+        }
+
+        if ($remaining > 0 && $fixedExtra > 0) {
+            $fixedRefund = (float) min($remaining, $fixedExtra);
+            $remaining = round($remaining - $fixedRefund, 2);
+        }
+
+        $createdTransactions = [];
+
+        DB::transaction(function () use (&$createdTransactions, $manager, $member, $mealRefund, $fixedRefund) {
+            $previousBalance = (float) (UserTransaction::query()
+                ->where('user_id', $member->id)
+                ->where('mess_id', $manager->mess_id)
+                ->orderByDesc('transaction_date')
+                ->orderByDesc('id')
+                ->value('balance') ?? 0);
+
+            // Create meal refund transaction (negative) if applicable
+            if ($mealRefund > 0) {
+                $previousBalance = round($previousBalance - $mealRefund, 2);
+
+                $tx = UserTransaction::create([
+                    'mess_id' => $manager->mess_id,
+                    'user_id' => $member->id,
+                    'transaction_date' => now()->format('Y-m-d'),
+                    'type' => 'Meals Expense',
+                    'amount' => -1 * $mealRefund,
+                    'balance' => $previousBalance,
+                    'created_by' => $manager->id,
+                ]);
+
+                $createdTransactions[] = $tx->fresh();
+            }
+
+            // Create fixed refund transaction (negative) if applicable
+            if ($fixedRefund > 0) {
+                $previousBalance = round($previousBalance - $fixedRefund, 2);
+
+                $tx = UserTransaction::create([
+                    'mess_id' => $manager->mess_id,
+                    'user_id' => $member->id,
+                    'transaction_date' => now()->format('Y-m-d'),
+                    'type' => 'Fixed Expense',
+                    'amount' => -1 * $fixedRefund,
+                    'balance' => $previousBalance,
+                    'created_by' => $manager->id,
+                ]);
+
+                $createdTransactions[] = $tx->fresh();
+            }
+        });
+
+        $updatedPaidMeal = round($memberPaidMeal - $mealRefund, 2);
+        $updatedPaidFixed = round($memberPaidFixed - $fixedRefund, 2);
+        $updatedPaid = round($memberPaid - ($mealRefund + $fixedRefund), 2);
+        $updatedExtra = round($updatedPaid - $memberBill, 2);
+
+        return response()->json([
+            'message' => 'Refund recorded successfully.',
+            'method' => $data['method'],
+            'transactions' => array_map(fn($t) => $this->formatUserTransaction($t), $createdTransactions),
+            'settlement' => [
+                'memberId' => $member->id,
+                'memberName' => $member->name,
+                'monthKey' => $monthKey,
+                'paidMeal' => $updatedPaidMeal,
+                'paidFixed' => $updatedPaidFixed,
+                'paid' => $updatedPaid,
+                'bill' => $memberBill,
+                'extra' => $updatedExtra,
+                'status' => $updatedExtra > 0 ? 'Pending Refund' : 'Due',
             ],
         ]);
     }

@@ -56,6 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/expenses/summary', [ExpenseController::class, 'monthlyExpenseSummary']);
             Route::get('/expenses/list', [ExpenseController::class, 'expensesList']);
             Route::get('/financials/members', [ExpenseController::class, 'membersFinancials']);
+            Route::post('/financials/members/{member}/refund', [ExpenseController::class, 'refundMemberExtra']);
             Route::put('/fixed-costs', [ExpenseController::class, 'upsertFixedCosts']);
             Route::post('/expenses', [ExpenseController::class, 'storeExpense']);
         });

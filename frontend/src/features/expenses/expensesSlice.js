@@ -125,6 +125,17 @@ export const expensesApiSlice = apiSlice.injectEndpoints({
         { type: "Financials", id: `MEMBERS-${arg?.monthKey || "CURRENT"}` },
       ],
     }),
+    refundMemberExtra: builder.mutation({
+      query: ({ memberId, monthKey, amount, method }) => ({
+        url: `/manager/financials/members/${memberId}/refund`,
+        method: "POST",
+        body: { monthKey, amount, method },
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "Financials", id: `MEMBERS-${arg?.monthKey || "CURRENT"}` },
+        { type: "Transaction", id: "LIST" },
+      ],
+    }),
     upsertFixedCosts: builder.mutation({
       query: (body) => ({
         url: "/manager/fixed-costs",
@@ -236,6 +247,7 @@ export const {
   useGetUserBillSummaryQuery,
   useGetUserTransactionsQuery,
   useGetMembersFinancialsQuery,
+  useRefundMemberExtraMutation,
   useUpsertFixedCostsMutation,
   useAddExpenseMutation,
   useAddMealMutation,
