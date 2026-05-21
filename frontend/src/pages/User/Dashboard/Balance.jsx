@@ -232,10 +232,15 @@ const PaymentModal = ({
                   Phone Number
                 </label>
                 <input
-                  type="text"
+                  type="tel"
+                  name="mobileBankingNumber"
+                  autoComplete="tel"
+                  inputMode="numeric"
+                  pattern="01[0-9]{9}"
+                  maxLength="11"
+                  placeholder="01XXXXXXXXX"
                   value={mobileBankingNumber}
                   onChange={(e) => setMobileBankingNumber(e.target.value)}
-                  placeholder="Enter phone number"
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                 />
               </div>
@@ -245,6 +250,8 @@ const PaymentModal = ({
                 </label>
                 <input
                   type="password"
+                  name="mobileBankingPin"
+                  autoComplete="new-password"
                   value={mobileBankingPin}
                   onChange={(e) => setMobileBankingPin(e.target.value)}
                   placeholder="Enter PIN"
