@@ -2,30 +2,30 @@
 
 ## Overview
 
-MessManager is a full-stack mess management application for tracking meals, expenses, fixed monthly costs, deposits, and member balances inside a shared mess. The system is built around three roles: `superAdmin`, `manager`, and `user`.
+MessManager is a full-stack mess management system for tracking meals, expenses, deposits, fixed monthly costs, member balances, and monthly settlements inside a shared mess. The app is centered around three roles: `superAdmin`, `manager`, and `user`.
 
-The application is split into two main parts:
+The codebase is split into two main parts:
 
-- `backend/` - a Laravel API that handles authentication, approvals, meal tracking, expenses, fixed costs, deposits, and bill calculations
-- `frontend/` - a React + Vite single-page app that provides the public pages and role-based dashboards
+- `backend/` - a Laravel API that handles authentication, mess approval, member management, meal tracking, expenses, deposits, balance calculations, refunds, and reporting
+- `frontend/` - a React + Vite single-page app that provides public pages and role-based dashboards
 
 ## Roles
 
 ### Super Admin
 
-The super admin controls the overall system and manages mess approval and activation.
+The super admin controls the overall system. This role reviews mess creation requests, approves or rejects them, and can activate or deactivate messes and manager accounts.
 
 ### Manager
 
-The manager owns a mess after approval, manages members, records expenses, sets fixed costs, reviews deposits, and sees financial summaries.
+The manager owns a mess after approval. This role manages members, records expenses, sets monthly fixed costs, reviews deposits, inspects member financials, and now records refunds for extra paid amounts.
 
 ### User / Member
 
-The user is a mess member. Members log meals, view bill summaries, see transactions, and request deposits.
+The user is a mess member. Members log meals, view bills, see transaction history, request deposits, and monitor their monthly balance and dues.
 
-## Main Workflow
+## Core Workflow
 
-### 1. Manager requests a mess
+### 1. Manager submits a mess creation request
 
 A public registration form lets a manager submit a new mess request. The request includes:
 
@@ -44,25 +44,25 @@ The super admin reviews pending mess requests. On approval:
 - a `Mess` record is created
 - a manager `User` account is created for the mess
 - the mess request is marked approved
-- the manager receives the credentials created during approval
+- the manager receives the created credentials
 
 On rejection, the request is marked rejected and no mess is created.
 
-### 3. First login password setup
+### 3. First-login password setup
 
-The backend supports first-login password setup for newly created accounts.
+Newly created accounts can be forced to set a new password on first login.
 
 - if `must_change_password` is enabled, the user must set a new password
-- the password setup endpoint can accept either camelCase or snake_case field names
-- once completed, the flag is cleared
+- the password setup endpoint accepts both camelCase and snake_case field names
+- after a successful setup, the flag is cleared
 
 ### 4. Manager adds members
 
-After login, the manager can add members by name and email.
+After login, the manager can create members by entering name and email.
 
 - a temporary password is generated automatically
-- the member account is created with role `user`
-- the account is flagged for first-login password setup
+- the account is created with role `user`
+- the member is flagged for first-login password setup
 
 ### 5. Members log meals
 
@@ -72,7 +72,7 @@ Members can add meal entries individually or in bulk.
 - meal quantity is stored per date
 - bulk meal entry supports date ranges and optional overwrite
 
-### 6. Manager handles money and bills
+### 6. Manager handles mess money
 
 Managers can:
 
@@ -82,10 +82,11 @@ Managers can:
 - view member financial summaries
 - view monthly dashboard totals
 - view daily meal breakdowns
+- record manual refunds for overpaid members
 
 ### 7. Members request deposits
 
-Members can submit deposit requests. The manager approves them, which creates a transaction and updates the member balance.
+Members submit deposit requests. The manager approves them, which creates a transaction and updates the member balance.
 
 ## Backend Features
 
@@ -144,6 +145,7 @@ The manager can:
 - view monthly expense summaries
 - list expenses for a month
 - view member financial breakdowns
+- record refunds for members with extra paid amounts
 
 ### Member operations
 
@@ -201,6 +203,7 @@ Members can:
 - `GET /api/manager/expenses/summary`
 - `GET /api/manager/expenses/list`
 - `GET /api/manager/financials/members`
+- `POST /api/manager/financials/members/{member}/refund`
 - `POST /api/manager/expenses`
 
 ### User routes
@@ -216,7 +219,7 @@ Members can:
 
 ## Frontend Structure
 
-The React app is a role-based SPA built with React Router and Redux Toolkit.
+The React app is a role-based SPA built with React Router, Redux Toolkit, and RTK Query.
 
 ### Global app behavior
 
@@ -254,7 +257,7 @@ Protected routes are handled by a role guard.
 
 - `/manager/dashboard` - manager overview dashboard
 - `/manager/members` - member management
-- `/manager/members-financials` - member-level financial report
+- `/manager/members-financials` - member-level financial report and refund settlement
 - `/manager/add-expense` - create expense entry
 - `/manager/expense-list` - list expenses for a month
 - `/manager/meals-chart` - daily meal chart and breakdown
@@ -392,6 +395,14 @@ Important fields:
 - balance
 - created by
 
+These records now cover:
+
+- member deposits
+- approved deposit requests
+- meal expense transactions
+- fixed expense transactions
+- refund transactions recorded by the manager
+
 ### UserDepositRequest
 
 Stores pending deposit requests before approval.
@@ -413,11 +424,11 @@ Important fields:
 
 ### Monthly meal rate
 
-The system treats `Bazaar` expenses as the meal cost pool.
+The system calculates the meal rate from monthly meal-related expense pools and total meal counts.
 
-- `bazaarTotal` = total of `Bazaar` expenses for the month
-- `totalMealsAllMembers` = total meal quantity for the month
-- `costPerMeal = bazaarTotal / totalMealsAllMembers` when meals exist
+- meal expense pool is summed for the month
+- total meal quantity is summed for the month
+- `costPerMeal = mealExpensePool / totalMealsAllMembers` when meals exist
 
 ### Fixed costs
 
@@ -440,10 +451,23 @@ For each member in a month:
 
 ### Member balance
 
-Balances are based on the transaction history.
+Balances are based on transaction history.
 
 - the latest transaction balance is used as current balance
 - deposits and other approved transaction types update the balance
+- refunds are recorded as negative transactions and reduce the running balance
+
+### Refund settlement logic
+
+When the manager records a refund for a member with extra paid amount:
+
+- the member must have a positive extra paid amount for the selected month
+- the refund amount cannot exceed that extra amount
+- the refund is applied first against meal extra, then against fixed extra
+- the backend creates separate negative transactions for meal and fixed portions
+- the settlement response returns updated paid totals and status
+
+This ensures meal and fixed deposits are reduced separately instead of treating the refund as a single undifferentiated transaction.
 
 ## Meal Entry Rules
 
@@ -487,6 +511,37 @@ When the manager approves a pending request:
 - the deposit request becomes `approved`
 - the approved transaction id is stored on the request
 
+## Financial Summary Screens
+
+### Manager member financials screen
+
+The member financials page shows:
+
+- meal breakdown per member
+- fixed breakdown per member
+- combined settlement summary
+- extra paid status
+- refund action for members with positive extra
+
+The refund modal on this page now mirrors the user payment modal style:
+
+- three gateway tiles for Hand Cash, Mobile Banking, and Card / Bank
+- mobile banking provider tiles for Bkash, Nagad, and Rocket
+- phone number input with mobile-number validation styling
+- PIN field hidden until mobile banking is selected
+- card fields shown only when card settlement is selected
+
+### User balance screen
+
+The user balance page shows:
+
+- total deposit for the month
+- separate meal expense and fixed expense deposit flows
+- payment gateway selection
+- transaction history
+
+The payment gateway UI uses the same logo assets from `frontend/public`.
+
 ## UI Components And Layouts
 
 The frontend is organized by role and screen type.
@@ -498,10 +553,27 @@ The frontend is organized by role and screen type.
 - feature state lives under `features`
 - reusable helpers live under `utils`
 
-## Notes
+## Implementation Notes
 
 - The frontend uses React Router for page navigation.
 - The backend is the source of truth for calculations and approvals.
 - Month-based features consistently use `YYYY-MM` as the month key.
-- The app currently uses API endpoint prefixes grouped by role: `admin`, `manager`, and `user`.
-- The project structure indicates a production-ready split between API logic and SPA UI, with role-based access as the central design.
+- The app uses API endpoint prefixes grouped by role: `admin`, `manager`, and `user`.
+- Refunds and deposit actions are recorded through `UserTransaction` so the history remains auditable.
+- Current refund and payment flows rely on the same asset set in `frontend/public` for consistent UI.
+
+## Recent Updates
+
+The latest project updates added or adjusted the following behavior:
+
+- manager refund settlement for overpaid members
+- refund allocation split between meal and fixed portions
+- refund gateway UI aligned with the user payment modal
+- mobile banking input validation for phone numbers starting with `01` and 11 digits long
+- PIN fields kept empty by default and protected from browser autofill
+- zero balances rendered as `0.00` instead of `-0.00`
+- zero extra statuses shown as `Settled` instead of `Due`
+
+## Project Summary
+
+MessManager is a role-based production-style mess accounting system with approval workflows, meal accounting, deposits, expense tracking, fixed cost distribution, refund settlement, and month-based financial reporting. The backend handles all authoritative calculations, while the frontend focuses on role-specific user experiences and dashboard workflows.
