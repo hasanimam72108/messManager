@@ -70,8 +70,7 @@
   <text class="method" x="460" y="286">+ request(): BelongsTo</text>
   <text class="method" x="460" y="304">+ members(): HasMany</text>
   <text class="method" x="460" y="322">+ meals(): HasMany</text>
-  <text class="method" x="460" y="340">+ expenses(): HasMany</text>
-  <text class="method" x="460" y="358">+ transactions(): HasMany</text>
+  <!-- Note: expenses() and transactions() not defined on Mess model; relations exist via Expense and UserTransaction -->
 
   <!-- MessRequest Class -->
   <rect class="classBox" x="850" y="110" width="340" height="340" rx="4" />
@@ -191,19 +190,22 @@
   <text class="attribute" x="860" y="605">+ id: bigint (PK)</text>
   <text class="attribute" x="860" y="623">+ mess_id: bigint (FK)</text>
   <text class="attribute" x="860" y="641">+ user_id: bigint (FK)</text>
-  <text class="attribute" x="860" y="659">+ amount_requested: decimal(10,2)</text>
-  <text class="attribute" x="860" y="677">+ status: enum</text>
-  <text class="label" x="870" y="695">{pending, approved, rejected}</text>
-  <text class="attribute" x="860" y="713">+ requested_date: timestamp</text>
-  <text class="attribute" x="860" y="731">+ approved_date: timestamp</text>
-  <text class="attribute" x="860" y="749">+ approved_by: bigint (FK)</text>
-  <text class="attribute" x="860" y="767">+ rejection_reason: text</text>
-  <text class="attribute" x="860" y="785">+ timestamps</text>
+  <text class="attribute" x="860" y="659">+ transaction_date: date</text>
+  <text class="attribute" x="860" y="677">+ type: string</text>
+  <text class="attribute" x="860" y="695">+ amount: decimal(10,2)</text>
+  <text class="attribute" x="860" y="713">+ status: enum</text>
+  <text class="label" x="870" y="731">{pending, approved, rejected}</text>
+  <text class="attribute" x="860" y="749">+ requested_by: bigint (FK)</text>
+  <text class="attribute" x="860" y="767">+ approved_by: bigint (FK)</text>
+  <text class="attribute" x="860" y="785">+ approved_transaction_id: bigint (FK)</text>
+  <text class="attribute" x="860" y="803">+ approved_at: timestamp</text>
+  <text class="attribute" x="860" y="821">+ timestamps</text>
   
-  <line class="divider" x1="850" y1="793" x2="1210" y2="793" />
-  <text class="method" x="860" y="816">+ mess(): BelongsTo</text>
-  <text class="method" x="860" y="834">+ user(): BelongsTo</text>
-  <text class="method" x="860" y="852">+ approvedBy(): BelongsTo</text>
+  <line class="divider" x1="850" y1="835" x2="1210" y2="835" />
+  <text class="method" x="860" y="858">+ mess(): BelongsTo</text>
+  <text class="method" x="860" y="876">+ user(): BelongsTo</text>
+  <text class="method" x="860" y="894">+ approver(): BelongsTo</text>
+  <text class="method" x="860" y="912">+ approvedTransaction(): BelongsTo</text>
 
   <!-- Relationships -->
   <!-- User -> Mess (1 manager to many members) -->
