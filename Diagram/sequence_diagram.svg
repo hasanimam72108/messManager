@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="1260" viewBox="0 0 1360 1260">
+<svg xmlns="http://www.w3.org/2000/svg" width="1360" height="1600" viewBox="0 0 1360 1600">
   <style>
     .title { font: 700 28px Georgia, serif; fill: #111 }
     .subtitle { font: 14px sans-serif; fill: #555 }
@@ -167,5 +167,49 @@
   <path class="returnMsg" d="M 725 1136 L 315 1136" />
   <text class="label" x="520" y="1126" text-anchor="middle">Expense added successfully</text>
 
-  <text class="foot" x="34" y="1220">Sequence diagram: Manager submits a mess request, Super Admin approves it, the manager completes first-login password setup, then the manager adds members and expenses for the mess.</text>
+  <!-- Phase 5: Meal logging and deposit requests -->
+  <rect class="phase" x="70" y="1180" width="980" height="34" rx="0" />
+  <text class="phaseText" x="560" y="1202" text-anchor="middle">Phase 5: Meal Logging & Deposit Requests</text>
+
+  <circle class="step" cx="1180" cy="1248" r="8" />
+  <text class="stepText" x="1180" y="1252" text-anchor="middle">19</text>
+  <path class="msg" d="M 1188 1248 L 315 1248" />
+  <text class="label" x="750" y="1238" text-anchor="middle">Member opens meal page / requests deposit</text>
+
+  <circle class="step" cx="315" cy="1288" r="8" />
+  <text class="stepText" x="315" y="1292" text-anchor="middle">20</text>
+  <path class="msg" d="M 323 1288 L 505 1288" />
+  <text class="label" x="410" y="1278" text-anchor="middle">POST /user/meals (or /user/meals/bulk)</text>
+
+  <circle class="step" cx="505" cy="1328" r="8" />
+  <text class="stepText" x="505" y="1332" text-anchor="middle">21</text>
+  <path class="msg" d="M 513 1328 L 725 1328" />
+  <text class="label" x="615" y="1318" text-anchor="middle">Create meal record in DB</text>
+
+  <circle class="step" cx="1180" cy="1368" r="8" />
+  <text class="stepText" x="1180" y="1372" text-anchor="middle">22</text>
+  <path class="msg" d="M 1188 1368 L 323 1368" />
+  <text class="label" x="750" y="1358" text-anchor="middle">POST /user/transactions (create deposit request)</text>
+
+  <circle class="step" cx="315" cy="1408" r="8" />
+  <text class="stepText" x="315" y="1412" text-anchor="middle">23</text>
+  <path class="msg" d="M 323 1408 L 505 1408" />
+  <text class="label" x="410" y="1398" text-anchor="middle">Store UserDepositRequest (status=pending)</text>
+
+  <circle class="step" cx="130" cy="1448" r="8" />
+  <text class="stepText" x="130" y="1452" text-anchor="middle">24</text>
+  <path class="msg" d="M 138 1448 L 315 1448" />
+  <text class="label" x="226" y="1438" text-anchor="middle">Manager views pending deposits (GET /manager/deposit-requests)</text>
+
+  <circle class="step" cx="315" cy="1488" r="8" />
+  <text class="stepText" x="315" y="1492" text-anchor="middle">25</text>
+  <path class="msg" d="M 323 1488 L 505 1488" />
+  <text class="label" x="410" y="1478" text-anchor="middle">POST /manager/deposit-requests/{id}/approve</text>
+
+  <circle class="step" cx="505" cy="1528" r="8" />
+  <text class="stepText" x="505" y="1532" text-anchor="middle">26</text>
+  <path class="msg" d="M 513 1528 L 725 1528" />
+  <text class="label" x="615" y="1518" text-anchor="middle">Create UserTransaction and update request (approved)</text>
+
+  <text class="foot" x="34" y="1560">Sequence diagram: Manager submits a mess request, Super Admin approves it, the manager completes first-login password setup, then the manager adds members and expenses. Members also log meals and submit deposit requests which managers can approve.</text>
 </svg>

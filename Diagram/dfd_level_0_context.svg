@@ -38,39 +38,39 @@
 
   <!-- Member (bottom-left) -->
   <rect class="entityBox" x="80" y="650" width="200" height="100" rx="6" />
-  <text class="entityEntity" x="180" y="700" text-anchor="middle">Member</text>
+  <text class="entityText" x="180" y="700" text-anchor="middle">Member</text>
 
   <!-- Data Flows -->
 
   <!-- Manager -> System -->
   <path class="dataFlow" d="M 280 170 L 450 380" />
-  <text class="flowLabel" x="350" y="260">1. Register mess request</text>
-  <text class="flowLabel" x="350" y="280">2. Add members, expenses</text>
+  <text class="flowLabel" x="350" y="260">1. Submit mess registration (/register)</text>
+  <text class="flowLabel" x="350" y="280">2. Manage members & expenses (/manager/*)</text>
 
   <!-- System -> Manager -->
   <path class="dataFlow" d="M 450 420 L 280 220" />
-  <text class="flowLabel" x="320" y="320">5. Approval notification</text>
-  <text class="flowLabel" x="320" y="340">6. Monthly bill summary</text>
+  <text class="flowLabel" x="320" y="320">5. Notifications & reports (/manager/dashboard/*)</text>
+  <text class="flowLabel" x="320" y="340">6. Monthly billing summary</text>
 
   <!-- SuperAdmin -> System -->
   <path class="dataFlow" d="M 1120 170 L 950 380" />
-  <text class="flowLabel" x="1020" y="260">3. Review requests</text>
-  <text class="flowLabel" x="1020" y="280">4. Approve/reject</text>
+  <text class="flowLabel" x="1020" y="260">3. Fetch mess requests (/admin/mess-requests)</text>
+  <text class="flowLabel" x="1020" y="280">4. Approve / reject requests (/admin/mess-requests/*)</text>
 
   <!-- System -> SuperAdmin -->
   <path class="dataFlow" d="M 950 420 L 1120 220" />
-  <text class="flowLabel" x="1000" y="340">7. System report</text>
-  <text class="flowLabel" x="1000" y="360">8. Admin dashboard</text>
+  <text class="flowLabel" x="1000" y="340">7. System reports & metrics (/admin/system-report)</text>
+  <text class="flowLabel" x="1000" y="360">8. Admin dashboard data</text>
 
   <!-- Member -> System -->
   <path class="dataFlow" d="M 280 700 L 450 580" />
-  <text class="flowLabel" x="330" y="650">9. Log meals</text>
-  <text class="flowLabel" x="330" y="670">10. Request deposits</text>
+  <text class="flowLabel" x="330" y="650">9. Log meals (/user/meals)</text>
+  <text class="flowLabel" x="330" y="670">10. Request deposits (/user/transactions)</text>
 
   <!-- System -> Member -->
   <path class="dataFlow" d="M 450 580 L 280 750" />
-  <text class="flowLabel" x="320" y="680">11. Personal bill</text>
-  <text class="flowLabel" x="320" y="700">12. Transaction history</text>
+  <text class="flowLabel" x="320" y="680">11. Personal bill & summary (/user/bill/summary)</text>
+  <text class="flowLabel" x="320" y="700">12. Transaction history (/user/transactions)</text>
 
   <!-- Legend -->
   <text class="note" x="50" y="860" style="font: 700 14px sans-serif;">Level 0 Scope:</text>

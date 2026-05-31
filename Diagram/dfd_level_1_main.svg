@@ -26,6 +26,7 @@
 
   <text class="title" x="50" y="50">Level 1: Main Processes</text>
   <text class="subtitle" x="50" y="80">Decomposition of the Mess Manager System into 4 primary processes</text>
+  <text class="subtitle" x="50" y="100" style="font-size:12px;">Mapped to API routes in `routes/api.php` (admin, manager, user, auth)</text>
 
   <!-- External Entities -->
   
@@ -85,32 +86,40 @@
   <!-- Expense/Transaction Stores -->
   <line x1="1350" y1="600" x2="1650" y2="600" stroke="#d97706" stroke-width="3" />
   <line x1="1350" y1="640" x2="1650" y2="640" stroke="#d97706" stroke-width="3" />
-  <text class="storeText" x="1500" y="625">D4: Expense/FixedCost</text>
+  <text class="storeText" x="1500" y="625">D4: Expense</text>
 
   <line x1="1350" y1="700" x2="1650" y2="700" stroke="#d97706" stroke-width="3" />
   <line x1="1350" y1="740" x2="1650" y2="740" stroke="#d97706" stroke-width="3" />
   <text class="storeText" x="1500" y="725">D5: Transaction</text>
 
+  <line x1="1350" y1="780" x2="1650" y2="780" stroke="#d97706" stroke-width="3" />
+  <line x1="1350" y1="820" x2="1650" y2="820" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="1500" y="805">D6: Meal</text>
+
+  <line x1="1350" y1="860" x2="1650" y2="860" stroke="#d97706" stroke-width="3" />
+  <line x1="1350" y1="900" x2="1650" y2="900" stroke="#d97706" stroke-width="3" />
+  <text class="storeText" x="1500" y="885">D7: FixedCost</text>
+
   <!-- Data Flows from Manager -->
   <path class="dataFlow" d="M 190 190 L 250 300" />
-  <text class="flowLabel" x="200" y="250">Mess request</text>
+  <text class="flowLabel" x="200" y="250">Mess request (/register)</text>
 
   <path class="dataFlow" d="M 190 190 L 650 300" />
-  <text class="flowLabel" x="400" y="220">Member emails</text>
+  <text class="flowLabel" x="400" y="220">Member invites / create member (/manager/members)</text>
 
   <path class="dataFlow" d="M 190 190 L 1050 300" />
-  <text class="flowLabel" x="600" y="220">Expense data</text>
+  <text class="flowLabel" x="600" y="220">Expense data (/manager/expenses, /manager/fixed-costs)</text>
 
   <!-- Data Flows from SuperAdmin -->
   <path class="dataFlow" d="M 1610 190 L 1550 300" />
-  <text class="flowLabel" x="1540" y="250">Approval decision</text>
+  <text class="flowLabel" x="1540" y="250">Approval decision (/admin/mess-requests/*)</text>
 
   <!-- P1 to/from Stores -->
   <path class="dataFlowAlt" d="M 300 420 L 300 600" />
-  <text class="flowLabel" x="310" y="520">Request data</text>
+  <text class="flowLabel" x="310" y="520">Save mess request (D1: MessRequest)</text>
 
   <path class="dataFlowAlt" d="M 300 600 L 300 420" />
-  <text class="flowLabel" x="310" y="580">Read requests</text>
+  <text class="flowLabel" x="310" y="580">Read pending requests</text>
 
   <!-- P1 to P2 (Manager approved) -->
   <path class="dataFlow" d="M 370 350 L 630 350" />
@@ -118,10 +127,10 @@
 
   <!-- P2 to/from Stores -->
   <path class="dataFlowAlt" d="M 700 420 L 700 600" />
-  <text class="flowLabel" x="710" y="520">Member data</text>
+  <text class="flowLabel" x="710" y="520">Store / update users (D2: User)</text>
 
   <path class="dataFlowAlt" d="M 700 600 L 700 420" />
-  <text class="flowLabel" x="710" y="580">Read users</text>
+  <text class="flowLabel" x="710" y="580">Read members list</text>
 
   <!-- P2 to P3 -->
   <path class="dataFlow" d="M 770 350 L 1030 350" />
@@ -129,21 +138,27 @@
 
   <!-- P3 to/from Stores -->
   <path class="dataFlowAlt" d="M 1100 420 L 1100 600" />
-  <text class="flowLabel" x="1110" y="520">Expense data</text>
+  <text class="flowLabel" x="1110" y="520">Store expenses (D4: Expense)</text>
 
   <path class="dataFlowAlt" d="M 1100 600 L 1100 420" />
-  <text class="flowLabel" x="1110" y="580">Read expenses</text>
+  <text class="flowLabel" x="1110" y="580">Read expense reports</text>
 
   <!-- P3 to P4 -->
   <path class="dataFlow" d="M 1170 350 L 1430 350" />
-  <text class="flowLabel" x="1300" y="340">Summary</text>
+  <text class="flowLabel" x="1300" y="340">Expense & meal summary</text>
 
   <!-- P4 to/from Stores -->
   <path class="dataFlowAlt" d="M 1500 420 L 1500 600" />
-  <text class="flowLabel" x="1510" y="520">Expense</text>
+  <text class="flowLabel" x="1510" y="520">Write expense data (D4)</text>
 
   <path class="dataFlowAlt" d="M 1500 420 L 1500 700" />
-  <text class="flowLabel" x="1510" y="620">Transaction</text>
+  <text class="flowLabel" x="1510" y="620">Write transactions (D5)</text>
+
+  <path class="dataFlowAlt" d="M 1500 420 L 1500 780" />
+  <text class="flowLabel" x="1510" y="740">Write meals (D6)</text>
+
+  <path class="dataFlowAlt" d="M 1500 420 L 1500 860" />
+  <text class="flowLabel" x="1510" y="800">Write fixed costs (D7)</text>
 
   <!-- P4 back to Member -->
   <path class="dataFlow" d="M 1430 350 L 190 940" />

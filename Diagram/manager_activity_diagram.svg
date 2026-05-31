@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1500" viewBox="0 0 1700 1500">
+  <style>
+    .title { font: 700 30px Georgia, serif; fill: #111 }
+    .subtitle { font: 13px sans-serif; fill: #555 }
+    .lane { fill: #fbfbfd; stroke: #d8d8d8; stroke-width: 2 }
+    .laneHead { fill: #334155 }
+    .laneTitle { font: 700 16px sans-serif; fill: #fff }
+    .startEnd { fill: #0f766e; stroke: #0f766e; stroke-width: 2 }
+    .action { fill: #ffffff; stroke: #2563eb; stroke-width: 2 }
+    .decision { fill: #f59e0b; stroke: #d97706; stroke-width: 2 }
+    .label { font: 13px sans-serif; fill: #111 }
+    .small { font: 12px sans-serif; fill: #444 }
+    .flow { stroke: #222; stroke-width: 2; fill: none; marker-end: url(#arrow) }
+    .flowSoft { stroke: #666; stroke-width: 1.8; fill: none; stroke-dasharray: 6 5; marker-end: url(#arrowSoft) }
+    .note { fill: #eff6ff; stroke: #bfdbfe; stroke-width: 1.5 }
+    .noteText { font: 12px sans-serif; fill: #1e3a8a }
+  </style>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#222" />
+    </marker>
+    <marker id="arrowSoft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666" />
+    </marker>
+  </defs>
+
+  <text class="title" x="40" y="48">Manager Activity Diagram</text>
+  <text class="subtitle" x="40" y="72">Manager workflow for mess setup, member management, expenses, billing, and deposit approvals</text>
+
+  <!-- Lanes -->
+  <rect class="lane" x="20" y="100" width="260" height="1360" />
+  <rect class="lane" x="280" y="100" width="470" height="1360" />
+  <rect class="lane" x="750" y="100" width="430" height="1360" />
+  <rect class="lane" x="1180" y="100" width="500" height="1360" />
+
+  <rect class="laneHead" x="20" y="100" width="260" height="44" />
+  <rect class="laneHead" x="280" y="100" width="470" height="44" />
+  <rect class="laneHead" x="750" y="100" width="430" height="44" />
+  <rect class="laneHead" x="1180" y="100" width="500" height="44" />
+
+  <text class="laneTitle" x="150" y="128" text-anchor="middle">Manager</text>
+  <text class="laneTitle" x="515" y="128" text-anchor="middle">Laravel API</text>
+  <text class="laneTitle" x="965" y="128" text-anchor="middle">Database</text>
+  <text class="laneTitle" x="1430" y="128" text-anchor="middle">Results / Views</text>
+
+  <!-- Start -->
+  <ellipse class="startEnd" cx="150" cy="190" rx="72" ry="26" />
+  <text class="label" x="150" y="194" text-anchor="middle" fill="#fff">Start</text>
+
+  <path class="flow" d="M 150 216 L 150 258" />
+  <rect class="action" x="55" y="258" width="190" height="58" rx="10" />
+  <text class="label" x="150" y="281" text-anchor="middle">Login / open manager dashboard</text>
+  <text class="small" x="150" y="299" text-anchor="middle">POST /login → must be ROLE_MANAGER</text>
+
+  <path class="flow" d="M 245 287 L 280 287" />
+  <rect class="action" x="300" y="258" width="200" height="58" rx="10" />
+  <text class="label" x="400" y="281" text-anchor="middle">Authenticate access</text>
+  <text class="small" x="400" y="299" text-anchor="middle">Check active account + mess</text>
+
+  <path class="flow" d="M 500 287 L 570 287" />
+  <rect class="decision" x="585" y="250" width="96" height="76" transform="rotate(45 633 288)" />
+  <text class="label" x="633" y="285" text-anchor="middle">Valid?</text>
+
+  <path class="flowSoft" d="M 633 326 L 633 392" />
+  <rect class="action" x="530" y="392" width="206" height="58" rx="10" />
+  <text class="label" x="633" y="415" text-anchor="middle">Show manager dashboard</text>
+  <text class="small" x="633" y="433" text-anchor="middle">GET /manager/dashboard/stats</text>
+
+  <path class="flow" d="M 736 421 L 790 421" />
+  <rect class="action" x="808" y="392" width="180" height="58" rx="10" />
+  <text class="label" x="898" y="415" text-anchor="middle">Load monthly stats</text>
+  <text class="small" x="898" y="433" text-anchor="middle">Expenses, meals, balances</text>
+
+  <path class="flow" d="M 988 421 L 1070 421" />
+  <rect class="action" x="1088" y="392" width="170" height="58" rx="10" />
+  <text class="label" x="1173" y="415" text-anchor="middle">Read records</text>
+  <text class="small" x="1173" y="433" text-anchor="middle">Meal, Expense, UserTransaction</text>
+
+  <path class="flow" d="M 1258 421 L 1370 421" />
+  <rect class="action" x="1385" y="392" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="415" text-anchor="middle">Display dashboard summary</text>
+  <text class="small" x="1515" y="433" text-anchor="middle">Counts, totals, recent activity</text>
+
+  <rect class="note" x="80" y="500" width="1040" height="36" rx="8" />
+  <text class="noteText" x="600" y="523" text-anchor="middle">Main manager loop: manage mess, members, meals, expenses, fixed costs, financial summaries, and pending deposit requests.</text>
+
+  <!-- Manage mess -->
+  <rect class="action" x="55" y="580" width="190" height="58" rx="10" />
+  <text class="label" x="150" y="603" text-anchor="middle">View / update mess</text>
+  <text class="small" x="150" y="621" text-anchor="middle">GET/PUT/DELETE /manager/mess</text>
+
+  <path class="flow" d="M 245 609 L 300 609" />
+  <rect class="action" x="300" y="580" width="200" height="58" rx="10" />
+  <text class="label" x="400" y="603" text-anchor="middle">Validate ownership</text>
+  <text class="small" x="400" y="621" text-anchor="middle">resolveManagedMess()</text>
+
+  <path class="flow" d="M 500 609 L 570 609" />
+  <rect class="action" x="585" y="580" width="210" height="58" rx="10" />
+  <text class="label" x="690" y="603" text-anchor="middle">Update mess data</text>
+  <text class="small" x="690" y="621" text-anchor="middle">Name or delete mess</text>
+
+  <path class="flowSoft" d="M 795 609 L 1088 609" />
+  <rect class="action" x="1088" y="580" width="210" height="58" rx="10" />
+  <text class="label" x="1193" y="603" text-anchor="middle">Persist mess changes</text>
+  <text class="small" x="1193" y="621" text-anchor="middle">Mess table updated</text>
+
+  <!-- Members -->
+  <rect class="action" x="55" y="700" width="190" height="58" rx="10" />
+  <text class="label" x="150" y="723" text-anchor="middle">Manage members</text>
+  <text class="small" x="150" y="741" text-anchor="middle">GET/POST/PUT/DELETE /manager/members</text>
+
+  <path class="flow" d="M 245 729 L 300 729" />
+  <rect class="action" x="300" y="700" width="200" height="58" rx="10" />
+  <text class="label" x="400" y="723" text-anchor="middle">Validate member data</text>
+  <text class="small" x="400" y="741" text-anchor="middle">name, email, ownership, duplicates</text>
+
+  <path class="flow" d="M 500 729 L 570 729" />
+  <rect class="action" x="585" y="700" width="210" height="58" rx="10" />
+  <text class="label" x="690" y="723" text-anchor="middle">Create / edit / delete user</text>
+  <text class="small" x="690" y="741" text-anchor="middle">role = user, temp password when added</text>
+
+  <path class="flow" d="M 795 729 L 1088 729" />
+  <rect class="action" x="1088" y="700" width="210" height="58" rx="10" />
+  <text class="label" x="1193" y="723" text-anchor="middle">Save member record</text>
+  <text class="small" x="1193" y="741" text-anchor="middle">Users table with mess_id</text>
+
+  <path class="flow" d="M 1298 729 L 1385 729" />
+  <rect class="action" x="1385" y="700" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="723" text-anchor="middle">Member account created</text>
+  <text class="small" x="1515" y="741" text-anchor="middle">Must change password on first login</text>
+
+  <!-- Expenses / billing -->
+  <rect class="action" x="55" y="840" width="190" height="58" rx="10" />
+  <text class="label" x="150" y="863" text-anchor="middle">Add expense / fixed costs</text>
+  <text class="small" x="150" y="881" text-anchor="middle">/manager/expenses and /manager/fixed-costs</text>
+
+  <path class="flow" d="M 245 869 L 300 869" />
+  <rect class="action" x="300" y="840" width="200" height="58" rx="10" />
+  <text class="label" x="400" y="863" text-anchor="middle">Validate expense data</text>
+  <text class="small" x="400" y="881" text-anchor="middle">title, amount, date, monthKey</text>
+
+  <path class="flow" d="M 500 869 L 570 869" />
+  <rect class="action" x="585" y="840" width="210" height="58" rx="10" />
+  <text class="label" x="690" y="863" text-anchor="middle">Store expense / fixed cost</text>
+  <text class="small" x="690" y="881" text-anchor="middle">Expense or FixedCost model</text>
+
+  <path class="flow" d="M 795 869 L 1088 869" />
+  <rect class="action" x="1088" y="840" width="210" height="58" rx="10" />
+  <text class="label" x="1193" y="863" text-anchor="middle">Persist financial data</text>
+  <text class="small" x="1193" y="881" text-anchor="middle">Update expense and fixed cost tables</text>
+
+  <path class="flow" d="M 1298 869 L 1385 869" />
+  <rect class="action" x="1385" y="840" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="863" text-anchor="middle">Updated billing state</text>
+  <text class="small" x="1515" y="881" text-anchor="middle">Monthly summaries and totals available</text>
+
+  <rect class="action" x="55" y="980" width="190" height="58" rx="10" />
+  <text class="label" x="150" y="1003" text-anchor="middle">View daily meals / stats</text>
+  <text class="small" x="150" y="1021" text-anchor="middle">/manager/meals/daily, /manager/financials/members</text>
+
+  <path class="flow" d="M 245 1009 L 300 1009" />
+  <rect class="action" x="300" y="980" width="200" height="58" rx="10" />
+  <text class="label" x="400" y="1003" text-anchor="middle">Query meal and balance data</text>
+  <text class="small" x="400" y="1021" text-anchor="middle">Meal + UserTransaction aggregation</text>
+
+  <path class="flow" d="M 500 1009 L 570 1009" />
+  <rect class="action" x="585" y="980" width="210" height="58" rx="10" />
+  <text class="label" x="690" y="1003" text-anchor="middle">Compute summaries</text>
+  <text class="small" x="690" y="1021" text-anchor="middle">cost per meal, member balance</text>
+
+  <path class="flow" d="M 795 1009 L 1088 1009" />
+  <rect class="action" x="1088" y="980" width="210" height="58" rx="10" />
+  <text class="label" x="1193" y="1003" text-anchor="middle">Read summary data</text>
+  <text class="small" x="1193" y="1021" text-anchor="middle">Expenses, meals, transactions, users</text>
+
+  <path class="flow" d="M 1298 1009 L 1385 1009" />
+  <rect class="action" x="1385" y="980" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="1003" text-anchor="middle">Dashboard / ledger updated</text>
+  <text class="small" x="1515" y="1021" text-anchor="middle">Financial overview for the manager</text>
+
+  <!-- Deposit approval -->
+  <rect class="action" x="55" y="1120" width="190" height="58" rx="10" />
+  <text class="label" x="150" y="1143" text-anchor="middle">Review deposit requests</text>
+  <text class="small" x="150" y="1161" text-anchor="middle">GET /manager/deposit-requests</text>
+
+  <path class="flow" d="M 245 1149 L 300 1149" />
+  <rect class="action" x="300" y="1120" width="200" height="58" rx="10" />
+  <text class="label" x="400" y="1143" text-anchor="middle">Inspect pending requests</text>
+  <text class="small" x="400" y="1161" text-anchor="middle">UserDepositRequest list</text>
+
+  <path class="flow" d="M 500 1149 L 570 1149" />
+  <rect class="decision" x="585" y="1112" width="96" height="76" transform="rotate(45 633 1150)" />
+  <text class="label" x="633" y="1147" text-anchor="middle">Approve?</text>
+
+  <path class="flow" d="M 633 1187 L 633 1254" />
+  <rect class="action" x="530" y="1254" width="206" height="58" rx="10" />
+  <text class="label" x="633" y="1277" text-anchor="middle">Approve or reject request</text>
+  <text class="small" x="633" y="1295" text-anchor="middle">POST /manager/deposit-requests/{id}/approve</text>
+
+  <path class="flow" d="M 736 1283 L 790 1283" />
+  <rect class="action" x="808" y="1254" width="180" height="58" rx="10" />
+  <text class="label" x="898" y="1277" text-anchor="middle">Create transaction</text>
+  <text class="small" x="898" y="1295" text-anchor="middle">UserTransaction record created</text>
+
+  <path class="flow" d="M 988 1283 L 1088 1283" />
+  <rect class="action" x="1088" y="1254" width="210" height="58" rx="10" />
+  <text class="label" x="1193" y="1277" text-anchor="middle">Update request status</text>
+  <text class="small" x="1193" y="1295" text-anchor="middle">approved or rejected</text>
+
+  <path class="flow" d="M 1298 1283 L 1385 1283" />
+  <rect class="action" x="1385" y="1254" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="1277" text-anchor="middle">Member balance updated</text>
+  <text class="small" x="1515" y="1295" text-anchor="middle">Deposit reflected in ledger</text>
+
+  <ellipse class="startEnd" cx="150" cy="1388" rx="72" ry="26" />
+  <text class="label" x="150" y="1392" text-anchor="middle" fill="#fff">End</text>
+
+  <path class="flowSoft" d="M 150 1414 L 150 1440" />
+  <text class="small" x="240" y="1450">Manager repeats the loop to maintain mess data, members, expenses, billing and deposit approvals.</text>
+
+</svg>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1700" viewBox="0 0 1700 1700">
+  <style>
+    .title { font: 700 30px Georgia, serif; fill: #111 }
+    .subtitle { font: 13px sans-serif; fill: #555 }
+    .lane { fill: #fbfbfd; stroke: #d8d8d8; stroke-width: 2 }
+    .laneHead { fill: #334155 }
+    .laneTitle { font: 700 16px sans-serif; fill: #fff }
+    .startEnd { fill: #0f766e; stroke: #0f766e; stroke-width: 2 }
+    .action { fill: #ffffff; stroke: #2563eb; stroke-width: 2 }
+    .decision { fill: #f59e0b; stroke: #d97706; stroke-width: 2 }
+    .label { font: 13px sans-serif; fill: #111 }
+    .small { font: 12px sans-serif; fill: #444 }
+    .flow { stroke: #222; stroke-width: 2; fill: none; marker-end: url(#arrow) }
+    .flowSoft { stroke: #666; stroke-width: 1.8; fill: none; stroke-dasharray: 6 5; marker-end: url(#arrowSoft) }
+    .note { fill: #eff6ff; stroke: #bfdbfe; stroke-width: 1.5 }
+    .noteText { font: 12px sans-serif; fill: #1e3a8a }
+  </style>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#222" />
+    </marker>
+    <marker id="arrowSoft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666" />
+    </marker>
+  </defs>
+
+  <text class="title" x="40" y="48">Admin Activity Diagram</text>
+  <text class="subtitle" x="40" y="72">SuperAdmin workflow for mess request approval, management controls, and system reporting</text>
+
+  <!-- Lanes -->
+  <rect class="lane" x="20" y="100" width="260" height="1500" />
+  <rect class="lane" x="280" y="100" width="430" height="1500" />
+  <rect class="lane" x="710" y="100" width="470" height="1500" />
+  <rect class="lane" x="1180" y="100" width="500" height="1500" />
+
+  <rect class="laneHead" x="20" y="100" width="260" height="44" />
+  <rect class="laneHead" x="280" y="100" width="430" height="44" />
+  <rect class="laneHead" x="710" y="100" width="470" height="44" />
+  <rect class="laneHead" x="1180" y="100" width="500" height="44" />
+
+  <text class="laneTitle" x="150" y="128" text-anchor="middle">SuperAdmin</text>
+  <text class="laneTitle" x="495" y="128" text-anchor="middle">Laravel API</text>
+  <text class="laneTitle" x="945" y="128" text-anchor="middle">Database</text>
+  <text class="laneTitle" x="1430" y="128" text-anchor="middle">Outcome / Views</text>
+
+  <!-- Start -->
+  <ellipse class="startEnd" cx="150" cy="190" rx="70" ry="26" />
+  <text class="label" x="150" y="194" text-anchor="middle" fill="#fff">Start</text>
+
+  <path class="flow" d="M 150 216 L 150 260" />
+  <rect class="action" x="60" y="260" width="180" height="58" rx="10" />
+  <text class="label" x="150" y="283" text-anchor="middle">Login to admin panel</text>
+  <text class="small" x="150" y="301" text-anchor="middle">POST /login</text>
+
+  <path class="flow" d="M 150 318 L 150 380" />
+  <rect class="action" x="60" y="380" width="180" height="58" rx="10" />
+  <text class="label" x="150" y="403" text-anchor="middle">Enter credentials</text>
+  <text class="small" x="150" y="421" text-anchor="middle">email + password</text>
+
+  <path class="flow" d="M 240 409 L 310 409" />
+  <rect class="action" x="320" y="380" width="180" height="58" rx="10" />
+  <text class="label" x="410" y="403" text-anchor="middle">Authenticate user</text>
+  <text class="small" x="410" y="421" text-anchor="middle">Check role = superAdmin</text>
+
+  <path class="flow" d="M 500 409 L 585 409" />
+  <rect class="decision" x="610" y="372" width="92" height="74" transform="rotate(45 656 409)" />
+  <text class="label" x="656" y="404" text-anchor="middle">Valid?</text>
+
+  <path class="flowSoft" d="M 656 446 L 656 520" />
+  <rect class="action" x="560" y="520" width="190" height="58" rx="10" />
+  <text class="label" x="655" y="543" text-anchor="middle">Open admin dashboard</text>
+  <text class="small" x="655" y="561" text-anchor="middle">Show mess requests, reports, lists</text>
+
+  <path class="flow" d="M 750 549 L 820 549" />
+  <rect class="action" x="840" y="520" width="180" height="58" rx="10" />
+  <text class="label" x="930" y="543" text-anchor="middle">Load dashboard data</text>
+  <text class="small" x="930" y="561" text-anchor="middle">GET /admin/system-report</text>
+
+  <path class="flow" d="M 1020 549 L 1110 549" />
+  <rect class="action" x="1125" y="520" width="170" height="58" rx="10" />
+  <text class="label" x="1210" y="543" text-anchor="middle">Save metrics</text>
+  <text class="small" x="1210" y="561" text-anchor="middle">messes, managers, users, requests</text>
+
+  <path class="flow" d="M 1295 549 L 1370 549" />
+  <rect class="action" x="1380" y="520" width="270" height="58" rx="10" />
+  <text class="label" x="1515" y="543" text-anchor="middle">Display dashboard summary</text>
+  <text class="small" x="1515" y="561" text-anchor="middle">Counts and current admin state</text>
+
+  <rect class="note" x="80" y="650" width="1040" height="36" rx="8" />
+  <text class="noteText" x="600" y="673" text-anchor="middle">Main admin loop: review requests, manage mess/manager status, inspect system reports, then return to dashboard.</text>
+
+  <!-- Main decision -->
+  <rect class="decision" x="540" y="730" width="120" height="88" transform="rotate(45 600 774)" />
+  <text class="label" x="600" y="770" text-anchor="middle">Choose action</text>
+
+  <path class="flow" d="M 655 774 L 770 774" />
+  <rect class="action" x="790" y="744" width="210" height="58" rx="10" />
+  <text class="label" x="895" y="767" text-anchor="middle">View mess requests</text>
+  <text class="small" x="895" y="785" text-anchor="middle">GET /admin/mess-requests</text>
+
+  <path class="flow" d="M 1000 774 L 1070 774" />
+  <rect class="action" x="1085" y="744" width="210" height="58" rx="10" />
+  <text class="label" x="1190" y="767" text-anchor="middle">Approve / reject</text>
+  <text class="small" x="1190" y="785" text-anchor="middle">/admin/mess-requests/{id}/approve|reject</text>
+
+  <path class="flow" d="M 1295 774 L 1370 774" />
+  <rect class="action" x="1385" y="744" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="767" text-anchor="middle">Create / update records</text>
+  <text class="small" x="1515" y="785" text-anchor="middle">Insert Mess + Manager or mark request rejected</text>
+
+  <path class="flow" d="M 1515 802 L 1515 890" />
+  <rect class="action" x="1385" y="900" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="923" text-anchor="middle">Return result</text>
+  <text class="small" x="1515" y="941" text-anchor="middle">Approval notice or rejection message</text>
+
+  <path class="flow" d="M 600 818 L 600 910" />
+  <rect class="action" x="390" y="920" width="420" height="58" rx="10" />
+  <text class="label" x="600" y="943" text-anchor="middle">Manage messes / managers</text>
+  <text class="small" x="600" y="961" text-anchor="middle">GET /admin/managers, /admin/messes-with-details, toggle status endpoints</text>
+
+  <path class="flow" d="M 600 978 L 600 1060" />
+  <rect class="action" x="390" y="1070" width="420" height="58" rx="10" />
+  <text class="label" x="600" y="1093" text-anchor="middle">Inspect system report</text>
+  <text class="small" x="600" y="1111" text-anchor="middle">GET /admin/system-report</text>
+
+  <path class="flow" d="M 600 1128 L 600 1205" />
+  <rect class="action" x="390" y="1215" width="420" height="58" rx="10" />
+  <text class="label" x="600" y="1238" text-anchor="middle">Review dashboard summary</text>
+  <text class="small" x="600" y="1256" text-anchor="middle">Counts, approvals, active mess/manager state</text>
+
+  <path class="flowSoft" d="M 600 1273 L 600 1350" />
+  <ellipse class="startEnd" cx="600" cy="1400" rx="70" ry="26" />
+  <text class="label" x="600" y="1404" text-anchor="middle" fill="#fff">End / Logout</text>
+
+  <!-- Branch notes on the right -->
+  <rect class="note" x="1160" y="1070" width="400" height="160" rx="10" />
+  <text class="noteText" x="1180" y="1100">Approved request path</text>
+  <text class="small" x="1180" y="1124">1. Validate pending MessRequest</text>
+  <text class="small" x="1180" y="1146">2. Create Mess and Manager account</text>
+  <text class="small" x="1180" y="1168">3. Update MessRequest status = approved</text>
+  <text class="small" x="1180" y="1190">4. Manager receives first-login password flow</text>
+
+  <rect class="note" x="1160" y="1250" width="400" height="160" rx="10" />
+  <text class="noteText" x="1180" y="1280">Rejected request path</text>
+  <text class="small" x="1180" y="1304">1. Keep request pending only if invalid</text>
+  <text class="small" x="1180" y="1326">2. Mark MessRequest as rejected</text>
+  <text class="small" x="1180" y="1348">3. Store approved_by and rejected_at</text>
+  <text class="small" x="1180" y="1370">4. Return rejection message to admin</text>
+
+</svg>

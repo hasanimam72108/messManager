@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <style>
+    .title { font: 700 28px Georgia, serif; fill: #111 }
+    .subtitle { font: 13px sans-serif; fill: #444 }
+    .system { fill: #f7fbff; stroke: #2c5aa0; stroke-width: 3 }
+    .actor { font: 700 14px sans-serif; fill: #111 }
+    .actorBox { fill: #fff; stroke: #666; stroke-width: 1.5 }
+    .usecase { fill: #fff; stroke: #0369a1; stroke-width: 2 }
+    .ucText { font: 12px sans-serif; fill: #111 }
+    .note { font: 11px sans-serif; fill: #444 }
+    .line { stroke: #333; stroke-width: 1.6; fill: none; marker-end: url(#arrow) }
+  </style>
+
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#333" />
+    </marker>
+  </defs>
+
+  <text class="title" x="40" y="44">Use Case Diagram</text>
+  <text class="subtitle" x="40" y="68">Core actors and use cases for Mess Manager (mapped to API endpoints)</text>
+
+  <!-- Actors -->
+  <g transform="translate(40,110)">
+    <rect class="actorBox" x="0" y="0" width="140" height="48" rx="6" />
+    <text class="actor" x="70" y="30" text-anchor="middle">Manager</text>
+  </g>
+
+  <g transform="translate(40,220)">
+    <rect class="actorBox" x="0" y="0" width="140" height="48" rx="6" />
+    <text class="actor" x="70" y="30" text-anchor="middle">Member</text>
+  </g>
+
+  <g transform="translate(1450,110)">
+    <rect class="actorBox" x="0" y="0" width="140" height="48" rx="6" />
+    <text class="actor" x="70" y="30" text-anchor="middle">SuperAdmin</text>
+  </g>
+
+  <!-- System boundary -->
+  <rect class="system" x="240" y="100" width="1180" height="780" rx="12" />
+  <text class="subtitle" x="540" y="130">MESS MANAGER SYSTEM</text>
+
+  <!-- Use cases (grouped) -->
+  <!-- Registration -->
+  <ellipse class="usecase" cx="520" cy="210" rx="140" ry="34" />
+  <text class="ucText" x="520" y="214" text-anchor="middle">Submit Mess Request</text>
+  <text class="note" x="520" y="232" text-anchor="middle">(/register)</text>
+
+  <ellipse class="usecase" cx="980" cy="210" rx="140" ry="34" />
+  <text class="ucText" x="980" y="214" text-anchor="middle">Approve / Reject Mess Request</text>
+  <text class="note" x="980" y="232" text-anchor="middle">(/admin/mess-requests/*)</text>
+
+  <!-- Onboarding / Auth -->
+  <ellipse class="usecase" cx="740" cy="300" rx="140" ry="34" />
+  <text class="ucText" x="740" y="304" text-anchor="middle">First‑login Password Setup</text>
+  <text class="note" x="740" y="322" text-anchor="middle">(/password/first-login)</text>
+
+  <!-- Members management -->
+  <ellipse class="usecase" cx="520" cy="380" rx="140" ry="34" />
+  <text class="ucText" x="520" y="384" text-anchor="middle">Manage Members (Add/Edit/Delete)</text>
+  <text class="note" x="520" y="402" text-anchor="middle">(/manager/members)</text>
+
+  <!-- Expenses & Fixed costs -->
+  <ellipse class="usecase" cx="980" cy="380" rx="140" ry="34" />
+  <text class="ucText" x="980" y="384" text-anchor="middle">Add Expense / Fixed Costs</text>
+  <text class="note" x="980" y="402" text-anchor="middle">(/manager/expenses, /manager/fixed-costs)</text>
+
+  <!-- Meals -->
+  <ellipse class="usecase" cx="520" cy="520" rx="140" ry="34" />
+  <text class="ucText" x="520" y="524" text-anchor="middle">Log Meals (single / bulk)</text>
+  <text class="note" x="520" y="542" text-anchor="middle">(/user/meals, /user/meals/bulk)</text>
+
+  <!-- Billing & Reports -->
+  <ellipse class="usecase" cx="980" cy="520" rx="140" ry="34" />
+  <text class="ucText" x="980" y="524" text-anchor="middle">Calculate Bills & Generate Summary</text>
+  <text class="note" x="980" y="542" text-anchor="middle">(/manager/expenses/summary, /manager/dashboard/stats)</text>
+
+  <ellipse class="usecase" cx="740" cy="620" rx="140" ry="34" />
+  <text class="ucText" x="740" y="624" text-anchor="middle">View Bill Summary & Dashboard</text>
+  <text class="note" x="740" y="642" text-anchor="middle">(/user/bill/summary, /user/dashboard/stats)</text>
+
+  <!-- Transactions -->
+  <ellipse class="usecase" cx="520" cy="720" rx="140" ry="34" />
+  <text class="ucText" x="520" y="724" text-anchor="middle">Request Deposit</text>
+  <text class="note" x="520" y="742" text-anchor="middle">(POST /user/transactions → UserDepositRequest)</text>
+
+  <ellipse class="usecase" cx="980" cy="720" rx="140" ry="34" />
+  <text class="ucText" x="980" y="724" text-anchor="middle">Approve Deposit / Create Transaction</text>
+  <text class="note" x="980" y="742" text-anchor="middle">(/manager/deposit-requests/{id}/approve)</text>
+
+  <ellipse class="usecase" cx="1260" cy="520" rx="140" ry="34" />
+  <text class="ucText" x="1260" y="524" text-anchor="middle">View Transactions / Ledger</text>
+  <text class="note" x="1260" y="542" text-anchor="middle">(/user/transactions, /manager/members)</text>
+
+  <!-- Reports for SuperAdmin -->
+  <ellipse class="usecase" cx="1260" cy="210" rx="140" ry="34" />
+  <text class="ucText" x="1260" y="214" text-anchor="middle">View System Reports</text>
+  <text class="note" x="1260" y="232" text-anchor="middle">(/admin/system-report)</text>
+
+  <!-- Associations (lines) -->
+  <path class="line" d="M 180 130 L 380 210" />
+  <path class="line" d="M 180 130 L 920 210" />
+  <path class="line" d="M 180 240 L 460 520" />
+  <path class="line" d="M 180 240 L 380 520" />
+  <path class="line" d="M 1530 130 L 1120 210" />
+  <path class="line" d="M 1530 130 L 1120 210" transform="translate(-20,8)" />
+  <path class="line" d="M 180 130 L 520 380" />
+  <path class="line" d="M 180 240 L 520 720" />
+
+  <!-- Legend / note -->
+  <text class="note" x="260" y="920">Actors: Manager (creates/maintains mess & members), Member (logs meals, requests deposits), SuperAdmin (approves mess requests, views reports).</text>
+  <text class="note" x="260" y="940">Use cases map to API endpoints shown in parentheses; diagram covers registration, onboarding, members, expenses, meals, billing, transactions, and reporting.</text>
+
+</svg>

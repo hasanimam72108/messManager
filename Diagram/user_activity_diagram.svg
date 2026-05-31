@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="1450" viewBox="0 0 1700 1450">
+  <style>
+    .title { font: 700 30px Georgia, serif; fill: #111 }
+    .subtitle { font: 13px sans-serif; fill: #555 }
+    .lane { fill: #fbfbfd; stroke: #d8d8d8; stroke-width: 2 }
+    .laneHead { fill: #334155 }
+    .laneTitle { font: 700 16px sans-serif; fill: #fff }
+    .startEnd { fill: #0f766e; stroke: #0f766e; stroke-width: 2 }
+    .action { fill: #ffffff; stroke: #2563eb; stroke-width: 2 }
+    .decision { fill: #f59e0b; stroke: #d97706; stroke-width: 2 }
+    .label { font: 13px sans-serif; fill: #111 }
+    .small { font: 12px sans-serif; fill: #444 }
+    .flow { stroke: #222; stroke-width: 2; fill: none; marker-end: url(#arrow) }
+    .flowSoft { stroke: #666; stroke-width: 1.8; fill: none; stroke-dasharray: 6 5; marker-end: url(#arrowSoft) }
+    .note { fill: #eff6ff; stroke: #bfdbfe; stroke-width: 1.5 }
+    .noteText { font: 12px sans-serif; fill: #1e3a8a }
+  </style>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#222" />
+    </marker>
+    <marker id="arrowSoft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666" />
+    </marker>
+  </defs>
+
+  <text class="title" x="40" y="48">User Activity Diagram</text>
+  <text class="subtitle" x="40" y="72">Member workflow for authentication, meal logging, bill viewing, and deposit requests</text>
+
+  <!-- Lanes -->
+  <rect class="lane" x="20" y="100" width="260" height="1220" />
+  <rect class="lane" x="280" y="100" width="430" height="1220" />
+  <rect class="lane" x="710" y="100" width="470" height="1220" />
+  <rect class="lane" x="1180" y="100" width="500" height="1220" />
+
+  <rect class="laneHead" x="20" y="100" width="260" height="44" />
+  <rect class="laneHead" x="280" y="100" width="430" height="44" />
+  <rect class="laneHead" x="710" y="100" width="470" height="44" />
+  <rect class="laneHead" x="1180" y="100" width="500" height="44" />
+
+  <text class="laneTitle" x="150" y="128" text-anchor="middle">Member</text>
+  <text class="laneTitle" x="495" y="128" text-anchor="middle">Laravel API</text>
+  <text class="laneTitle" x="945" y="128" text-anchor="middle">Database</text>
+  <text class="laneTitle" x="1430" y="128" text-anchor="middle">Results / Views</text>
+
+  <!-- Start -->
+  <ellipse class="startEnd" cx="150" cy="190" rx="72" ry="26" />
+  <text class="label" x="150" y="194" text-anchor="middle" fill="#fff">Start</text>
+
+  <path class="flow" d="M 150 216 L 150 260" />
+  <rect class="action" x="55" y="260" width="190" height="58" rx="10" />
+  <text class="label" x="150" y="283" text-anchor="middle">Login to account</text>
+  <text class="small" x="150" y="301" text-anchor="middle">POST /login</text>
+
+  <path class="flow" d="M 245 289 L 280 289" />
+  <rect class="action" x="300" y="260" width="200" height="58" rx="10" />
+  <text class="label" x="400" y="283" text-anchor="middle">Authenticate user</text>
+  <text class="small" x="400" y="301" text-anchor="middle">ROLE_USER + active account checks</text>
+
+  <path class="flow" d="M 500 289 L 570 289" />
+  <rect class="decision" x="585" y="252" width="96" height="76" transform="rotate(45 633 290)" />
+  <text class="label" x="633" y="287" text-anchor="middle">Valid?</text>
+
+  <path class="flowSoft" d="M 633 328 L 633 400" />
+  <rect class="action" x="530" y="400" width="206" height="58" rx="10" />
+  <text class="label" x="633" y="423" text-anchor="middle">Open member dashboard</text>
+  <text class="small" x="633" y="441" text-anchor="middle">GET /user/dashboard/stats</text>
+
+  <path class="flow" d="M 736 429 L 790 429" />
+  <rect class="action" x="808" y="400" width="180" height="58" rx="10" />
+  <text class="label" x="898" y="423" text-anchor="middle">Load member summary</text>
+  <text class="small" x="898" y="441" text-anchor="middle">Bills, meals, transactions</text>
+
+  <path class="flow" d="M 988 429 L 1070 429" />
+  <rect class="action" x="1088" y="400" width="170" height="58" rx="10" />
+  <text class="label" x="1173" y="423" text-anchor="middle">Read member records</text>
+  <text class="small" x="1173" y="441" text-anchor="middle">Meal + UserTransaction</text>
+
+  <path class="flow" d="M 1258 429 L 1370 429" />
+  <rect class="action" x="1385" y="400" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="423" text-anchor="middle">Display dashboard</text>
+  <text class="small" x="1515" y="441" text-anchor="middle">Current balance and monthly bill</text>
+
+  <rect class="note" x="80" y="498" width="1040" height="36" rx="8" />
+  <text class="noteText" x="600" y="521" text-anchor="middle">Main member loop: view bill, log meals, request deposits, and review transaction history.</text>
+
+  <!-- Bill summary -->
+  <rect class="action" x="55" y="570" width="190" height="58" rx="10" />
+  <text class="label" x="150" y="593" text-anchor="middle">View bill summary</text>
+  <text class="small" x="150" y="611" text-anchor="middle">/user/bill/summary</text>
+
+  <path class="flow" d="M 245 599 L 300 599" />
+  <rect class="action" x="300" y="570" width="200" height="58" rx="10" />
+  <text class="label" x="400" y="593" text-anchor="middle">Validate session</text>
+  <text class="small" x="400" y="611" text-anchor="middle">User belongs to mess</text>
+
+  <path class="flow" d="M 500 599 L 570 599" />
+  <rect class="action" x="585" y="570" width="210" height="58" rx="10" />
+  <text class="label" x="690" y="593" text-anchor="middle">Compute bill data</text>
+  <text class="small" x="690" y="611" text-anchor="middle">Meal cost, fixed cost, balance</text>
+
+  <path class="flow" d="M 795 599 L 1088 599" />
+  <rect class="action" x="1088" y="570" width="210" height="58" rx="10" />
+  <text class="label" x="1193" y="593" text-anchor="middle">Read summary records</text>
+  <text class="small" x="1193" y="611" text-anchor="middle">Meals, expenses, transactions, fixed costs</text>
+
+  <path class="flow" d="M 1298 599 L 1385 599" />
+  <rect class="action" x="1385" y="570" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="593" text-anchor="middle">Show bill and dashboard</text>
+  <text class="small" x="1515" y="611" text-anchor="middle">Total due, paid amount, recent activity</text>
+
+  <!-- Meal logging -->
+  <rect class="action" x="55" y="700" width="190" height="58" rx="10" />
+  <text class="label" x="150" y="723" text-anchor="middle">Log meal</text>
+  <text class="small" x="150" y="741" text-anchor="middle">/user/meals or /user/meals/bulk</text>
+
+  <path class="flow" d="M 245 729 L 300 729" />
+  <rect class="action" x="300" y="700" width="200" height="58" rx="10" />
+  <text class="label" x="400" y="723" text-anchor="middle">Validate meal input</text>
+  <text class="small" x="400" y="741" text-anchor="middle">date, mealType, quantity</text>
+
+  <path class="flow" d="M 500 729 L 570 729" />
+  <rect class="action" x="585" y="700" width="210" height="58" rx="10" />
+  <text class="label" x="690" y="723" text-anchor="middle">Store meal</text>
+  <text class="small" x="690" y="741" text-anchor="middle">Meal record with mess_id and user_id</text>
+
+  <path class="flow" d="M 795 729 L 1088 729" />
+  <rect class="action" x="1088" y="700" width="210" height="58" rx="10" />
+  <text class="label" x="1193" y="723" text-anchor="middle">Persist meal row</text>
+  <text class="small" x="1193" y="741" text-anchor="middle">Created_by and meal_date saved</text>
+
+  <path class="flow" d="M 1298 729 L 1385 729" />
+  <rect class="action" x="1385" y="700" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="723" text-anchor="middle">Meal appears in monthly totals</text>
+  <text class="small" x="1515" y="741" text-anchor="middle">Dashboard and bill summary update</text>
+
+  <!-- Deposit requests -->
+  <rect class="action" x="55" y="830" width="190" height="58" rx="10" />
+  <text class="label" x="150" y="853" text-anchor="middle">Request deposit</text>
+  <text class="small" x="150" y="871" text-anchor="middle">POST /user/transactions</text>
+
+  <path class="flow" d="M 245 859 L 300 859" />
+  <rect class="action" x="300" y="830" width="200" height="58" rx="10" />
+  <text class="label" x="400" y="853" text-anchor="middle">Validate deposit amount</text>
+  <text class="small" x="400" y="871" text-anchor="middle">amount > 0, optional date/type</text>
+
+  <path class="flow" d="M 500 859 L 570 859" />
+  <rect class="action" x="585" y="830" width="210" height="58" rx="10" />
+  <text class="label" x="690" y="853" text-anchor="middle">Create deposit request</text>
+  <text class="small" x="690" y="871" text-anchor="middle">UserDepositRequest status=pending</text>
+
+  <path class="flow" d="M 795 859 L 1088 859" />
+  <rect class="action" x="1088" y="830" width="210" height="58" rx="10" />
+  <text class="label" x="1193" y="853" text-anchor="middle">Persist pending request</text>
+  <text class="small" x="1193" y="871" text-anchor="middle">Approved later by manager</text>
+
+  <path class="flow" d="M 1298 859 L 1385 859" />
+  <rect class="action" x="1385" y="830" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="853" text-anchor="middle">Await approval</text>
+  <text class="small" x="1515" y="871" text-anchor="middle">Manager creates transaction after approval</text>
+
+  <!-- Transaction history -->
+  <rect class="action" x="55" y="960" width="190" height="58" rx="10" />
+  <text class="label" x="150" y="983" text-anchor="middle">View transactions</text>
+  <text class="small" x="150" y="1001" text-anchor="middle">GET /user/transactions</text>
+
+  <path class="flow" d="M 245 989 L 300 989" />
+  <rect class="action" x="300" y="960" width="200" height="58" rx="10" />
+  <text class="label" x="400" y="983" text-anchor="middle">Load ledger</text>
+  <text class="small" x="400" y="1001" text-anchor="middle">Current balance and history</text>
+
+  <path class="flow" d="M 500 989 L 570 989" />
+  <rect class="action" x="585" y="960" width="210" height="58" rx="10" />
+  <text class="label" x="690" y="983" text-anchor="middle">Query transaction table</text>
+  <text class="small" x="690" y="1001" text-anchor="middle">Filter by user_id and mess_id</text>
+
+  <path class="flow" d="M 795 989 L 1088 989" />
+  <rect class="action" x="1088" y="960" width="210" height="58" rx="10" />
+  <text class="label" x="1193" y="983" text-anchor="middle">Return transaction rows</text>
+  <text class="small" x="1193" y="1001" text-anchor="middle">Deposit / debit / credit entries</text>
+
+  <path class="flow" d="M 1298 989 L 1385 989" />
+  <rect class="action" x="1385" y="960" width="260" height="58" rx="10" />
+  <text class="label" x="1515" y="983" text-anchor="middle">Show history to member</text>
+  <text class="small" x="1515" y="1001" text-anchor="middle">Ledger view with running balance</text>
+
+  <ellipse class="startEnd" cx="150" cy="1136" rx="72" ry="26" />
+  <text class="label" x="150" y="1140" text-anchor="middle" fill="#fff">End</text>
+
+  <path class="flowSoft" d="M 150 1162 L 150 1200" />
+  <text class="small" x="240" y="1220">Member repeats the loop to review bills, add meals, request deposits, and track transactions.</text>
+
+</svg>

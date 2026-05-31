@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="2080" height="1260" viewBox="0 0 2080 1260">
+<svg xmlns="http://www.w3.org/2000/svg" width="2080" height="1700" viewBox="0 0 2080 1700">
   <style>
     .title { font: 700 30px Georgia, serif; fill: #111 }
     .subtitle { font: 14px sans-serif; fill: #555 }
@@ -201,6 +201,54 @@
   <text class="text" x="1890" y="1092" text-anchor="middle">Members view updates</text>
   <text class="small" x="1890" y="1110" text-anchor="middle">Bills, meals, deposits, and balances refresh</text>
 
+  <!-- Additional steps: Meal logging and deposit workflow -->
+  <path class="line" d="M 1690 1168 L 1720 1168" marker-end="url(#arrow)" />
+  <rect class="step" x="1770" y="1140" width="240" height="56" rx="8" />
+  <text class="text" x="1890" y="1162" text-anchor="middle">Member: Open meal page</text>
+
+  <path class="line" d="M 276 1194 L 350 1194" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="372" y="1166" width="235" height="56" rx="8" />
+  <text class="text" x="490" y="1188" text-anchor="middle">Web UI: POST /user/meals</text>
+
+  <path class="line" d="M 607 1194 L 680 1194" marker-end="url(#arrow)" />
+  <rect class="step" x="705" y="1166" width="300" height="56" rx="8" />
+  <text class="text" x="855" y="1188" text-anchor="middle">Laravel API: Create Meal</text>
+  <text class="small" x="855" y="1206" text-anchor="middle">POST /user/meals -> Save to Meal</text>
+
+  <path class="line" d="M 1005 1194 L 1030 1194" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1070" y="1166" width="285" height="56" rx="8" />
+  <text class="text" x="1212" y="1188" text-anchor="middle">Database: Persist Meal</text>
+
+  <!-- Deposit request flow -->
+  <rect class="step" x="56" y="1266" width="220" height="56" rx="8" />
+  <text class="text" x="166" y="1288" text-anchor="middle">Member: Request deposit</text>
+  <text class="small" x="166" y="1306" text-anchor="middle">POST /user/transactions (creates UserDepositRequest)</text>
+
+  <path class="line" d="M 276 1294 L 350 1294" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="372" y="1266" width="235" height="56" rx="8" />
+  <text class="text" x="490" y="1288" text-anchor="middle">Web UI: Submit deposit request</text>
+
+  <path class="line" d="M 607 1294 L 680 1294" marker-end="url(#arrow)" />
+  <rect class="step" x="705" y="1266" width="300" height="56" rx="8" />
+  <text class="text" x="855" y="1288" text-anchor="middle">Laravel API: Store UserDepositRequest</text>
+
+  <path class="line" d="M 1005 1294 L 1030 1294" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1070" y="1266" width="285" height="56" rx="8" />
+  <text class="text" x="1212" y="1288" text-anchor="middle">Database: Persist DepositRequest (status=pending)</text>
+
+  <path class="line" d="M 1212 1314 L 1212 1414" marker-end="url(#arrow)" />
+  <rect class="decision" x="1110" y="1402" width="204" height="88" transform="rotate(45 1212 1446)" />
+  <text class="text" x="1212" y="1448" text-anchor="middle">Manager approves?</text>
+
+  <path class="line" d="M 1110 1450 L 995 1450" marker-end="url(#arrow)" />
+  <rect class="step" x="705" y="1440" width="300" height="56" rx="8" />
+  <text class="text" x="855" y="1462" text-anchor="middle">POST /manager/deposit-requests/{id}/approve</text>
+  <text class="small" x="855" y="1480" text-anchor="middle">Creates UserTransaction and marks request approved</text>
+
+  <path class="line" d="M 1690 1504 L 1720 1504" marker-end="url(#arrow)" />
+  <rect class="stepSoft" x="1770" y="1488" width="240" height="56" rx="8" />
+  <text class="text" x="1890" y="1510" text-anchor="middle">Member: Dashboard updated (balance & tx history)</text>
+
   <!-- Footer -->
-  <text class="text" x="38" y="1218">This swimlane uses vertical lanes to show how the mess app moves from manager input, through the API, into approval and onboarding, and then into member and expense management.</text>
+  <text class="text" x="38" y="1648">This swimlane uses vertical lanes to show how the mess app moves from manager input, through the API, into approval and onboarding, and then into member and expense management. It also includes meal logging and deposit request/approval flows.</text>
 </svg>

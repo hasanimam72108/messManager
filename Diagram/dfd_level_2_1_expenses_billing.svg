@@ -99,39 +99,39 @@
 
   <!-- Data Flows from Manager -->
   <path class="dataFlow" d="M 190 190 L 350 250" />
-  <text class="flowLabel" x="250" y="210">Expense entry</text>
+  <text class="flowLabel" x="250" y="210">Expense entry (POST /manager/expenses)</text>
 
   <path class="dataFlow" d="M 190 190 L 350 550" />
-  <text class="flowLabel" x="220" y="380">Fixed costs entry</text>
+  <text class="flowLabel" x="220" y="380">Fixed costs entry (PUT /manager/fixed-costs)</text>
 
   <!-- 3.1 to Store -->
   <path class="dataFlowAlt" d="M 340 280 L 300 400" />
-  <text class="flowLabel" x="310" y="340">Save expense</text>
+  <text class="flowLabel" x="310" y="340">Save expense (D3.1) via POST /manager/expenses</text>
 
   <path class="dataFlowAlt" d="M 300 400 L 340 290" />
   <text class="flowLabel" x="310" y="380">Read expense</text>
 
   <!-- 3.2 to Store -->
   <path class="dataFlowAlt" d="M 340 580 L 300 500" />
-  <text class="flowLabel" x="310" y="540">Save costs</text>
+  <text class="flowLabel" x="310" y="540">Save fixed costs (D3.2) via PUT /manager/fixed-costs</text>
 
   <path class="dataFlowAlt" d="M 300 500 L 340 570" />
   <text class="flowLabel" x="310" y="520">Read costs</text>
 
   <!-- Member to 3.3 -->
   <path class="dataFlow" d="M 190 1040 L 850 310" />
-  <text class="flowLabel" x="400" y="650">Meal data</text>
+  <text class="flowLabel" x="400" y="650">Meal data (POST /user/meals or /user/meals/bulk)</text>
 
   <!-- 3.3 to Meal Store -->
   <path class="dataFlowAlt" d="M 860 310 L 825 400" />
-  <text class="flowLabel" x="840" y="350">Save meal</text>
+  <text class="flowLabel" x="840" y="350">Save meal (D3.3) via POST /user/meals</text>
 
   <path class="dataFlowAlt" d="M 825 400 L 860 300" />
   <text class="flowLabel" x="840" y="380">Query meals</text>
 
   <!-- 3.3 to 3.4 -->
   <path class="dataFlow" d="M 960 270 L 1340 300" />
-  <text class="flowLabel" x="1140" y="280">Meal quantity</text>
+  <text class="flowLabel" x="1140" y="280">Meal quantity (used by /manager/meals/daily)</text>
 
   <!-- 3.4 to Meal Store -->
   <path class="dataFlowAlt" d="M 1400 360 L 900 400" />
@@ -139,19 +139,19 @@
 
   <!-- 3.4 to FixedCost Store -->
   <path class="dataFlowAlt" d="M 1340 350 L 300 530" />
-  <text class="flowLabel" x="800" y="420">Read fixed costs</text>
+  <text class="flowLabel" x="800" y="420">Read fixed costs (GET /manager/fixed-costs)</text>
 
   <!-- 3.4 to Mess Store -->
   <path class="dataFlowAlt" d="M 1400 360 L 1400 450" />
-  <text class="flowLabel" x="1410" y="410">Read mess info</text>
+  <text class="flowLabel" x="1410" y="410">Read mess info (GET /manager/mess)</text>
 
   <!-- 3.4 to 3.5 -->
   <path class="dataFlow" d="M 1340 350 L 960 600" />
-  <text class="flowLabel" x="1120" y="460">Cost per meal</text>
+  <text class="flowLabel" x="1120" y="460">Cost per meal (calculated from bazaar / meals via GET /manager/expenses/summary)</text>
 
   <!-- 3.5 to Store -->
   <path class="dataFlowAlt" d="M 900 710 L 1400 800" />
-  <text class="flowLabel" x="1120" y="760">Save bill</text>
+  <text class="flowLabel" x="1120" y="760">Save bill summary (D3.5) — internal summary store</text>
 
   <path class="dataFlowAlt" d="M 1400 800 L 900 710" />
   <text class="flowLabel" x="1120" y="780">Read bill</text>

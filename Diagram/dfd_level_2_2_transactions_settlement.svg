@@ -94,62 +94,62 @@
 
   <!-- Data Flows from Bill Summary -->
   <path class="dataFlow" d="M 190 190 L 350 250" />
-  <text class="flowLabel" x="250" y="210">Bill created</text>
+  <text class="flowLabel" x="250" y="210">Bill created (from billing process)</text>
 
   <!-- 4.1 to Transaction Store -->
   <path class="dataFlowAlt" d="M 340 280 L 300 400" />
-  <text class="flowLabel" x="310" y="340">Save transaction</text>
+  <text class="flowLabel" x="310" y="340">Save transaction (D4.1) via UserTransaction create</text>
 
   <path class="dataFlowAlt" d="M 300 400 L 340 290" />
   <text class="flowLabel" x="310" y="380">Query transactions</text>
 
   <!-- Member to 4.2 -->
   <path class="dataFlow" d="M 190 1040 L 350 550" />
-  <text class="flowLabel" x="220" y="800">Deposit request</text>
+  <text class="flowLabel" x="220" y="800">Deposit request (POST /user/transactions -> creates UserDepositRequest)</text>
 
   <!-- 4.2 to DepositRequest Store -->
   <path class="dataFlowAlt" d="M 340 580 L 300 500" />
-  <text class="flowLabel" x="310" y="540">Update status</text>
+  <text class="flowLabel" x="310" y="540">Update request status (manager approves via POST /manager/deposit-requests/{id}/approve)</text>
 
   <path class="dataFlowAlt" d="M 300 500 L 340 570" />
   <text class="flowLabel" x="310" y="520">Read request</text>
 
   <!-- 4.2 to 4.1 -->
   <path class="dataFlow" d="M 460 380 L 460 310" />
-  <text class="flowLabel" x="470" y="350">Create deposit tx</text>
+  <text class="flowLabel" x="470" y="350">Create deposit transaction (UserTransaction created on approval)</text>
 
   <!-- 4.3 to Bill Store -->
   <path class="dataFlowAlt" d="M 860 310 L 875 380" />
-  <text class="flowLabel" x="850" y="350">Read bill</text>
+  <text class="flowLabel" x="850" y="350">Read bill summary (D4.3) — used in balance calc</text>
 
   <!-- 4.3 to 4.1 -->
   <path class="dataFlowAlt" d="M 900 310 L 450 280" />
-  <text class="flowLabel" x="650" y="290">All transactions</text>
+  <text class="flowLabel" x="650" y="290">All transactions (query D4.1 via GET /user/transactions or manager reports)</text>
 
   <!-- 4.3 to 4.4 -->
   <path class="dataFlow" d="M 900 310 L 900 490" />
-  <text class="flowLabel" x="910" y="410">Query balance</text>
+  <text class="flowLabel" x="910" y="410">Query balance (computed from transactions and bill)</text>
 
   <!-- 4.4 to Transaction Store -->
   <path class="dataFlowAlt" d="M 840 580 L 300 410" />
-  <text class="flowLabel" x="550" y="500">Get latest balance</text>
+  <text class="flowLabel" x="550" y="500">Get latest balance (sum of D4.1 transactions for user)</text>
 
   <!-- 4.4 to User Store -->
   <path class="dataFlowAlt" d="M 960 550 L 1250 570" />
-  <text class="flowLabel" x="1090" y="560">Get member info</text>
+  <text class="flowLabel" x="1090" y="560">Get member info (D4.4: User via GET /manager/members or /user)</text>
 
   <!-- 4.4 to 4.5 -->
   <path class="dataFlow" d="M 960 550 L 1340 470" />
-  <text class="flowLabel" x="1130" y="520">Ledger data</text>
+  <text class="flowLabel" x="1130" y="520">Ledger data (used by dashboard endpoints /manager/dashboard/stats, /user/dashboard/stats)</text>
 
   <!-- 4.5 to Member -->
   <path class="dataFlow" d="M 1340 400 L 190 1040" />
-  <text class="flowLabel" x="700" y="750">Dashboard display</text>
+  <text class="flowLabel" x="700" y="750">Dashboard display (via /user/dashboard/stats)</text>
   <text class="flowLabel" x="700" y="770">(meals, balance, tx history)</text>
 
   <!-- 4.5 to Manager -->
   <path class="dataFlow" d="M 1340 350 L 190 190" />
-  <text class="flowLabel" x="700" y="260">System report</text>
+  <text class="flowLabel" x="700" y="260">System report (via /admin/system-report or /manager/dashboard/stats)</text>
   <text class="flowLabel" x="700" y="280">(member ledgers, deposits)</text>
 
   <!-- Legend/Notes -->
