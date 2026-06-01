@@ -397,7 +397,15 @@ const Balance = () => {
     paidAmount: 0,
   };
   const fixedShareTotal = Number(selectedMonthStats.fixedShareTotal || 0);
-  const fixedExpensePaidForMonth = Number(selectedMonthStats.paidAmount || 0);
+  // Calculate fixed expense paid for the selected month using transactions
+  const fixedExpensePaidForMonth =
+    transactions
+      .filter(
+        (tx) =>
+          tx?.type === "Fixed Expense" &&
+          tx?.date?.startsWith(fixedExpenseMonth),
+      )
+      .reduce((sum, tx) => sum + Number(tx.amount || 0), 0) || 0;
   const hasFixedCostSet = fixedShareTotal > 0;
   const remainingFixedExpenseDue = Math.max(
     0,
