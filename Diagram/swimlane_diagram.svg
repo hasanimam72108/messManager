@@ -1,254 +1,386 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="2080" height="1700" viewBox="0 0 2080 1700">
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="1020" viewBox="0 0 1500 1020">
   <style>
-    .title { font: 700 30px Georgia, serif; fill: #111 }
-    .subtitle { font: 14px sans-serif; fill: #555 }
-    .lane { fill: #fbfbfd; stroke: #dedede }
-    .laneAlt { fill: #f4f7ff; stroke: #dedede }
-    .laneHead { fill: #5a4df0; }
-    .laneTitle { font: 700 16px sans-serif; fill: #fff; letter-spacing: 0.4px }
-    .step { fill: #ffffff; stroke: #6f63ff; stroke-width: 2 }
-    .stepSoft { fill: #f9f8ff; stroke: #8a80ff; stroke-width: 2 }
-    .decision { fill: #f2a43d; stroke: #cc8300; stroke-width: 2 }
-    .text { font: 13px sans-serif; fill: #222 }
-    .small { font: 12px sans-serif; fill: #444 }
-    .line { stroke: #222; stroke-width: 2.1; fill: none }
-    .lineSoft { stroke: #666; stroke-width: 1.8; fill: none; stroke-dasharray: 6 5 }
-    .note { fill: #5a4df0; }
-    .noteText { font: 700 12px sans-serif; fill: #fff }
+    text          { font-family: Arial, sans-serif; }
+    .title        { font-size: 16px; font-weight: bold; fill: #111 }
+    .laneName     { font-size: 12.5px; font-weight: bold; fill: #111; text-anchor: middle }
+    .box          { fill: #fff; stroke: #444; stroke-width: 1.4 }
+    .dia          { fill: #fff; stroke: #444; stroke-width: 1.4 }
+    .dot          { fill: #222 }
+    .txt          { font-size: 11px; fill: #111; text-anchor: middle }
+    .txtsm        { font-size: 9.5px; fill: #555; text-anchor: middle }
+    .lbl          { font-size: 9.5px; fill: #555 }
+    .conn         { stroke: #333; stroke-width: 1.4; fill: none }
+    .dash         { stroke: #888; stroke-width: 1.2; fill: none; stroke-dasharray: 5 4 }
+    .laneA        { fill: #fafafa; stroke: #ccc; stroke-width: 1 }
+    .laneB        { fill: #f5f5f5; stroke: #ccc; stroke-width: 1 }
+    .hdiv         { stroke: #bbb; stroke-width: 1 }
+    .vdiv         { stroke: #bbb; stroke-width: 1 }
   </style>
   <defs>
-    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#222" />
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#333"/>
     </marker>
-    <marker id="arrowSoft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666" />
+    <marker id="d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#888"/>
     </marker>
   </defs>
 
-  <text class="title" x="38" y="56">Swimlane Diagram</text>
-  <text class="subtitle" x="38" y="82">Vertical lanes with a detailed mess-management flow: request, approval, onboarding, members, and expenses</text>
+  <!-- Title -->
+  <text class="title" x="18" y="28">Swimlane Diagram — MessManager System</text>
 
-  <!-- Vertical lanes -->
-  <rect class="lane" x="20" y="110" width="330" height="1110" />
-  <rect class="laneAlt" x="350" y="110" width="330" height="1110" />
-  <rect class="lane" x="680" y="110" width="350" height="1110" />
-  <rect class="laneAlt" x="1030" y="110" width="360" height="1110" />
-  <rect class="lane" x="1390" y="110" width="330" height="1110" />
-  <rect class="laneAlt" x="1720" y="110" width="340" height="1110" />
+  <!--
+    Lane layout (y=38 to y=1010, total height 972)
+    Member    : x=18,  w=210, cx=123
+    Manager   : x=228, w=210, cx=333
+    Admin     : x=438, w=210, cx=543
+    Web UI    : x=648, w=210, cx=753
+    Laravel API: x=858, w=225, cx=970
+    Database  : x=1083,w=210, cx=1188
+    Right edge: 1293 + right margin = 1310
+  -->
 
-  <rect class="laneHead" x="20" y="110" width="330" height="46" />
-  <rect class="laneHead" x="350" y="110" width="330" height="46" />
-  <rect class="laneHead" x="680" y="110" width="350" height="46" />
-  <rect class="laneHead" x="1030" y="110" width="360" height="46" />
-  <rect class="laneHead" x="1390" y="110" width="330" height="46" />
-  <rect class="laneHead" x="1720" y="110" width="340" height="46" />
+  <!-- Lane backgrounds -->
+  <rect class="laneA" x="18"   y="38" width="210" height="972"/>
+  <rect class="laneB" x="228"  y="38" width="210" height="972"/>
+  <rect class="laneA" x="438"  y="38" width="210" height="972"/>
+  <rect class="laneB" x="648"  y="38" width="210" height="972"/>
+  <rect class="laneA" x="858"  y="38" width="225" height="972"/>
+  <rect class="laneB" x="1083" y="38" width="210" height="972"/>
 
-  <text class="laneTitle" x="185" y="139" text-anchor="middle">Manager</text>
-  <text class="laneTitle" x="515" y="139" text-anchor="middle">Web / UI</text>
-  <text class="laneTitle" x="855" y="139" text-anchor="middle">Laravel API</text>
-  <text class="laneTitle" x="1210" y="139" text-anchor="middle">Super Admin</text>
-  <text class="laneTitle" x="1555" y="139" text-anchor="middle">Database</text>
-  <text class="laneTitle" x="1890" y="139" text-anchor="middle">Member</text>
+  <!-- Vertical dividers -->
+  <line class="vdiv" x1="228"  y1="38" x2="228"  y2="1010"/>
+  <line class="vdiv" x1="438"  y1="38" x2="438"  y2="1010"/>
+  <line class="vdiv" x1="648"  y1="38" x2="648"  y2="1010"/>
+  <line class="vdiv" x1="858"  y1="38" x2="858"  y2="1010"/>
+  <line class="vdiv" x1="1083" y1="38" x2="1083" y2="1010"/>
 
-  <!-- Phase 1: request submission -->
-  <rect class="note" x="48" y="176" width="254" height="32" rx="6" />
-  <text class="noteText" x="175" y="197" text-anchor="middle">Phase 1: Request mess creation</text>
+  <!-- Lane names -->
+  <text class="laneName" x="123"  y="56">Member</text>
+  <text class="laneName" x="333"  y="56">Manager</text>
+  <text class="laneName" x="543"  y="56">Admin</text>
+  <text class="laneName" x="753"  y="56">Web UI</text>
+  <text class="laneName" x="970"  y="56">Laravel API</text>
+  <text class="laneName" x="1188" y="56">Database</text>
 
-  <rect class="step" x="56" y="226" width="220" height="56" rx="8" />
-  <text class="text" x="166" y="248" text-anchor="middle">Open registration page</text>
-  <text class="small" x="166" y="266" text-anchor="middle">Enter mess name and manager email</text>
+  <!-- Horizontal separator under lane names -->
+  <line class="hdiv" x1="18" y1="62" x2="1293" y2="62"/>
 
-  <path class="line" d="M 276 254 L 350 254" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="372" y="226" width="235" height="56" rx="8" />
-  <text class="text" x="490" y="248" text-anchor="middle">Validate form fields</text>
-  <text class="small" x="490" y="266" text-anchor="middle">Required fields, email format, duplicate checks</text>
+  <!-- ═══════════════════════════════════
+       START NODES
+       ═══════════════════════════════════ -->
+  <circle class="dot" cx="123" cy="84" r="10"/>
+  <circle class="dot" cx="333" cy="84" r="10"/>
+  <circle class="dot" cx="543" cy="84" r="10"/>
 
-  <path class="line" d="M 607 254 L 680 254" marker-end="url(#arrow)" />
-  <rect class="step" x="705" y="226" width="300" height="56" rx="8" />
-  <text class="text" x="855" y="248" text-anchor="middle">POST /register</text>
-  <text class="small" x="855" y="266" text-anchor="middle">Create pending MessRequest record</text>
+  <!-- ═══════════════════════════════════
+       LOGIN & AUTHENTICATION
+       ═══════════════════════════════════ -->
 
-  <path class="line" d="M 1005 254 L 1030 254" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1070" y="226" width="285" height="56" rx="8" />
-  <text class="text" x="1212" y="248" text-anchor="middle">Review request queue</text>
-  <text class="small" x="1212" y="266" text-anchor="middle">See pending requests with manager email</text>
+  <!-- Login box — Web UI lane -->
+  <rect class="box" x="663" y="104" width="180" height="36" rx="3"/>
+  <text class="txt" x="753" y="127">Login</text>
 
-  <path class="line" d="M 1100 309 C 1040 309, 995 309, 955 309" marker-end="url(#arrow)" />
-  <rect class="step" x="705" y="300" width="300" height="56" rx="8" />
-  <text class="text" x="855" y="322" text-anchor="middle">Store pending request</text>
-  <text class="small" x="855" y="340" text-anchor="middle">status = pending, approved_mess_id = null</text>
+  <!-- Start nodes → Login (Web UI) -->
+  <path class="conn" d="M123 94 L123 122 L661 122" marker-end="url(#a)"/>
+  <path class="conn" d="M333 94 L333 115 L753 115 L753 102" marker-end="url(#a)"/>
+  <path class="conn" d="M543 94 L543 110 L753 110" />
 
-  <path class="lineSoft" d="M 855 356 L 855 404" marker-end="url(#arrowSoft)" />
+  <!-- Web UI → Laravel API: POST /login -->
+  <line class="conn" x1="843" y1="122" x2="856" y2="122" marker-end="url(#a)"/>
+  <rect class="box" x="870" y="104" width="195" height="36" rx="3"/>
+  <text class="txt" x="967" y="120">Authentication</text>
+  <text class="txtsm" x="967" y="134">POST /api/login</text>
 
-  <!-- Phase 2: approval decision -->
-  <rect class="note" x="715" y="416" width="280" height="32" rx="6" />
-  <text class="noteText" x="855" y="437" text-anchor="middle">Phase 2: Super Admin approval</text>
+  <!-- Laravel API → Database -->
+  <line class="conn" x1="1065" y1="122" x2="1081" y2="122" marker-end="url(#a)"/>
+  <rect class="box" x="1095" y="104" width="185" height="36" rx="3"/>
+  <text class="txt" x="1187" y="127">Validate User</text>
 
-  <path class="line" d="M 1212 282 L 1212 482" marker-end="url(#arrow)" />
-  <rect class="decision" x="1110" y="470" width="204" height="88" transform="rotate(45 1212 514)" />
-  <text class="text" x="1212" y="504" text-anchor="middle">Approve?</text>
+  <!-- Valid? diamond — in API lane -->
+  <polygon class="dia" points="967,158 1022,185 967,212 912,185"/>
+  <text class="txt" x="967" y="189">Valid?</text>
+  <line class="conn" x1="967" y1="140" x2="967" y2="156" marker-end="url(#a)"/>
 
-  <path class="line" d="M 1110 514 L 995 514" marker-end="url(#arrow)" />
-  <text class="small" x="1048" y="503" text-anchor="middle">No</text>
-  <rect class="step" x="705" y="478" width="300" height="56" rx="8" />
-  <text class="text" x="855" y="500" text-anchor="middle">Reject request</text>
-  <text class="small" x="855" y="518" text-anchor="middle">Update status rejected and notify manager</text>
+  <!-- Invalid → back to Web UI Login (dashed) -->
+  <path class="dash" d="M912 185 L753 185 L753 140" marker-end="url(#d)"/>
+  <text class="lbl" x="820" y="180">Invalid</text>
 
-  <path class="line" d="M 1005 514 L 1030 514" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1070" y="478" width="285" height="56" rx="8" />
-  <text class="text" x="1212" y="500" text-anchor="middle">Record rejection reason</text>
-  <text class="small" x="1212" y="518" text-anchor="middle">approved_by, rejected_at, message</text>
+  <!-- Valid → Role? -->
+  <path class="conn" d="M967 212 L967 232 L753 232 L753 218" marker-end="url(#a)"/>
+  <text class="lbl" x="976" y="228">Valid</text>
 
-  <path class="line" d="M 1130 602 C 1050 602, 980 602, 930 602" marker-end="url(#arrow)" />
-  <rect class="step" x="705" y="584" width="300" height="56" rx="8" />
-  <text class="text" x="855" y="606" text-anchor="middle">Approval branch continues</text>
-  <text class="small" x="855" y="624" text-anchor="middle">Create Mess and manager account in one transaction</text>
+  <!-- Role? diamond — in Web UI lane -->
+  <polygon class="dia" points="753,218 808,245 753,272 698,245"/>
+  <text class="txt" x="753" y="249">Role?</text>
 
-  <path class="line" d="M 1005 612 L 1030 612" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1070" y="584" width="285" height="56" rx="8" />
-  <text class="text" x="1212" y="606" text-anchor="middle">Approve request</text>
-  <text class="small" x="1212" y="624" text-anchor="middle">status = approved and approved_mess_id set</text>
+  <!-- Role → Member -->
+  <path class="conn" d="M698 245 L123 245 L123 295" marker-end="url(#a)"/>
+  <text class="lbl" x="380" y="240">Member</text>
 
-  <path class="line" d="M 1355 612 L 1390 612" marker-end="url(#arrow)" />
-  <rect class="step" x="1420" y="584" width="270" height="56" rx="8" />
-  <text class="text" x="1555" y="606" text-anchor="middle">Insert Mess</text>
-  <text class="small" x="1555" y="624" text-anchor="middle">name, manager_user_id, mess_request_id</text>
+  <!-- Role → Manager -->
+  <path class="conn" d="M753 272 L753 285 L333 285 L333 295" marker-end="url(#a)"/>
+  <text class="lbl" x="540" y="283">Manager</text>
 
-  <path class="line" d="M 1690 612 L 1720 612" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1770" y="584" width="240" height="56" rx="8" />
-  <text class="text" x="1890" y="606" text-anchor="middle">Receive approval notice</text>
-  <text class="small" x="1890" y="624" text-anchor="middle">Temp password and first-login required</text>
+  <!-- Role → Admin -->
+  <path class="conn" d="M808 245 L830 245 L830 290 L543 290 L543 295" marker-end="url(#a)"/>
+  <text class="lbl" x="838" y="242">Admin</text>
 
-  <path class="lineSoft" d="M 1890 640 L 1890 686" marker-end="url(#arrowSoft)" />
+  <!-- ═══════════════════════════════════════════════
+       ROW 1 (y=295–331) — Dashboards
+       ═══════════════════════════════════════════════ -->
+  <!-- Member: View Dashboard -->
+  <rect class="box" x="33" y="295" width="180" height="36" rx="3"/>
+  <text class="txt" x="123" y="318">View Dashboard</text>
 
-  <!-- Phase 3: first login -->
-  <rect class="note" x="1740" y="698" width="300" height="32" rx="6" />
-  <text class="noteText" x="1890" y="719" text-anchor="middle">Phase 3: First login password setup</text>
+  <!-- Manager: Manager Dashboard -->
+  <rect class="box" x="243" y="295" width="180" height="36" rx="3"/>
+  <text class="txt" x="333" y="318">Manager Dashboard</text>
 
-  <rect class="step" x="1770" y="744" width="240" height="56" rx="8" />
-  <text class="text" x="1890" y="766" text-anchor="middle">Login with temporary password</text>
-  <text class="small" x="1890" y="784" text-anchor="middle">mustChangePassword = true</text>
+  <!-- Admin: Admin Panel -->
+  <rect class="box" x="453" y="295" width="180" height="36" rx="3"/>
+  <text class="txt" x="543" y="318">Admin Panel</text>
 
-  <path class="line" d="M 1770 772 L 1030 772" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1070" y="744" width="285" height="56" rx="8" />
-  <text class="text" x="1212" y="766" text-anchor="middle">Submit new password</text>
-  <text class="small" x="1212" y="784" text-anchor="middle">completeFirstLoginPasswordSetup()</text>
+  <!-- Web UI: Fetch Dashboard -->
+  <rect class="box" x="663" y="295" width="180" height="36" rx="3"/>
+  <text class="txt" x="753" y="311">GET Dashboard</text>
+  <text class="txtsm" x="753" y="325">/api/{role}/dashboard</text>
 
-  <path class="line" d="M 1070 800 L 1030 800" marker-end="url(#arrow)" />
-  <rect class="step" x="705" y="772" width="300" height="56" rx="8" />
-  <text class="text" x="855" y="794" text-anchor="middle">Update user credentials</text>
-  <text class="small" x="855" y="812" text-anchor="middle">Save hashed password and clear flag</text>
+  <!-- API: Auth & Return -->
+  <rect class="box" x="870" y="295" width="195" height="36" rx="3"/>
+  <text class="txt" x="967" y="318">Auth &amp; Return Data</text>
 
-  <path class="line" d="M 705 800 L 680 800" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="372" y="772" width="235" height="56" rx="8" />
-  <text class="text" x="490" y="794" text-anchor="middle">Show dashboard</text>
-  <text class="small" x="490" y="812" text-anchor="middle">Manager can now manage members and expenses</text>
+  <!-- DB: Query Stats -->
+  <rect class="box" x="1095" y="295" width="185" height="36" rx="3"/>
+  <text class="txt" x="1187" y="318">Query Stats</text>
 
-  <!-- Phase 4: member onboarding -->
-  <rect class="note" x="48" y="860" width="254" height="32" rx="6" />
-  <text class="noteText" x="175" y="881" text-anchor="middle">Phase 4: Add members</text>
+  <!-- Actors → Web UI dashboard -->
+  <line class="conn" x1="213" y1="313" x2="661" y2="313" marker-end="url(#a)"/>
+  <!-- Web UI → API -->
+  <line class="conn" x1="843" y1="313" x2="868" y2="313" marker-end="url(#a)"/>
+  <!-- API → DB -->
+  <line class="conn" x1="1065" y1="313" x2="1093" y2="313" marker-end="url(#a)"/>
 
-  <rect class="step" x="56" y="906" width="220" height="56" rx="8" />
-  <text class="text" x="166" y="928" text-anchor="middle">Enter member name and email</text>
-  <text class="small" x="166" y="946" text-anchor="middle">Manager collects emails from the mess group</text>
+  <!-- ═══════════════════════════════════════════════
+       ROW 2 (y=355–391) — Members / Bills / Approval
+       ═══════════════════════════════════════════════ -->
+  <line class="conn" x1="123" y1="331" x2="123" y2="355" marker-end="url(#a)"/>
+  <line class="conn" x1="333" y1="331" x2="333" y2="355" marker-end="url(#a)"/>
+  <line class="conn" x1="543" y1="331" x2="543" y2="355" marker-end="url(#a)"/>
 
-  <path class="line" d="M 276 934 L 350 934" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="372" y="906" width="235" height="56" rx="8" />
-  <text class="text" x="490" y="928" text-anchor="middle">POST /manager/members</text>
-  <text class="small" x="490" y="946" text-anchor="middle">Validate mess ownership and duplicate email</text>
+  <!-- Member: View Bill Summary -->
+  <rect class="box" x="33" y="355" width="180" height="36" rx="3"/>
+  <text class="txt" x="123" y="378">View Bill Summary</text>
 
-  <path class="line" d="M 607 934 L 680 934" marker-end="url(#arrow)" />
-  <rect class="step" x="705" y="906" width="300" height="56" rx="8" />
-  <text class="text" x="855" y="928" text-anchor="middle">Create member user</text>
-  <text class="small" x="855" y="946" text-anchor="middle">role = user, mess_id assigned, temp password set</text>
+  <!-- Manager: Manage Members -->
+  <rect class="box" x="243" y="355" width="180" height="36" rx="3"/>
+  <text class="txt" x="333" y="378">Manage Members</text>
 
-  <path class="line" d="M 1005 934 L 1030 934" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1070" y="906" width="285" height="56" rx="8" />
-  <text class="text" x="1212" y="928" text-anchor="middle">Send first-login instructions</text>
-  <text class="small" x="1212" y="946" text-anchor="middle">Member must change password on first login</text>
+  <!-- Admin: Approve / Reject -->
+  <rect class="box" x="453" y="355" width="180" height="36" rx="3"/>
+  <text class="txt" x="543" y="378">Approve / Reject</text>
 
-  <path class="line" d="M 1355 934 L 1720 934" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1770" y="906" width="240" height="56" rx="8" />
-  <text class="text" x="1890" y="928" text-anchor="middle">Member receives account</text>
-  <text class="small" x="1890" y="946" text-anchor="middle">Can log in after first password setup</text>
+  <!-- Web UI -->
+  <rect class="box" x="663" y="355" width="180" height="36" rx="3"/>
+  <text class="txt" x="753" y="371">GET Bill / Members</text>
+  <text class="txtsm" x="753" y="385">/api/{role}/members</text>
 
-  <!-- Phase 5: expenses -->
-  <rect class="note" x="48" y="1024" width="254" height="32" rx="6" />
-  <text class="noteText" x="175" y="1045" text-anchor="middle">Phase 5: Add and track expenses</text>
+  <!-- API -->
+  <rect class="box" x="870" y="355" width="195" height="36" rx="3"/>
+  <text class="txt" x="967" y="378">Process &amp; Return</text>
 
-  <rect class="step" x="56" y="1070" width="220" height="56" rx="8" />
-  <text class="text" x="166" y="1092" text-anchor="middle">Add expense details</text>
-  <text class="small" x="166" y="1110" text-anchor="middle">title, amount, date, description</text>
+  <!-- DB -->
+  <rect class="box" x="1095" y="355" width="185" height="36" rx="3"/>
+  <text class="txt" x="1187" y="378">Query Users / Bills</text>
 
-  <path class="line" d="M 276 1098 L 350 1098" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="372" y="1070" width="235" height="56" rx="8" />
-  <text class="text" x="490" y="1092" text-anchor="middle">POST /manager/expenses</text>
-  <text class="small" x="490" y="1110" text-anchor="middle">Manager role and mess_id required</text>
+  <!-- Connectors row 2 -->
+  <line class="conn" x1="213" y1="373" x2="661" y2="373" marker-end="url(#a)"/>
+  <line class="conn" x1="843" y1="373" x2="868" y2="373" marker-end="url(#a)"/>
+  <line class="conn" x1="1065" y1="373" x2="1093" y2="373" marker-end="url(#a)"/>
 
-  <path class="line" d="M 607 1098 L 680 1098" marker-end="url(#arrow)" />
-  <rect class="step" x="705" y="1070" width="300" height="56" rx="8" />
-  <text class="text" x="855" y="1092" text-anchor="middle">Save expense</text>
-  <text class="small" x="855" y="1110" text-anchor="middle">Create expense row against the mess</text>
+  <!-- ═══════════════════════════════════════════════
+       ROW 3 (y=415–451) — Meals / Deposit Approval / View All Mess
+       ═══════════════════════════════════════════════ -->
+  <line class="conn" x1="123" y1="391" x2="123" y2="415" marker-end="url(#a)"/>
+  <line class="conn" x1="333" y1="391" x2="333" y2="415" marker-end="url(#a)"/>
+  <line class="conn" x1="543" y1="391" x2="543" y2="415" marker-end="url(#a)"/>
 
-  <path class="line" d="M 1005 1098 L 1390 1098" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1420" y="1070" width="270" height="56" rx="8" />
-  <text class="text" x="1555" y="1092" text-anchor="middle">Persist to database</text>
-  <text class="small" x="1555" y="1110" text-anchor="middle">Monthly summary, fixed costs, transactions</text>
+  <!-- Member: Meals Entry -->
+  <rect class="box" x="33" y="415" width="180" height="36" rx="3"/>
+  <text class="txt" x="123" y="438">Meals Entry</text>
 
-  <path class="line" d="M 1690 1098 L 1720 1098" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1770" y="1070" width="240" height="56" rx="8" />
-  <text class="text" x="1890" y="1092" text-anchor="middle">Members view updates</text>
-  <text class="small" x="1890" y="1110" text-anchor="middle">Bills, meals, deposits, and balances refresh</text>
+  <!-- Manager: Deposit Approval -->
+  <rect class="box" x="243" y="415" width="180" height="36" rx="3"/>
+  <text class="txt" x="333" y="438">Deposit Approval</text>
 
-  <!-- Additional steps: Meal logging and deposit workflow -->
-  <path class="line" d="M 1690 1168 L 1720 1168" marker-end="url(#arrow)" />
-  <rect class="step" x="1770" y="1140" width="240" height="56" rx="8" />
-  <text class="text" x="1890" y="1162" text-anchor="middle">Member: Open meal page</text>
+  <!-- Admin: View All Mess -->
+  <rect class="box" x="453" y="415" width="180" height="36" rx="3"/>
+  <text class="txt" x="543" y="438">View All Mess</text>
 
-  <path class="line" d="M 276 1194 L 350 1194" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="372" y="1166" width="235" height="56" rx="8" />
-  <text class="text" x="490" y="1188" text-anchor="middle">Web UI: POST /user/meals</text>
+  <!-- Web UI -->
+  <rect class="box" x="663" y="415" width="180" height="36" rx="3"/>
+  <text class="txt" x="753" y="431">POST /user/meals</text>
+  <text class="txtsm" x="753" y="445">Meal entry form</text>
 
-  <path class="line" d="M 607 1194 L 680 1194" marker-end="url(#arrow)" />
-  <rect class="step" x="705" y="1166" width="300" height="56" rx="8" />
-  <text class="text" x="855" y="1188" text-anchor="middle">Laravel API: Create Meal</text>
-  <text class="small" x="855" y="1206" text-anchor="middle">POST /user/meals -> Save to Meal</text>
+  <!-- API -->
+  <rect class="box" x="870" y="415" width="195" height="36" rx="3"/>
+  <text class="txt" x="967" y="438">Validate &amp; Save Meal</text>
 
-  <path class="line" d="M 1005 1194 L 1030 1194" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1070" y="1166" width="285" height="56" rx="8" />
-  <text class="text" x="1212" y="1188" text-anchor="middle">Database: Persist Meal</text>
+  <!-- DB -->
+  <rect class="box" x="1095" y="415" width="185" height="36" rx="3"/>
+  <text class="txt" x="1187" y="438">Insert Meal</text>
 
-  <!-- Deposit request flow -->
-  <rect class="step" x="56" y="1266" width="220" height="56" rx="8" />
-  <text class="text" x="166" y="1288" text-anchor="middle">Member: Request deposit</text>
-  <text class="small" x="166" y="1306" text-anchor="middle">POST /user/transactions (creates UserDepositRequest)</text>
+  <!-- Connectors row 3 -->
+  <line class="conn" x1="213" y1="433" x2="661" y2="433" marker-end="url(#a)"/>
+  <line class="conn" x1="843" y1="433" x2="868" y2="433" marker-end="url(#a)"/>
+  <line class="conn" x1="1065" y1="433" x2="1093" y2="433" marker-end="url(#a)"/>
 
-  <path class="line" d="M 276 1294 L 350 1294" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="372" y="1266" width="235" height="56" rx="8" />
-  <text class="text" x="490" y="1288" text-anchor="middle">Web UI: Submit deposit request</text>
+  <!-- ═══════════════════════════════════════════════
+       ROW 4 (y=475–511) — Request Deposit / Manage Expenses
+       ═══════════════════════════════════════════════ -->
+  <line class="conn" x1="123" y1="451" x2="123" y2="475" marker-end="url(#a)"/>
+  <line class="conn" x1="333" y1="451" x2="333" y2="475" marker-end="url(#a)"/>
 
-  <path class="line" d="M 607 1294 L 680 1294" marker-end="url(#arrow)" />
-  <rect class="step" x="705" y="1266" width="300" height="56" rx="8" />
-  <text class="text" x="855" y="1288" text-anchor="middle">Laravel API: Store UserDepositRequest</text>
+  <!-- Member: Request Deposit -->
+  <rect class="box" x="33" y="475" width="180" height="36" rx="3"/>
+  <text class="txt" x="123" y="498">Request Deposit</text>
 
-  <path class="line" d="M 1005 1294 L 1030 1294" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1070" y="1266" width="285" height="56" rx="8" />
-  <text class="text" x="1212" y="1288" text-anchor="middle">Database: Persist DepositRequest (status=pending)</text>
+  <!-- Manager: Manage Expenses -->
+  <rect class="box" x="243" y="475" width="180" height="36" rx="3"/>
+  <text class="txt" x="333" y="498">Manage Expenses</text>
 
-  <path class="line" d="M 1212 1314 L 1212 1414" marker-end="url(#arrow)" />
-  <rect class="decision" x="1110" y="1402" width="204" height="88" transform="rotate(45 1212 1446)" />
-  <text class="text" x="1212" y="1448" text-anchor="middle">Manager approves?</text>
+  <!-- Cross-lane: Request Deposit → Deposit Approval (row above) -->
+  <path class="conn" d="M213 493 L243 493 L243 451 L241 433" marker-end="url(#a)"/>
 
-  <path class="line" d="M 1110 1450 L 995 1450" marker-end="url(#arrow)" />
-  <rect class="step" x="705" y="1440" width="300" height="56" rx="8" />
-  <text class="text" x="855" y="1462" text-anchor="middle">POST /manager/deposit-requests/{id}/approve</text>
-  <text class="small" x="855" y="1480" text-anchor="middle">Creates UserTransaction and marks request approved</text>
+  <!-- Web UI -->
+  <rect class="box" x="663" y="475" width="180" height="36" rx="3"/>
+  <text class="txt" x="753" y="491">POST /user/transactions</text>
+  <text class="txtsm" x="753" y="505">Submit deposit request</text>
 
-  <path class="line" d="M 1690 1504 L 1720 1504" marker-end="url(#arrow)" />
-  <rect class="stepSoft" x="1770" y="1488" width="240" height="56" rx="8" />
-  <text class="text" x="1890" y="1510" text-anchor="middle">Member: Dashboard updated (balance & tx history)</text>
+  <!-- API -->
+  <rect class="box" x="870" y="475" width="195" height="36" rx="3"/>
+  <text class="txt" x="967" y="498">Create DepositRequest</text>
 
-  <!-- Footer -->
-  <text class="text" x="38" y="1648">This swimlane uses vertical lanes to show how the mess app moves from manager input, through the API, into approval and onboarding, and then into member and expense management. It also includes meal logging and deposit request/approval flows.</text>
+  <!-- DB -->
+  <rect class="box" x="1095" y="475" width="185" height="36" rx="3"/>
+  <text class="txt" x="1187" y="491">Insert DepositRequest</text>
+  <text class="txtsm" x="1187" y="505">status = pending</text>
+
+  <!-- Connectors row 4 -->
+  <line class="conn" x1="213" y1="493" x2="661" y2="493" marker-end="url(#a)"/>
+  <line class="conn" x1="843" y1="493" x2="868" y2="493" marker-end="url(#a)"/>
+  <line class="conn" x1="1065" y1="493" x2="1093" y2="493" marker-end="url(#a)"/>
+
+  <!-- ═══════════════════════════════════════════════
+       ROW 5 (y=535–571) — View Transactions / Set Fixed Costs
+       ═══════════════════════════════════════════════ -->
+  <line class="conn" x1="123" y1="511" x2="123" y2="535" marker-end="url(#a)"/>
+  <line class="conn" x1="333" y1="511" x2="333" y2="535" marker-end="url(#a)"/>
+
+  <!-- Member: View Transactions -->
+  <rect class="box" x="33" y="535" width="180" height="36" rx="3"/>
+  <text class="txt" x="123" y="558">View Transactions</text>
+
+  <!-- Manager: Set Fixed Costs -->
+  <rect class="box" x="243" y="535" width="180" height="36" rx="3"/>
+  <text class="txt" x="333" y="558">Set Fixed Costs</text>
+
+  <!-- Web UI -->
+  <rect class="box" x="663" y="535" width="180" height="36" rx="3"/>
+  <text class="txt" x="753" y="551">GET /user/transactions</text>
+  <text class="txtsm" x="753" y="565">Transaction history</text>
+
+  <!-- API -->
+  <rect class="box" x="870" y="535" width="195" height="36" rx="3"/>
+  <text class="txt" x="967" y="558">Fetch Transactions</text>
+
+  <!-- DB -->
+  <rect class="box" x="1095" y="535" width="185" height="36" rx="3"/>
+  <text class="txt" x="1187" y="558">Query UserTransactions</text>
+
+  <!-- Connectors row 5 -->
+  <line class="conn" x1="213" y1="553" x2="661" y2="553" marker-end="url(#a)"/>
+  <line class="conn" x1="843" y1="553" x2="868" y2="553" marker-end="url(#a)"/>
+  <line class="conn" x1="1065" y1="553" x2="1093" y2="553" marker-end="url(#a)"/>
+
+  <!-- ═══════════════════════════════════════════════
+       ROW 6 (y=595–631) — Monthly Reports (Manager only)
+       ═══════════════════════════════════════════════ -->
+  <line class="conn" x1="333" y1="571" x2="333" y2="595" marker-end="url(#a)"/>
+
+  <!-- Manager: Monthly Reports -->
+  <rect class="box" x="243" y="595" width="180" height="36" rx="3"/>
+  <text class="txt" x="333" y="618">Monthly Reports</text>
+
+  <!-- Web UI -->
+  <rect class="box" x="663" y="595" width="180" height="36" rx="3"/>
+  <text class="txt" x="753" y="611">GET /manager/expenses</text>
+  <text class="txtsm" x="753" y="625">Monthly summary</text>
+
+  <!-- API -->
+  <rect class="box" x="870" y="595" width="195" height="36" rx="3"/>
+  <text class="txt" x="967" y="618">Aggregate Monthly Data</text>
+
+  <!-- DB -->
+  <rect class="box" x="1095" y="595" width="185" height="36" rx="3"/>
+  <text class="txt" x="1187" y="618">Query Month Records</text>
+
+  <!-- Manager → Web UI -->
+  <line class="conn" x1="423" y1="613" x2="661" y2="613" marker-end="url(#a)"/>
+  <line class="conn" x1="843" y1="613" x2="868" y2="613" marker-end="url(#a)"/>
+  <line class="conn" x1="1065" y1="613" x2="1093" y2="613" marker-end="url(#a)"/>
+
+  <!-- ═══════════════════════════════════════════════
+       LOGOUT (y=680–716) — all converge
+       ═══════════════════════════════════════════════ -->
+
+  <!-- Logout box — Manager lane -->
+  <rect class="box" x="243" y="700" width="180" height="36" rx="3"/>
+  <text class="txt" x="333" y="723">Logout</text>
+
+  <!-- Member (View Transactions end) → Logout -->
+  <path class="conn" d="M123 571 L123 718 L241 718" marker-end="url(#a)"/>
+
+  <!-- Manager (Monthly Reports) → Logout -->
+  <line class="conn" x1="333" y1="631" x2="333" y2="698" marker-end="url(#a)"/>
+
+  <!-- Admin (View All Mess) → Logout -->
+  <path class="conn" d="M543 451 L543 718 L425 718" marker-end="url(#a)"/>
+
+  <!-- Web UI: POST /logout -->
+  <rect class="box" x="663" y="700" width="180" height="36" rx="3"/>
+  <text class="txt" x="753" y="723">POST /api/logout</text>
+
+  <!-- Logout → Web UI -->
+  <line class="conn" x1="423" y1="718" x2="661" y2="718" marker-end="url(#a)"/>
+
+  <!-- API: Revoke Token -->
+  <rect class="box" x="870" y="700" width="195" height="36" rx="3"/>
+  <text class="txt" x="967" y="723">Revoke Token</text>
+  <line class="conn" x1="843" y1="718" x2="868" y2="718" marker-end="url(#a)"/>
+
+  <!-- DB: Delete Token -->
+  <rect class="box" x="1095" y="700" width="185" height="36" rx="3"/>
+  <text class="txt" x="1187" y="723">Delete Token</text>
+  <line class="conn" x1="1065" y1="718" x2="1093" y2="718" marker-end="url(#a)"/>
+
+  <!-- ═══════════════════════════════════════════════
+       END NODES
+       ═══════════════════════════════════════════════ -->
+
+  <!-- Arrows from Logout back to actor lanes for end nodes -->
+  <path class="conn" d="M243 718 L123 718 L123 758" marker-end="url(#a)"/>
+  <line class="conn" x1="333" y1="736" x2="333" y2="758" marker-end="url(#a)"/>
+  <path class="conn" d="M425 718 L543 718 L543 758" marker-end="url(#a)"/>
+
+  <!-- End nodes (filled circle + outer ring = UML final state) -->
+  <circle class="dot" cx="123" cy="768" r="10"/>
+  <circle cx="123" cy="768" r="16" fill="none" stroke="#222" stroke-width="2"/>
+
+  <circle class="dot" cx="333" cy="768" r="10"/>
+  <circle cx="333" cy="768" r="16" fill="none" stroke="#222" stroke-width="2"/>
+
+  <circle class="dot" cx="543" cy="768" r="10"/>
+  <circle cx="543" cy="768" r="16" fill="none" stroke="#222" stroke-width="2"/>
+
 </svg>

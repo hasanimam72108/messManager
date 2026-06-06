@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="430" viewBox="0 0 1180 430">
+  <style>
+    text{font-family:Arial,sans-serif}
+    .title{font-size:15px;font-weight:bold;fill:#111}
+    .laneName{font-size:12px;font-weight:bold;fill:#111;text-anchor:middle}
+    .box{fill:#fff;stroke:#444;stroke-width:1.4}
+    .dia{fill:#fff;stroke:#444;stroke-width:1.4}
+    .dot{fill:#222}
+    .txt{font-size:11px;fill:#111;text-anchor:middle}
+    .txtsm{font-size:9.5px;fill:#555;text-anchor:middle}
+    .lbl{font-size:9.5px;fill:#555}
+    .conn{stroke:#333;stroke-width:1.4;fill:none}
+    .dash{stroke:#888;stroke-width:1.2;fill:none;stroke-dasharray:5 4}
+    .laneA{fill:#fafafa;stroke:#ccc;stroke-width:1}
+    .laneB{fill:#f5f5f5;stroke:#ccc;stroke-width:1}
+    .vdiv{stroke:#bbb;stroke-width:1}
+    .hdiv{stroke:#bbb;stroke-width:1}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#333"/></marker>
+    <marker id="d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#888"/></marker>
+  </defs>
+
+  <text class="title" x="18" y="20">Swimlane 5 — Deposit Request &amp; Approval</text>
+
+  <!--
+    Lanes (5):
+    Member  : x=18,  w=225, cx=130  | box x=32,  w=196
+    Manager : x=243, w=225, cx=355  | box x=257, w=196
+    Web UI  : x=468, w=225, cx=580  | box x=482, w=196
+    API     : x=693, w=240, cx=813  | box x=707, w=212
+    Database: x=933, w=222, cx=1044 | box x=948, w=192
+  -->
+  <rect class="laneA" x="18"  y="28" width="225" height="402"/>
+  <rect class="laneB" x="243" y="28" width="225" height="402"/>
+  <rect class="laneA" x="468" y="28" width="225" height="402"/>
+  <rect class="laneB" x="693" y="28" width="240" height="402"/>
+  <rect class="laneA" x="933" y="28" width="222" height="402"/>
+  <line class="vdiv" x1="243"  y1="28" x2="243"  y2="430"/>
+  <line class="vdiv" x1="468"  y1="28" x2="468"  y2="430"/>
+  <line class="vdiv" x1="693"  y1="28" x2="693"  y2="430"/>
+  <line class="vdiv" x1="933"  y1="28" x2="933"  y2="430"/>
+  <text class="laneName" x="130"  y="46">Member</text>
+  <text class="laneName" x="355"  y="46">Manager</text>
+  <text class="laneName" x="580"  y="46">Web UI</text>
+  <text class="laneName" x="813"  y="46">Laravel API</text>
+  <text class="laneName" x="1044" y="46">Database</text>
+  <line class="hdiv" x1="18" y1="52" x2="1155" y2="52"/>
+
+  <!-- Start nodes -->
+  <circle class="dot" cx="130" cy="68" r="10"/>
+  <circle class="dot" cx="355" cy="68" r="10"/>
+  <line class="conn" x1="130" y1="78" x2="130" y2="84" marker-end="url(#a)"/>
+
+  <!-- ROW 1 (cy=102): Member: Request Deposit → WebUI → API → DB -->
+  <rect class="box" x="32"  y="84" width="196" height="36" rx="3"/>
+  <text class="txt" x="130" y="100">Request Deposit</text>
+  <text class="txtsm" x="130" y="114">Enter deposit amount</text>
+  <path class="conn" d="M228 102 L480 102" marker-end="url(#a)"/>
+  <rect class="box" x="482" y="84" width="196" height="36" rx="3"/>
+  <text class="txt" x="580" y="100">POST /user/transactions</text>
+  <text class="txtsm" x="580" y="114">Submit deposit request form</text>
+  <line class="conn" x1="678" y1="102" x2="705" y2="102" marker-end="url(#a)"/>
+  <rect class="box" x="707" y="84" width="212" height="36" rx="3"/>
+  <text class="txt" x="813" y="100">Create DepositRequest</text>
+  <text class="txtsm" x="813" y="114">status = pending</text>
+  <line class="conn" x1="919" y1="102" x2="946" y2="102" marker-end="url(#a)"/>
+  <rect class="box" x="948" y="84" width="192" height="36" rx="3"/>
+  <text class="txt" x="1044" y="100">Insert DepositRequest</text>
+  <text class="txtsm" x="1044" y="114">Awaiting manager approval</text>
+
+  <!-- Dashed: DB notifies Manager of pending deposit -->
+  <path class="dash" d="M948 102 L355 102 L355 140" marker-end="url(#d)"/>
+  <text class="lbl" x="600" y="97">pending deposit visible</text>
+
+  <!-- ROW 2 (cy=158): Manager: Review Requests → WebUI → API → DB -->
+  <line class="conn" x1="355" y1="78" x2="355" y2="140" marker-end="url(#a)"/>
+  <rect class="box" x="257" y="140" width="196" height="36" rx="3"/>
+  <text class="txt" x="355" y="156">Review Pending Requests</text>
+  <text class="txtsm" x="355" y="170">List of deposit requests</text>
+  <line class="conn" x1="453" y1="158" x2="480" y2="158" marker-end="url(#a)"/>
+  <rect class="box" x="482" y="140" width="196" height="36" rx="3"/>
+  <text class="txt" x="580" y="156">GET /manager/deposit-requests</text>
+  <text class="txtsm" x="580" y="170">Fetch pending list</text>
+  <line class="conn" x1="678" y1="158" x2="705" y2="158" marker-end="url(#a)"/>
+  <rect class="box" x="707" y="140" width="212" height="36" rx="3"/>
+  <text class="txt" x="813" y="158">Fetch Pending Requests</text>
+  <text class="txtsm" x="813" y="170">Filter status = pending</text>
+  <line class="conn" x1="919" y1="158" x2="946" y2="158" marker-end="url(#a)"/>
+  <rect class="box" x="948" y="140" width="192" height="36" rx="3"/>
+  <text class="txt" x="1044" y="158">Query DepositRequests</text>
+  <text class="txtsm" x="1044" y="170">status = pending</text>
+
+  <!-- Arrow down in Manager to diamond -->
+  <line class="conn" x1="355" y1="176" x2="355" y2="190" marker-end="url(#a)"/>
+
+  <!-- Approve? diamond  center(355,214): top(355,190) right(414,214) bottom(355,238) left(296,214) -->
+  <polygon class="dia" points="355,190 414,214 355,238 296,214"/>
+  <text class="txt" x="355" y="218">Approve?</text>
+
+  <!-- YES → right into WebUI (cy=214) -->
+  <path class="conn" d="M414 214 L480 214" marker-end="url(#a)"/>
+  <text class="lbl" x="420" y="209">Yes</text>
+
+  <!-- YES ROW (cy=214, y=196–232): WebUI → API: Create Tx → DB: Insert + Update -->
+  <rect class="box" x="482" y="196" width="196" height="36" rx="3"/>
+  <text class="txt" x="580" y="212">POST /deposit/{id}/approve</text>
+  <text class="txtsm" x="580" y="226">Approval action submitted</text>
+  <line class="conn" x1="678" y1="214" x2="705" y2="214" marker-end="url(#a)"/>
+  <rect class="box" x="707" y="196" width="212" height="36" rx="3"/>
+  <text class="txt" x="813" y="212">Create UserTransaction</text>
+  <text class="txtsm" x="813" y="226">Recalculate running balance</text>
+  <line class="conn" x1="919" y1="214" x2="946" y2="214" marker-end="url(#a)"/>
+  <rect class="box" x="948" y="196" width="192" height="36" rx="3"/>
+  <text class="txt" x="1044" y="212">Insert Transaction</text>
+  <text class="txtsm" x="1044" y="226">Request → approved</text>
+  <!-- Member: Balance Updated (YES) -->
+  <rect class="box" x="32" y="196" width="196" height="36" rx="3"/>
+  <text class="txt" x="130" y="212">Balance Updated</text>
+  <text class="txtsm" x="130" y="226">Transaction recorded</text>
+  <!-- Dashed: DB → Member (below YES row) -->
+  <path class="dash" d="M1044 232 L1044 240 L130 240 L130 232" marker-end="url(#d)"/>
+
+  <!-- NO → down (deposit stays pending) -->
+  <path class="conn" d="M355 238 L355 258" marker-end="url(#a)"/>
+  <text class="lbl" x="360" y="253">No</text>
+  <rect class="box" x="257" y="258" width="196" height="36" rx="3"/>
+  <text class="txt" x="355" y="281">Deposit Stays Pending</text>
+
+  <!-- ROW 3 (cy=324): Member: View Updated Balance → WebUI → API → DB -->
+  <line class="conn" x1="130" y1="232" x2="130" y2="304" marker-end="url(#a)"/>
+  <rect class="box" x="32"  y="304" width="196" height="36" rx="3"/>
+  <text class="txt" x="130" y="320">View Updated Balance</text>
+  <text class="txtsm" x="130" y="334">Check new balance and history</text>
+  <path class="conn" d="M228 322 L480 322" marker-end="url(#a)"/>
+  <rect class="box" x="482" y="304" width="196" height="36" rx="3"/>
+  <text class="txt" x="580" y="320">GET /user/transactions</text>
+  <text class="txtsm" x="580" y="334">Transaction history &amp; balance</text>
+  <line class="conn" x1="678" y1="322" x2="705" y2="322" marker-end="url(#a)"/>
+  <rect class="box" x="707" y="304" width="212" height="36" rx="3"/>
+  <text class="txt" x="813" y="322">Fetch Balance &amp; Transactions</text>
+  <line class="conn" x1="919" y1="322" x2="946" y2="322" marker-end="url(#a)"/>
+  <rect class="box" x="948" y="304" width="192" height="36" rx="3"/>
+  <text class="txt" x="1044" y="322">Query UserTransactions</text>
+
+  <!-- End nodes -->
+  <line class="conn" x1="130" y1="340" x2="130" y2="380" marker-end="url(#a)"/>
+  <circle class="dot" cx="130" cy="392" r="10"/>
+  <circle cx="130" cy="392" r="16" fill="none" stroke="#222" stroke-width="2"/>
+  <line class="conn" x1="355" y1="294" x2="355" y2="380" marker-end="url(#a)"/>
+  <circle class="dot" cx="355" cy="392" r="10"/>
+  <circle cx="355" cy="392" r="16" fill="none" stroke="#222" stroke-width="2"/>
+</svg>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="400" viewBox="0 0 1180 400">
+  <style>
+    text{font-family:Arial,sans-serif}
+    .title{font-size:15px;font-weight:bold;fill:#111}
+    .laneName{font-size:12px;font-weight:bold;fill:#111;text-anchor:middle}
+    .box{fill:#fff;stroke:#444;stroke-width:1.4}
+    .dia{fill:#fff;stroke:#444;stroke-width:1.4}
+    .dot{fill:#222}
+    .txt{font-size:11px;fill:#111;text-anchor:middle}
+    .txtsm{font-size:9.5px;fill:#555;text-anchor:middle}
+    .lbl{font-size:9.5px;fill:#555}
+    .conn{stroke:#333;stroke-width:1.4;fill:none}
+    .dash{stroke:#888;stroke-width:1.2;fill:none;stroke-dasharray:5 4}
+    .laneA{fill:#fafafa;stroke:#ccc;stroke-width:1}
+    .laneB{fill:#f5f5f5;stroke:#ccc;stroke-width:1}
+    .vdiv{stroke:#bbb;stroke-width:1}
+    .hdiv{stroke:#bbb;stroke-width:1}
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#333"/></marker>
+    <marker id="d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#888"/></marker>
+  </defs>
+
+  <text class="title" x="18" y="20">Swimlane 3 — Member Onboarding</text>
+
+  <!--
+    Lanes (5):
+    Manager : x=18,  w=225, cx=130  | box x=32,  w=196
+    Member  : x=243, w=225, cx=355  | box x=257, w=196
+    Web UI  : x=468, w=225, cx=580  | box x=482, w=196
+    API     : x=693, w=240, cx=813  | box x=707, w=212
+    Database: x=933, w=222, cx=1044 | box x=948, w=192
+  -->
+  <rect class="laneA" x="18"  y="28" width="225" height="372"/>
+  <rect class="laneB" x="243" y="28" width="225" height="372"/>
+  <rect class="laneA" x="468" y="28" width="225" height="372"/>
+  <rect class="laneB" x="693" y="28" width="240" height="372"/>
+  <rect class="laneA" x="933" y="28" width="222" height="372"/>
+  <line class="vdiv" x1="243"  y1="28" x2="243"  y2="400"/>
+  <line class="vdiv" x1="468"  y1="28" x2="468"  y2="400"/>
+  <line class="vdiv" x1="693"  y1="28" x2="693"  y2="400"/>
+  <line class="vdiv" x1="933"  y1="28" x2="933"  y2="400"/>
+  <text class="laneName" x="130"  y="46">Manager</text>
+  <text class="laneName" x="355"  y="46">Member</text>
+  <text class="laneName" x="580"  y="46">Web UI</text>
+  <text class="laneName" x="813"  y="46">Laravel API</text>
+  <text class="laneName" x="1044" y="46">Database</text>
+  <line class="hdiv" x1="18" y1="52" x2="1155" y2="52"/>
+
+  <!-- Manager start -->
+  <circle class="dot" cx="130" cy="68" r="10"/>
+  <line class="conn" x1="130" y1="78" x2="130" y2="84" marker-end="url(#a)"/>
+
+  <!-- ROW 1 (cy=102): Manager: Enter Member Details → WebUI → API → DB -->
+  <rect class="box" x="32"  y="84" width="196" height="36" rx="3"/>
+  <text class="txt" x="130" y="100">Enter Member Details</text>
+  <text class="txtsm" x="130" y="114">Name and email for new member</text>
+  <!-- Manager → WebUI (arrow skips Member lane) -->
+  <path class="conn" d="M228 102 L480 102" marker-end="url(#a)"/>
+  <rect class="box" x="482" y="84" width="196" height="36" rx="3"/>
+  <text class="txt" x="580" y="100">POST /manager/members</text>
+  <text class="txtsm" x="580" y="114">Validate mess ownership</text>
+  <line class="conn" x1="678" y1="102" x2="705" y2="102" marker-end="url(#a)"/>
+  <rect class="box" x="707" y="84" width="212" height="36" rx="3"/>
+  <text class="txt" x="813" y="100">Create Member Account</text>
+  <text class="txtsm" x="813" y="114">role=user, temp password, mess_id</text>
+  <line class="conn" x1="919" y1="102" x2="946" y2="102" marker-end="url(#a)"/>
+  <rect class="box" x="948" y="84" width="192" height="36" rx="3"/>
+  <text class="txt" x="1044" y="100">Insert User Record</text>
+  <text class="txtsm" x="1044" y="114">must_change_password = true</text>
+
+  <!-- Dashed: DB notifies Member with credentials -->
+  <path class="dash" d="M948 102 L355 102 L355 140" marker-end="url(#d)"/>
+  <text class="lbl" x="600" y="97">credentials sent</text>
+
+  <!-- ROW 2 (cy=158): Member: Receive Credentials + First Login → WebUI → API → DB -->
+  <rect class="box" x="257" y="140" width="196" height="36" rx="3"/>
+  <text class="txt" x="355" y="156">Receive Credentials</text>
+  <text class="txtsm" x="355" y="170">Login with temp password</text>
+  <!-- Member → WebUI -->
+  <line class="conn" x1="453" y1="158" x2="480" y2="158" marker-end="url(#a)"/>
+  <rect class="box" x="482" y="140" width="196" height="36" rx="3"/>
+  <text class="txt" x="580" y="156">POST /api/login</text>
+  <text class="txtsm" x="580" y="170">Submit login credentials</text>
+  <line class="conn" x1="678" y1="158" x2="705" y2="158" marker-end="url(#a)"/>
+  <rect class="box" x="707" y="140" width="212" height="36" rx="3"/>
+  <text class="txt" x="813" y="156">Authenticate + Check Flag</text>
+  <text class="txtsm" x="813" y="170">must_change_password = true</text>
+  <line class="conn" x1="919" y1="158" x2="946" y2="158" marker-end="url(#a)"/>
+  <rect class="box" x="948" y="140" width="192" height="36" rx="3"/>
+  <text class="txt" x="1044" y="158">Validate User</text>
+
+  <!-- Vertical arrows in Member and Manager lanes -->
+  <line class="conn" x1="355" y1="176" x2="355" y2="196" marker-end="url(#a)"/>
+  <line class="conn" x1="130" y1="120" x2="130" y2="196"/>
+
+  <!-- ROW 3 (cy=214): Member: Set New Password → WebUI → API → DB -->
+  <rect class="box" x="257" y="196" width="196" height="36" rx="3"/>
+  <text class="txt" x="355" y="212">Set New Password</text>
+  <text class="txtsm" x="355" y="226">First-login password setup</text>
+  <line class="conn" x1="453" y1="214" x2="480" y2="214" marker-end="url(#a)"/>
+  <rect class="box" x="482" y="196" width="196" height="36" rx="3"/>
+  <text class="txt" x="580" y="212">POST /password/first-login</text>
+  <text class="txtsm" x="580" y="226">Submit new password</text>
+  <line class="conn" x1="678" y1="214" x2="705" y2="214" marker-end="url(#a)"/>
+  <rect class="box" x="707" y="196" width="212" height="36" rx="3"/>
+  <text class="txt" x="813" y="212">Update Credentials</text>
+  <text class="txtsm" x="813" y="226">Hash password, clear flag</text>
+  <line class="conn" x1="919" y1="214" x2="946" y2="214" marker-end="url(#a)"/>
+  <rect class="box" x="948" y="196" width="192" height="36" rx="3"/>
+  <text class="txt" x="1044" y="214">Update User Record</text>
+  <text class="txtsm" x="1044" y="226">must_change_password = false</text>
+
+  <line class="conn" x1="355" y1="232" x2="355" y2="252" marker-end="url(#a)"/>
+
+  <!-- ROW 4 (cy=270): Member: Access Member Dashboard -->
+  <rect class="box" x="257" y="252" width="196" height="36" rx="3"/>
+  <text class="txt" x="355" y="275">Access Member Dashboard</text>
+  <!-- WebUI returns dashboard -->
+  <path class="dash" d="M919 214 L580 214 L580 250" marker-end="url(#d)"/>
+  <rect class="box" x="482" y="252" width="196" height="36" rx="3"/>
+  <text class="txt" x="580" y="268">Redirect to Dashboard</text>
+  <text class="txtsm" x="580" y="282">/user/dashboard</text>
+  <line class="conn" x1="453" y1="270" x2="480" y2="270" marker-end="url(#a)"/>
+
+  <!-- End nodes -->
+  <line class="conn" x1="130" y1="196" x2="130" y2="310" marker-end="url(#a)"/>
+  <circle class="dot" cx="130" cy="322" r="10"/>
+  <circle cx="130" cy="322" r="16" fill="none" stroke="#222" stroke-width="2"/>
+  <line class="conn" x1="355" y1="288" x2="355" y2="310" marker-end="url(#a)"/>
+  <circle class="dot" cx="355" cy="322" r="10"/>
+  <circle cx="355" cy="322" r="16" fill="none" stroke="#222" stroke-width="2"/>
+</svg>

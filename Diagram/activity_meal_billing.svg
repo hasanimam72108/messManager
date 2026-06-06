@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="270" height="780" viewBox="0 0 270 780">
+  <style>
+    .stroke { stroke:#000; stroke-width:2; fill:none }
+    .box { fill:#fff; stroke:#000; stroke-width:2 }
+    .label { font-family: Arial, sans-serif; font-size:14px; fill:#000 }
+    .title { font-family: Arial, sans-serif; font-size:12px; font-weight:600 }
+  </style>
+
+  <!-- Start -->
+  <circle cx="135" cy="30" r="12" class="stroke" fill="#fff"/>
+
+  <!-- Daily Meal Entries -->
+  <path d="M85 70 h100 v34 h-100 z" class="box" rx="2"/>
+  <text x="135" y="95" text-anchor="middle" class="label">Daily Meal Entries</text>
+  <path d="M135 82 v18" class="stroke" marker-end="url(#arr)"/>
+
+  <!-- Aggregate Meals -->
+  <path d="M65 140 h140 v34 h-140 z" class="box"/>
+  <text x="135" y="163" text-anchor="middle" class="label">Aggregate Meals</text>
+  <path d="M135 114 v20" class="stroke"/>
+  <path d="M135 174 v18" class="stroke" marker-end="url(#arr)"/>
+
+  <!-- Calculate per-member bill -->
+  <path d="M45 220 h180 v34 h-180 z" class="box"/>
+  <text x="135" y="243" text-anchor="middle" class="label">Calculate per-member bill</text>
+  <path d="M135 192 v24" class="stroke"/>
+  <path d="M135 254 v18" class="stroke" marker-end="url(#arr)"/>
+
+  <!-- Post invoice -->
+  <path d="M85 300 h100 v34 h-100 z" class="box"/>
+  <text x="135" y="325" text-anchor="middle" class="label">Post invoice</text>
+  <path d="M135 272 v24" class="stroke"/>
+  <path d="M135 334 v28" class="stroke" marker-end="url(#arr)"/>
+
+  <!-- End -->
+  <rect x="117" y="380" width="36" height="28" rx="2" class="box"/>
+  <text x="135" y="400" text-anchor="middle" class="label">Bill</text>
+
+  <circle cx="135" cy="500" r="14" class="stroke"/>
+  <circle cx="135" cy="500" r="6" fill="#000"/>
+
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0 0 L9 5 L0 10 z" fill="#000" />
+    </marker>
+  </defs>
+</svg>
