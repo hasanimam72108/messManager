@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1010" height="1990" viewBox="0 0 1010 1990" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif">
+<defs>
+<marker id="arw" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 Z" fill="#000000"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="1010" height="1990" fill="#ffffff"/>
+
+<g fill="none" stroke="#000000" stroke-width="2.5">
+<path d="M720,104 V164" marker-end="url(#arw)"/>
+<path d="M720,240 V300" marker-end="url(#arw)"/>
+<path d="M720,376 V436" marker-end="url(#arw)"/>
+<path d="M720,512 V572" marker-end="url(#arw)"/>
+<path d="M720,748 V808" marker-end="url(#arw)"/>
+<path d="M720,984 V1044" marker-end="url(#arw)"/>
+<path d="M720,1120 V1180" marker-end="url(#arw)"/>
+<path d="M720,1256 V1316" marker-end="url(#arw)"/>
+<path d="M720,1392 V1452" marker-end="url(#arw)"/>
+<path d="M720,1528 V1588" marker-end="url(#arw)"/>
+<path d="M720,1664 V1724" marker-end="url(#arw)"/>
+<path d="M720,1800 V1860" marker-end="url(#arw)"/>
+<path d="M545,660 H140 V1044" marker-end="url(#arw)"/>
+<path d="M530,896 H300 V1044" marker-end="url(#arw)"/>
+<path d="M220,1120 V1900 H680" marker-end="url(#arw)"/>
+</g>
+
+<g fill="#ffffff" stroke="#000000" stroke-width="2.5">
+<ellipse cx="720" cy="64" rx="52" ry="40"/>
+<rect x="500" y="164" width="440" height="76" rx="3"/>
+<rect x="500" y="300" width="440" height="76" rx="3"/>
+<rect x="500" y="436" width="440" height="76" rx="3"/>
+<polygon points="720,572 895,660 720,748 545,660"/>
+<polygon points="720,808 910,896 720,984 530,896"/>
+<rect x="50" y="1044" width="340" height="76" rx="3"/>
+<rect x="500" y="1044" width="440" height="76" rx="3"/>
+<rect x="500" y="1180" width="440" height="76" rx="3"/>
+<rect x="500" y="1316" width="440" height="76" rx="3"/>
+<rect x="500" y="1452" width="440" height="76" rx="3"/>
+<rect x="500" y="1588" width="440" height="76" rx="3"/>
+<rect x="500" y="1724" width="440" height="76" rx="3"/>
+<circle cx="720" cy="1900" r="40"/>
+</g>
+<circle cx="720" cy="1900" r="22" fill="#000000"/>
+
+<g fill="#000000" font-size="22" text-anchor="middle">
+<text x="720" y="210">Member Submits Deposit Request</text>
+<text x="720" y="346">Save Request as Pending</text>
+<text x="720" y="482">Manager Reviews Pending List</text>
+<text x="220" y="1090">Show Error Message</text>
+<text x="720" y="1090">Manager Approves Request</text>
+<text x="720" y="1226">Fetch Previous Balance</text>
+<text x="720" y="1362">New Balance = Previous + Amount</text>
+<text x="720" y="1498">Create User Transaction</text>
+<text x="720" y="1634">Update Request as Approved</text>
+<text x="720" y="1770">Update Member Balance &amp; History</text>
+</g>
+
+<g fill="#000000" font-size="20" text-anchor="middle">
+<text x="720" y="655">Request Belongs</text>
+<text x="720" y="683">to This Mess?</text>
+<text x="720" y="891">Status Still</text>
+<text x="720" y="919">Pending?</text>
+</g>
+
+<g fill="#000000" font-size="20">
+<text x="455" y="648" text-anchor="middle">No</text>
+<text x="420" y="884" text-anchor="middle">No</text>
+<text x="740" y="790">Yes</text>
+<text x="740" y="1026">Yes</text>
+</g>
+</svg>

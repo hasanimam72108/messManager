@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="1950" viewBox="0 0 980 1950" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif">
+<defs>
+<marker id="arw" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 Z" fill="#000000"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="980" height="1950" fill="#ffffff"/>
+
+<g fill="none" stroke="#000000" stroke-width="2.5">
+<path d="M700,104 V166" marker-end="url(#arw)"/>
+<path d="M700,242 V300" marker-end="url(#arw)"/>
+<path d="M700,464 V520" marker-end="url(#arw)"/>
+<path d="M700,700 V756" marker-end="url(#arw)"/>
+<path d="M700,832 V894" marker-end="url(#arw)"/>
+<path d="M700,970 V1032" marker-end="url(#arw)"/>
+<path d="M700,1208 V1264" marker-end="url(#arw)"/>
+<path d="M700,1340 V1402" marker-end="url(#arw)"/>
+<path d="M700,1478 V1540" marker-end="url(#arw)"/>
+<path d="M700,1616 V1678" marker-end="url(#arw)"/>
+<path d="M700,1754 V1812" marker-end="url(#arw)"/>
+<path d="M540,382 H200 V242" marker-end="url(#arw)"/>
+<path d="M515,610 H120 V242" marker-end="url(#arw)"/>
+<path d="M355,204 H490" marker-end="url(#arw)"/>
+<path d="M530,1120 H230 V1264" marker-end="url(#arw)"/>
+<path d="M230,1340 V1852 H660" marker-end="url(#arw)"/>
+</g>
+
+<g fill="#ffffff" stroke="#000000" stroke-width="2.5">
+<ellipse cx="700" cy="64" rx="52" ry="40"/>
+<rect x="490" y="166" width="420" height="76" rx="3"/>
+<rect x="45" y="166" width="310" height="76" rx="3"/>
+<polygon points="700,300 860,382 700,464 540,382"/>
+<polygon points="700,520 885,610 700,700 515,610"/>
+<rect x="490" y="756" width="420" height="76" rx="3"/>
+<rect x="490" y="894" width="420" height="76" rx="3"/>
+<polygon points="700,1032 870,1120 700,1208 530,1120"/>
+<rect x="65" y="1264" width="330" height="76" rx="3"/>
+<rect x="490" y="1264" width="420" height="76" rx="3"/>
+<rect x="490" y="1402" width="420" height="76" rx="3"/>
+<rect x="490" y="1540" width="420" height="76" rx="3"/>
+<rect x="490" y="1678" width="420" height="76" rx="3"/>
+<circle cx="700" cy="1852" r="40"/>
+</g>
+<circle cx="700" cy="1852" r="22" fill="#000000"/>
+
+<g fill="#000000" font-size="22" text-anchor="middle">
+<text x="700" y="212">Fill Registration Form</text>
+<text x="200" y="212">Show Validation Error</text>
+<text x="700" y="802">Create Mess Request (Pending)</text>
+<text x="700" y="940">Super Admin Reviews Request</text>
+<text x="230" y="1310">Mark Request Rejected</text>
+<text x="700" y="1310">Create Mess Record</text>
+<text x="700" y="1448">Create &amp; Link Manager Account</text>
+<text x="700" y="1586">Update Request as Approved</text>
+<text x="700" y="1724">Send Credentials to Manager</text>
+</g>
+
+<g fill="#000000" font-size="20" text-anchor="middle">
+<text x="700" y="389">Password Match?</text>
+<text x="700" y="605">Duplicate Email or</text>
+<text x="700" y="633">Pending Request?</text>
+<text x="700" y="1115">Approve</text>
+<text x="700" y="1143">Request?</text>
+</g>
+
+<g fill="#000000" font-size="20">
+<text x="460" y="370" text-anchor="middle">No</text>
+<text x="430" y="598" text-anchor="middle">Yes</text>
+<text x="390" y="1108" text-anchor="middle">Reject</text>
+<text x="720" y="500">Yes</text>
+<text x="720" y="738">No</text>
+<text x="720" y="1246">Approve</text>
+</g>
+</svg>

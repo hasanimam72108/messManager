@@ -1,0 +1,109 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1720" height="2610" viewBox="0 0 1720 2610" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif">
+<defs>
+<marker id="arw" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 Z" fill="#000000"/>
+</marker>
+</defs>
+<rect x="0" y="0" width="1720" height="2610" fill="#ffffff"/>
+
+<g fill="none" stroke="#000000" stroke-width="2.5">
+<path d="M800,104 V164" marker-end="url(#arw)"/>
+<path d="M800,240 V300"/>
+<path d="M200,300 H1400"/>
+<path d="M200,300 V360" marker-end="url(#arw)"/>
+<path d="M600,300 V360" marker-end="url(#arw)"/>
+<path d="M1000,300 V360" marker-end="url(#arw)"/>
+<path d="M1400,300 V360" marker-end="url(#arw)"/>
+<path d="M200,436 V500"/>
+<path d="M600,436 V500"/>
+<path d="M1000,436 V500"/>
+<path d="M1400,436 V500"/>
+<path d="M200,500 H1400"/>
+<path d="M800,500 V560" marker-end="url(#arw)"/>
+<path d="M620,655 H300 V782" marker-end="url(#arw)"/>
+<path d="M980,655 H1300 V782" marker-end="url(#arw)"/>
+<path d="M300,858 V930"/>
+<path d="M1300,858 V930"/>
+<path d="M300,930 H1300"/>
+<path d="M800,930 V992" marker-end="url(#arw)"/>
+<path d="M800,1068 V1122" marker-end="url(#arw)"/>
+<path d="M800,1198 V1252" marker-end="url(#arw)"/>
+<path d="M800,1328 V1382" marker-end="url(#arw)"/>
+<path d="M800,1458 V1512" marker-end="url(#arw)"/>
+<path d="M800,1588 V1628" marker-end="url(#arw)"/>
+<path d="M620,1720 H280 V1880" marker-end="url(#arw)"/>
+<path d="M800,1812 V1880" marker-end="url(#arw)"/>
+<path d="M980,1720 H1320 V1880" marker-end="url(#arw)"/>
+<path d="M280,1956 V2030"/>
+<path d="M800,1956 V2030"/>
+<path d="M1320,1956 V2030"/>
+<path d="M280,2030 H1320"/>
+<path d="M800,2030 V2090" marker-end="url(#arw)"/>
+<path d="M980,2185 H1650 V1160 H970" marker-end="url(#arw)"/>
+<path d="M800,2280 V2342" marker-end="url(#arw)"/>
+<path d="M800,2418 V2478" marker-end="url(#arw)"/>
+</g>
+
+<g fill="#ffffff" stroke="#000000" stroke-width="2.5">
+<ellipse cx="800" cy="64" rx="52" ry="40"/>
+<rect x="600" y="164" width="400" height="76" rx="3"/>
+<rect x="45" y="360" width="310" height="76" rx="3"/>
+<rect x="445" y="360" width="310" height="76" rx="3"/>
+<rect x="845" y="360" width="310" height="76" rx="3"/>
+<rect x="1245" y="360" width="310" height="76" rx="3"/>
+<polygon points="800,560 980,655 800,750 620,655"/>
+<rect x="150" y="782" width="300" height="76" rx="3"/>
+<rect x="1070" y="782" width="460" height="76" rx="3"/>
+<rect x="540" y="992" width="520" height="76" rx="3"/>
+<rect x="630" y="1122" width="340" height="76" rx="3"/>
+<rect x="550" y="1252" width="500" height="76" rx="3"/>
+<rect x="550" y="1382" width="500" height="76" rx="3"/>
+<rect x="610" y="1512" width="380" height="76" rx="3"/>
+<polygon points="800,1628 980,1720 800,1812 620,1720"/>
+<rect x="140" y="1880" width="280" height="76" rx="3"/>
+<rect x="650" y="1880" width="300" height="76" rx="3"/>
+<rect x="1120" y="1880" width="400" height="76" rx="3"/>
+<polygon points="800,2090 980,2185 800,2280 620,2185"/>
+<rect x="570" y="2342" width="460" height="76" rx="3"/>
+<circle cx="800" cy="2518" r="40"/>
+</g>
+<circle cx="800" cy="2518" r="22" fill="#000000"/>
+
+<g fill="#000000" font-size="22" text-anchor="middle">
+<text x="800" y="210">Select Month (YYYY-MM)</text>
+<text x="200" y="406">Fetch Monthly Meals</text>
+<text x="600" y="406">Fetch Monthly Expenses</text>
+<text x="1000" y="406">Fetch Fixed Costs</text>
+<text x="1400" y="406">Count Members</text>
+<text x="300" y="828">Cost Per Meal = 0</text>
+<text x="1300" y="828">Cost Per Meal = Expense &#247; Meals</text>
+<text x="800" y="1038">Fixed Share = Fixed Total &#247; Members</text>
+<text x="800" y="1168">For Each Member</text>
+<text x="800" y="1298">Bill = (Meals &#215; Rate) + Fixed Share</text>
+<text x="800" y="1428">Paid = Total of Month Transactions</text>
+<text x="800" y="1558">Extra = Paid &#8722; Bill</text>
+<text x="280" y="1926">Mark as Due</text>
+<text x="800" y="1926">Mark as Settled</text>
+<text x="1320" y="1926">Mark as Pending Refund</text>
+<text x="800" y="2388">Generate Monthly Report</text>
+</g>
+
+<g fill="#000000" font-size="20" text-anchor="middle">
+<text x="800" y="650">Total Meals</text>
+<text x="800" y="678">&gt; 0 ?</text>
+<text x="800" y="1715">Extra</text>
+<text x="800" y="1743">Amount?</text>
+<text x="800" y="2180">More</text>
+<text x="800" y="2208">Members?</text>
+</g>
+
+<g fill="#000000" font-size="20">
+<text x="455" y="635" text-anchor="middle">No</text>
+<text x="1015" y="635">Yes</text>
+<text x="450" y="1700" text-anchor="middle">Extra &lt; 0</text>
+<text x="820" y="1856">Extra = 0</text>
+<text x="1015" y="1700">Extra &gt; 0</text>
+<text x="1015" y="2165">Yes</text>
+<text x="820" y="2322">No</text>
+</g>
+</svg>
